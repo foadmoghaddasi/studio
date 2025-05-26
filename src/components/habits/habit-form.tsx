@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -37,7 +38,7 @@ export default function HabitForm() {
     resolver: zodResolver(habitFormSchema),
     defaultValues: {
       title: "",
-      totalDays: 21,
+      totalDays: '', // Changed from 21 to an empty string
     },
   });
 
@@ -93,6 +94,7 @@ export default function HabitForm() {
                 <Input 
                   type="number" 
                   inputMode="numeric"
+                  placeholder="مثلا: ۴۰ روز" // Added placeholder
                   {...field} 
                   className="text-lg p-3 rounded-lg"
                   aria-label="تعداد روز"
@@ -110,3 +112,4 @@ export default function HabitForm() {
     </Form>
   );
 }
+
