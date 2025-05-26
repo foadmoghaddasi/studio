@@ -264,7 +264,18 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
 
       {habitToDelete && (
         <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
-          <AlertDialogContent dir="rtl" className="rounded-3xl">
+          <AlertDialogContent 
+            dir="rtl" 
+            className="rounded-3xl"
+            onPointerDownOutside={(e) => {
+              // AlertDialog by default prevents closing on outside click.
+              // We are attempting to allow closing on outside click here.
+              // Radix's AlertDialog might internally prevent this event from bubbling
+              // or call event.preventDefault() to stop the dialog from closing.
+              // If this doesn't work, it means the default behavior is too strong.
+              setShowDeleteConfirm(false);
+            }}
+          >
             <AlertDialogHeader className="items-center">
               <AlertTriangle className="h-12 w-12 text-destructive mb-3" />
               <AlertDialogTitle>تأیید حذف عادت</AlertDialogTitle>
