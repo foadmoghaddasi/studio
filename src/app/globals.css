@@ -66,11 +66,20 @@
     direction: rtl;
   }
   
-  * {
-    @apply border-border;
-  }
   body {
     @apply bg-background text-foreground;
-    /* font-family will be inherited from html, which is now explicitly font-sans (Vazir) */
+  }
+
+  /* Global scrollbar hiding */
+  /* For Webkit browsers (Chrome, Safari, new Edge, Opera) */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* For Firefox and IE/Edge - applied to all elements */
+  * {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and old Edge */
+    @apply border-border; /* Keep existing global border style */
   }
 }
