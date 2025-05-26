@@ -55,7 +55,7 @@ export default function BottomNavigation() {
                 aria-current={isActive ? 'page' : undefined}
               >
                 <div className={cn(
-                  "flex items-center justify-center h-10 w-10 mb-4 transition-colors",
+                  "flex items-center justify-center h-10 w-10 mb-2 transition-colors", // Changed mb-4 to mb-2
                   isActive ? "bg-primary rounded-full" : "group-hover:bg-primary/10 rounded-md"
                 )}>
                   <item.icon className={cn("h-5 w-5", isActive ? "text-primary-foreground" : "text-inherit")} />
@@ -71,4 +71,3 @@ export default function BottomNavigation() {
     </nav>
   );
 }
-
