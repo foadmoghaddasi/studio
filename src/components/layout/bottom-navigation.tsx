@@ -27,9 +27,9 @@ export default function BottomNavigation() {
 
   const displayedNavItems = [...navItems].sort((a, b) => {
     const orderMap: Record<string, number> = {
-      '/my-habits': 0,  
+      '/my-habits': 0,  // Right-most in RTL
       '/archive': 1,    
-      '/settings': 2,   
+      '/settings': 2,   // Left-most in RTL
     };
 
     const orderA = orderMap[a.href] ?? 99;
@@ -40,7 +40,7 @@ export default function BottomNavigation() {
 
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-card md:max-w-md md:mx-auto md:left-1/2 md:-translate-x-1/2 w-full h-24 border-t-2 border-primary"> 
+    <nav className="fixed bottom-0 left-0 right-0 bg-card md:max-w-md md:mx-auto md:left-1/2 md:-translate-x-1/2 w-full h-24 border-t border-primary"> 
       <div className="flex items-start h-full pt-4 gap-x-2">
         {displayedNavItems.map((item) => {
           const isActive = pathname === item.href;
