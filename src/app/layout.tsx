@@ -29,8 +29,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fa" dir="rtl" className={`${vazir.variable} ${geistMono.variable}`}>
-      <body className={`antialiased`}> {/* Font variables moved to html tag */}
+    <html lang="fa" dir="rtl">
+      <body className={`antialiased ${vazir.className} ${geistMono.className}`}>
         <AuthProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <HabitProvider>
