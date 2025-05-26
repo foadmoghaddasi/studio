@@ -30,11 +30,11 @@
   }
 
   .dark {
-    --background: 0 0% 5%; /* Darker base background */
+    --background: 0 0% 3.9%; /* Darkest */
     --foreground: 0 0% 98%;
     --card: 0 0% 7.1%; /* Slightly lighter than background for card elevation */
     --card-foreground: 0 0% 98%;
-    --popover: 0 0% 7.1%; /* Same as card */
+    --popover: 0 0% 7.1%; /* Same as card for floating elements */
     --popover-foreground: 0 0% 98%;
     --primary: 170 100% 39.8%;
     --primary-foreground: 0 0% 100%;
