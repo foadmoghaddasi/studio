@@ -78,10 +78,10 @@ export default function OtpForm() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[calc(100svh-10rem)] text-center p-4" lang="fa">
-      <h1 className="text-2xl font-semibold text-foreground mb-4">تایید شماره تلفن</h1>
-      <p className="text-muted-foreground mb-8 max-w-xs">
-        کد ۶ رقمی برای تایید به شماره شما فرستاده شده است.
+    <div className="flex flex-col items-center justify-center min-h-[calc(100svh-10rem)] text-right p-4" lang="fa">
+      <h1 className="text-2xl font-semibold text-foreground mb-4 w-full max-w-sm">تایید شماره تلفن</h1>
+      <p className="text-muted-foreground mb-8 max-w-xs w-full max-w-sm">
+        خوب حالا یه اس ام اس حاوی کد 6 رقمی برات ارسال شده، بی زحمت اونو وارد کن و تمام!
       </p>
 
       <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-8">
@@ -96,14 +96,14 @@ export default function OtpForm() {
               onChange={(e) => handleChange(e.target as HTMLInputElement, index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
               ref={(el) => (inputRefs.current[index] = el)}
-              className="w-12 h-14 text-2xl text-center transition-all" // Simplified classes to inherit from base Input
+              className="w-14 h-14 text-2xl text-center transition-all" 
               aria-label={`OTP digit ${index + 1}`}
               disabled={isLoading}
             />
           ))}
         </div>
 
-        <div className="text-muted-foreground">
+        <div className="text-muted-foreground text-center">
           {countdown > 0 ? (
             <span>ارسال مجدد کد تا {formattedCountdown()} دیگر</span>
           ) : (
@@ -114,10 +114,10 @@ export default function OtpForm() {
         </div>
 
         <div className="space-y-4">
-          <Button type="submit" className="w-full text-lg p-6 rounded-full" disabled={isLoading || otp.join("").length !== OTP_LENGTH}>
+          <Button type="submit" className="w-full text-lg p-6" disabled={isLoading || otp.join("").length !== OTP_LENGTH}>
             {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : "ادامه"}
           </Button>
-          <Button variant="outline" className="w-full text-lg p-6 rounded-full" onClick={() => router.back()} disabled={isLoading}>
+          <Button variant="outline" className="w-full text-lg p-6" onClick={() => router.back()} disabled={isLoading}>
             بازگشت
           </Button>
         </div>
