@@ -139,7 +139,7 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
 
   if (isArchiveView) {
     return (
-      <Card className="w-full shadow-md bg-muted/30">
+      <Card className="w-full bg-muted/30">
         <CardHeader>
           <CardTitle className="text-xl font-semibold text-muted-foreground">{habit.title}</CardTitle>
         </CardHeader>
@@ -164,7 +164,7 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
   return (
     <>
       <Card className={cn(
-        "w-full shadow-md hover:shadow-lg transition-all duration-300 ease-in-out",
+        "w-full transition-all duration-300 ease-in-out",
         (!habit.isActive || habit.isArchived) && "opacity-70 bg-muted/50 scale-[0.985] transform" 
       )}>
         <CardHeader className="flex flex-row items-start justify-between pb-2">
@@ -268,11 +268,6 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
             dir="rtl" 
             className="rounded-3xl"
             onPointerDownOutside={(e) => {
-              // AlertDialog by default prevents closing on outside click.
-              // We are attempting to allow closing on outside click here.
-              // Radix's AlertDialog might internally prevent this event from bubbling
-              // or call event.preventDefault() to stop the dialog from closing.
-              // If this doesn't work, it means the default behavior is too strong.
               setShowDeleteConfirm(false);
             }}
           >

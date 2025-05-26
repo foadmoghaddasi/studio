@@ -25,12 +25,11 @@ export default function BottomNavigation() {
     return null;
   }
 
-  // Order for RTL display (Right to Left): My Habits (rightmost) | Archive | Settings (leftmost)
   const displayedNavItems = [...navItems].sort((a, b) => {
     const orderMap: Record<string, number> = {
-      '/my-habits': 0,  // Will be rightmost for user
-      '/archive': 1,    // Middle
-      '/settings': 2,   // Will be leftmost for user
+      '/my-habits': 0,  
+      '/archive': 1,    
+      '/settings': 2,   
     };
 
     const orderA = orderMap[a.href] ?? 99;
@@ -41,7 +40,7 @@ export default function BottomNavigation() {
 
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-card md:max-w-md md:mx-auto md:left-1/2 md:-translate-x-1/2 w-full h-24"> {/* Removed custom top shadow */}
+    <nav className="fixed bottom-0 left-0 right-0 bg-card md:max-w-md md:mx-auto md:left-1/2 md:-translate-x-1/2 w-full h-24 border-t-2 border-primary"> 
       <div className="flex items-start h-full pt-4 gap-x-2">
         {displayedNavItems.map((item) => {
           const isActive = pathname === item.href;

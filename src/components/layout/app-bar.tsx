@@ -10,16 +10,15 @@ import { usePathname } from 'next/navigation';
 export default function AppBar() {
   const { isAuthenticated, isLoading } = useAuth();
   const pathname = usePathname();
-  const userDisplayName = "کاربر روزبه‌روز"; // Placeholder
-  const userFirstName = userDisplayName.split(' ')[0]; // Extract first part as first name
+  const userDisplayName = "کاربر روزبه‌روز"; 
+  const userFirstName = userDisplayName.split(' ')[0]; 
 
-  // Do not render AppBar on auth pages or if not authenticated
   if (isLoading || !isAuthenticated || ['/', '/otp'].includes(pathname)) {
     return null;
   }
 
   return (
-    <header className="bg-card sticky top-0 z-40 md:max-w-md md:mx-auto md:left-1/2 md:-translate-x-1/2 w-full" lang="fa"> {/* Removed shadow-md */}
+    <header className="bg-card sticky top-0 z-40 md:max-w-md md:mx-auto md:left-1/2 md:-translate-x-1/2 w-full border-b-2 border-primary" lang="fa"> 
       <div className="container mx-auto max-w-md h-16 flex items-center justify-between px-4">
         <Link href="/profile" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
           <Avatar className="h-9 w-9">
@@ -30,7 +29,6 @@ export default function AppBar() {
           </Avatar>
           <span className="font-medium text-foreground">سلام {userFirstName}!</span>
         </Link>
-        {/* Placeholder for potential actions like notifications or settings icon */}
         <div></div>
       </div>
     </header>
