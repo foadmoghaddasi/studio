@@ -4,7 +4,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import DarkModeToggle from "@/components/shared/dark-mode-toggle";
+// import DarkModeToggle from "@/components/shared/dark-mode-toggle"; // Removed from here
 import { useAuth } from "@/providers/auth-provider";
 import { useHabits } from "@/providers/habit-provider";
 import { User, LogOut, BarChart3, TrendingUp, CheckSquare } from "lucide-react";
@@ -23,7 +23,7 @@ export default function ProfilePage() {
 
   return (
     <div className="space-y-8 pb-20" lang="fa">
-      <h1 className="text-3xl font-bold text-foreground text-center">تنظیمات</h1>
+      <h1 className="text-3xl font-bold text-foreground text-center">پروفایل کاربری</h1>
 
       <Card className="shadow-lg">
         <CardHeader className="items-center text-center">
@@ -55,9 +55,9 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          <div className="pt-6">
-            <DarkModeToggle />
-          </div>
+          {/* <div className="pt-6">
+             Removed DarkModeToggle from here
+          </div> */}
         </CardContent>
       </Card>
 
