@@ -3,7 +3,7 @@
 
 import type { Habit } from '@/lib/types';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button'; // Added buttonVariants import
 import ProgressRing from './progress-ring';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
@@ -255,7 +255,7 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>انصراف</AlertDialogCancel>
-              <AlertDialogAction onClick={confirmDeleteHabit} className={buttonVariants({ variant: "destructive" })}>
+              <AlertDialogAction onClick={confirmDeleteHabit} className={cn(buttonVariants({ variant: "destructive" }))}>
                 حذف
               </AlertDialogAction>
             </AlertDialogFooter>
