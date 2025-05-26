@@ -20,6 +20,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: 'روز به روز',
   description: 'اپلیکیشن مدیریت عادت‌ها',
+  manifest: '/manifest.json', // Added manifest link for PWA
 };
 
 export default function RootLayout({
@@ -31,6 +32,9 @@ export default function RootLayout({
     // vazir.variable removed from className
     // font-sans class added back to body for default Tailwind font
     <html lang="fa" dir="rtl" className={`${geistMono.variable}`} suppressHydrationWarning={true}>
+      <head>
+        <meta name="theme-color" content="#00BFA6" />
+      </head>
       <body className="antialiased font-sans" suppressHydrationWarning={true}>
         <AuthProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>

@@ -1,4 +1,16 @@
+
 import type {NextConfig} from 'next';
+import nextPWA from 'next-pwa';
+
+const pwaConfig = {
+  dest: 'public',
+  register: true,
+  skipWaiting: true,
+  disable: process.env.NODE_ENV === 'development',
+  // experimental: { // Not needed directly here for next-pwa with App Router
+  //  appDir: true, 
+  // },
+};
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -18,16 +30,8 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // If you decide to add full PWA support with next-pwa or similar:
-  // experimental: {
-  //   appDir: true,
-  // },
-  // pwa: {
-  //   dest: 'public',
-  //   register: true,
-  //   skipWaiting: true,
-  //   disable: process.env.NODE_ENV === 'development'
-  // }
 };
 
-export default nextConfig;
+const withPWA = nextPWA(pwaConfig);
+
+export default withPWA(nextConfig);
