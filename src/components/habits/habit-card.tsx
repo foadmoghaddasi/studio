@@ -237,7 +237,7 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
             </div>
           )}
           {motivationalMessage && !isLoadingMotivation && (
-            <div className="mt-2 p-3 bg-accent/20 rounded-md text-sm text-accent-foreground text-center animate-in fade-in duration-300">
+            <div className="mt-2 p-3 bg-primary/10 rounded-md text-sm text-primary text-center animate-in fade-in duration-300">
               {motivationalMessage}
             </div>
           )}
