@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useTheme } from 'next-themes';
@@ -29,7 +30,7 @@ export default function DarkModeToggle({ showLabel = true }: { showLabel?: boole
         </Label>
       )}
       <div className="flex items-center">
-        <Sun className={`h-6 w-6 transition-opacity ${isDarkMode ? 'opacity-50' : 'opacity-100 text-yellow-500'}`} fill="currentColor" />
+        <Sun className={`h-6 w-6 transition-opacity ${isDarkMode ? 'opacity-50' : 'opacity-100 text-yellow-500'}`} />
         <Switch
           id="dark-mode-switch"
           checked={isDarkMode}
@@ -37,8 +38,9 @@ export default function DarkModeToggle({ showLabel = true }: { showLabel?: boole
           className="mx-2"
           aria-label={isDarkMode ? "تغییر به حالت روشن" : "تغییر به حالت تاریک"}
         />
-        <Moon className={`h-6 w-6 transition-opacity ${isDarkMode ? 'opacity-100 text-primary' : 'opacity-50'}`} fill="currentColor" />
+        <Moon className={`h-6 w-6 transition-opacity ${isDarkMode ? 'opacity-100 text-primary' : 'opacity-50'}`} />
       </div>
     </div>
   );
 }
+

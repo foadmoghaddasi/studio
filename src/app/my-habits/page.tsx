@@ -17,7 +17,7 @@ export default function MyHabitsPage() {
           aria-label="ایجاد عادت جدید"
           className="fixed bottom-28 right-6 z-30 h-14 w-14 bg-primary text-primary-foreground rounded-full flex items-center justify-center shadow-lg hover:bg-primary/90 transition-colors"
         >
-          <Plus className="h-7 w-7" /> {/* Plus is often used as outline, fill might make it a square. Let's test. If not good, user can specify to remove fill for this one. */}
+          <Plus className="h-7 w-7" />
         </a>
       </Link>
     </div>

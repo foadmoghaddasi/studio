@@ -16,12 +16,12 @@ export default function HabitList() {
   if (activeHabits.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center text-center space-y-6 py-12 min-h-[calc(100svh-15rem)]">
-        <ListX className="w-20 h-20 text-primary opacity-50" fill="currentColor" />
+        <ListX className="w-20 h-20 text-primary opacity-50" />
         <h2 className="text-2xl font-semibold text-foreground">هنوز عادتی اضافه نکردی یا همه آرشیو شدن</h2>
         <p className="text-muted-foreground max-w-xs">
           خوشحالم که اینجایی... حالا می‌تونی اولین تغییر زندگیت رو از اینجا شروع کنی.
         </p>
-        <ArrowDown className="w-10 h-10 text-primary animate-bounce mt-4" fill="currentColor" />
+        <ArrowDown className="w-10 h-10 text-primary animate-bounce mt-4" />
         <Link href="/create-habit" legacyBehavior>
           <Button size="lg" className="text-lg p-7 rounded-xl shadow-lg">
             ایجاد اولین عادت

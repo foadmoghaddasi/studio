@@ -1,3 +1,4 @@
+
 "use client";
 
 import { getMotivationalMessage, type MotivationalMessageInput } from "@/ai/flows/personalized-motivation";
@@ -87,7 +88,7 @@ export default function MotivationalQuote({
 
   return (
     <Alert className="bg-primary/10 border-primary/30 text-primary-foreground shadow-lg animate-in fade-in duration-500">
-       <Sparkles className="h-5 w-5 text-primary" fill="currentColor" />
+       <Sparkles className="h-5 w-5 text-primary" />
       <AlertTitle className="mr-6 font-semibold text-primary">پیام روز</AlertTitle>
       <AlertDescription className="mr-6 text-foreground">
         {message}
@@ -95,3 +96,4 @@ export default function MotivationalQuote({
     </Alert>
   );
 }
+

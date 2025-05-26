@@ -27,7 +27,7 @@ export default function ArchivePage() {
 
       {archivedHabits.length === 0 ? (
         <div className="flex flex-col items-center justify-center text-center space-y-6 py-12 min-h-[calc(100svh-20rem)]">
-          <ArchiveX className="w-20 h-20 text-primary opacity-50" fill="currentColor" />
+          <ArchiveX className="w-20 h-20 text-primary opacity-50" />
           <h2 className="text-2xl font-semibold text-foreground">آرشیو خالی است</h2>
           <p className="text-muted-foreground max-w-xs">
             هنوز هیچ عادتی را آرشیو نکرده‌اید.
@@ -43,3 +43,4 @@ export default function ArchivePage() {
     </div>
   );
 }
+

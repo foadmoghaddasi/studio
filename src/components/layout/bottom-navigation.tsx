@@ -58,7 +58,7 @@ export default function BottomNavigation() {
                   "flex items-center justify-center h-10 w-10 mb-2 transition-colors", 
                   isActive ? "bg-primary rounded-full" : "group-hover:bg-primary/10 rounded-md"
                 )}>
-                  <item.icon className={cn("h-5 w-5", isActive ? "text-primary-foreground" : "text-inherit")} fill="currentColor" />
+                  <item.icon className={cn("h-5 w-5", isActive ? "text-primary-foreground" : "text-inherit")} />
                 </div>
                 <span className={cn(isActive ? "text-primary" : "text-inherit")}> 
                   {item.label}
@@ -71,3 +71,4 @@ export default function BottomNavigation() {
     </nav>
   );
 }
+
