@@ -152,7 +152,7 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
         <CardFooter>
           <Button
             onClick={handleUnarchiveHabit}
-            className="w-full text-md p-5"
+            className="w-full text-md p-5 rounded-full"
             variant="default"
           >
             <ArchiveIconLucide className="ml-2 h-5 w-5 transform rotate-180" /> فعال سازی دوباره
@@ -168,14 +168,19 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
         "w-full transition-all duration-300 ease-in-out",
         (!habit.isActive || habit.isArchived) && "opacity-70 bg-muted/50 scale-[0.985] transform" 
       )}>
-        <CardHeader className="flex flex-row items-start justify-between pb-2">
-          <Link href={`/habits/${habit.id}`} legacyBehavior passHref>
-            <a className={cn("hover:underline flex-grow", (!habit.isActive || habit.isArchived) && "pointer-events-none")}>
-              <CardTitle className={cn("text-xl font-semibold transition-colors duration-300 ease-in-out", (!habit.isActive || habit.isArchived) && "text-muted-foreground")}>
-                {habit.title}
-              </CardTitle>
-            </a>
-          </Link>
+        <CardHeader className="flex flex-row items-center justify-between pb-2">
+          <div className="flex-grow">
+            <Link href={`/habits/${habit.id}`} legacyBehavior passHref>
+              <a className={cn("hover:underline", (!habit.isActive || habit.isArchived) && "pointer-events-none")}>
+                <CardTitle className={cn("text-xl font-semibold transition-colors duration-300 ease-in-out", (!habit.isActive || habit.isArchived) && "text-muted-foreground")}>
+                  {habit.title}
+                </CardTitle>
+              </a>
+            </Link>
+            <p className="text-xs text-muted-foreground mt-2">
+              تاریخ شروع: {new Date(habit.createdAt).toLocaleDateString('fa-IR')}
+            </p>
+          </div>
           <div className="flex items-center space-x-2 space-x-reverse">
             {!habit.isArchived && (
               <>
@@ -193,13 +198,13 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
             )}
              <DropdownMenu dir="rtl">
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8">
+                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
                   <MoreVertical className="h-5 w-5" />
                   <span className="sr-only">گزینه‌ها</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onSelect={handleArchiveHabit}>
+                <DropdownMenuItem onSelect={handleArchiveHabit} className="rounded-full">
                   <ArchiveIconLucide className="ml-2 h-4 w-4" />
                   آرشیو عادت
                 </DropdownMenuItem>
@@ -209,7 +214,7 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
                     setHabitToDelete(habit);
                     setShowDeleteConfirm(true);
                   }}
-                  className="text-destructive hover:bg-destructive/10 focus:bg-destructive/10 focus:text-destructive data-[highlighted]:bg-destructive/10 data-[highlighted]:text-destructive"
+                  className="text-destructive hover:bg-destructive/10 focus:bg-destructive/10 focus:text-destructive data-[highlighted]:bg-destructive/10 data-[highlighted]:text-destructive rounded-full"
                 >
                   <Trash2 className="ml-2 h-4 w-4" />
                   حذف عادت
@@ -223,9 +228,7 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
             <p className="text-sm text-muted-foreground">
               پیشرفت: {toPersianNumerals(habit.daysCompleted)} از {toPersianNumerals(habit.totalDays)} روز
             </p>
-            <p className="text-xs text-muted-foreground">
-              تاریخ شروع: {new Date(habit.createdAt).toLocaleDateString('fa-IR')}
-            </p>
+            
           </div>
           <ProgressRing
             percentage={percentage}
@@ -237,7 +240,7 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
         <CardFooter className="flex flex-col items-stretch gap-3">
           <Button
             onClick={handleCompleteDay}
-            className="w-full text-md p-5 transition-transform active:scale-95"
+            className="w-full text-md p-5 rounded-full"
             disabled={isCompletedToday || !habit.isActive || habit.isArchived}
           >
             {isCompletedToday ? (
@@ -280,8 +283,8 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter className="mt-4">
-              <AlertDialogCancel className="flex-1">انصراف</AlertDialogCancel>
-              <AlertDialogAction onClick={confirmDeleteHabit} className={cn(buttonVariants({ variant: "destructive" }), "flex-1")}>
+              <AlertDialogCancel className="flex-1 rounded-full">انصراف</AlertDialogCancel>
+              <AlertDialogAction onClick={confirmDeleteHabit} className={cn(buttonVariants({ variant: "destructive" }), "flex-1 rounded-full")}>
                 حذف
               </AlertDialogAction>
             </AlertDialogFooter>
@@ -291,3 +294,4 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
     </>
   );
 }
+
