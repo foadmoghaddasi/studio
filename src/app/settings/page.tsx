@@ -10,7 +10,7 @@ export default function SettingsPage() {
       <h1 className="text-2xl font-bold text-foreground text-center">تنظیمات</h1>
 
       <div>
-        <p className="text-base text-muted-foreground mb-1 text-right">نمایش</p>
+        <p className="text-base text-muted-foreground mb-2 pr-4 text-right">نمایش</p>
         <Card>
           <CardContent className="flex items-center justify-between p-4">
             <span className="text-base text-foreground">حالت شب</span>
@@ -22,3 +22,4 @@ export default function SettingsPage() {
     </div>
   );
 }
+
