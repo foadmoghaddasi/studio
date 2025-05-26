@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 import { Vazirmatn, Geist_Mono } from 'next/font/google'; // Import Vazirmatn
 import './globals.css';
@@ -6,10 +7,11 @@ import { HabitProvider } from '@/providers/habit-provider';
 import { Toaster } from '@/components/ui/toaster';
 import BottomNavigation from '@/components/layout/bottom-navigation';
 import AuthProvider from '@/providers/auth-provider';
+import AppBar from '@/components/layout/app-bar'; // Import AppBar
 
-const vazir = Vazirmatn({ // Initialize Vazirmatn
+const vazir = Vazirmatn({ 
   subsets: ['arabic', 'latin'],
-  variable: '--font-vazir', // Define a CSS variable for Vazirmatn
+  variable: '--font-vazir', 
   display: 'swap',
 });
 
@@ -29,13 +31,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fa" dir="rtl" className={`${vazir.variable} ${geistMono.variable}`}>
-      <body className="antialiased"> {/* Tailwind will apply font-sans (Vazir) via globals.css */}
+    <html lang="fa" dir="rtl" className={`${vazir.variable} ${geistMono.variable} font-sans`}>
+      <body className="antialiased">
         <AuthProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <HabitProvider>
               <div className="flex flex-col min-h-svh">
-                <main className="flex-grow container mx-auto max-w-md p-4 pt-8">
+                <AppBar /> {/* Add AppBar here */}
+                <main className="flex-grow container mx-auto max-w-md p-4 pt-6"> {/* Adjusted pt for AppBar height */}
                   {children}
                 </main>
                 <BottomNavigation />
