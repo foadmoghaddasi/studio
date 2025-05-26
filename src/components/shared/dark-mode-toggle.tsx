@@ -6,6 +6,7 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Moon, Sun } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { cn } from '@/lib/utils';
 
 export default function DarkModeToggle({ showLabel = true }: { showLabel?: boolean }) {
   const { theme, setTheme } = useTheme();
@@ -23,7 +24,7 @@ export default function DarkModeToggle({ showLabel = true }: { showLabel?: boole
   const isDarkMode = theme === 'dark';
 
   return (
-    <div className="flex items-center justify-between w-full">
+    <div className={cn("flex items-center", showLabel && "justify-between w-full")}>
       {showLabel && (
         <Label htmlFor="dark-mode-switch" className="text-sm">
           {isDarkMode ? 'حالت شب' : 'حالت روز'}
