@@ -3,61 +3,11 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --background: 150 11% 97%; /* Lighter base background */
-    --foreground: 0 0% 3.9%;
-    --card: 150 11% 95%; /* Slightly darker than background for card elevation */
-    --card-foreground: 0 0% 3.9%;
-    --popover: 150 11% 95%; /* Same as card for floating elements */
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 170 100% 39.8%; /* #00C9A7 */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 150 15% 92%; /* For inputs and secondary actions, distinct from card */
-    --secondary-foreground: 0 0% 9%;
-    --muted: 150 10% 90%; /* For subtle backgrounds, placeholders, distinct from secondary */
-    --muted-foreground: 0 0% 45.1%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 150 10% 85%; /* Kept for rings, focus states if needed */
-    --input: 150 10% 85%; /* Kept for rings, focus states if needed */
-    --ring: 170 100% 39.8%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
-  }
-
-  .dark {
-    --background: 0 0% 3.9%; /* Darkest */
-    --foreground: 0 0% 98%;
-    --card: 0 0% 7.1%; /* Slightly lighter than background for card elevation */
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 7.1%; /* Same as card for floating elements */
-    --popover-foreground: 0 0% 98%;
-    --primary: 170 100% 39.8%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 10%; /* For inputs and secondary actions, distinct from card */
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 12%; /* For subtle backgrounds, placeholders, distinct from secondary */
-    --muted-foreground: 0 0% 63.9%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%; /* Kept for rings, focus states */
-    --input: 0 0% 14.9%; /* Kept for rings, focus states */
-    --ring: 170 100% 39.8%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-  }
+  /* Ensure Vazir (via Tailwind's font-sans config) is applied if not already via body class */
+  /* html {
+    @apply font-sans; 
+  } */
   
-  html {
-    @apply font-sans; /* Ensures Vazir (via Tailwind's font-sans config) is the default */
-  }
-
   html[dir="rtl"] {
     direction: rtl;
   }
@@ -76,6 +26,5 @@
   * {
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE and old Edge */
-    /* @apply border-border; Removed global border application */
   }
 }
