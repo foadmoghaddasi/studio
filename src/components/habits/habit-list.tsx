@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useHabits } from '@/providers/habit-provider';
@@ -5,6 +6,7 @@ import HabitCard from './habit-card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ArrowDown, ListX } from 'lucide-react'; // ListX for empty habits
+import type { Habit } from '@/lib/types';
 
 export default function HabitList() {
   const { habits } = useHabits();
@@ -27,9 +29,21 @@ export default function HabitList() {
     );
   }
 
+  const sortedHabits = [...habits].sort((a: Habit, b: Habit) => {
+    // Active habits first
+    if (a.isActive && !b.isActive) {
+      return -1;
+    }
+    if (!a.isActive && b.isActive) {
+      return 1;
+    }
+    // If both are active or both inactive, sort by creation date (newest first)
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
+
   return (
     <div className="space-y-6 pb-24"> {/* Padding bottom to avoid overlap with bottom nav */}
-      {habits.map((habit) => (
+      {sortedHabits.map((habit) => (
         <HabitCard key={habit.id} habit={habit} />
       ))}
     </div>
