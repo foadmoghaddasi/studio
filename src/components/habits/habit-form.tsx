@@ -59,11 +59,15 @@ export default function HabitForm() {
       });
       setIsLoading(false);
     }
+    // Simulate API call for a bit longer if needed
+    // setTimeout(() => {
+    //   setIsLoading(false);
+    // }, 2000);
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8" lang="fa">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" lang="fa"> {/* Changed space-y-8 to space-y-4 */}
         <FormField
           control={form.control}
           name="title"
@@ -102,7 +106,7 @@ export default function HabitForm() {
           )}
         />
 
-        <Button type="submit" className="w-full text-lg p-6" disabled={isLoading}>
+        <Button type="submit" className="w-full text-lg p-6 rounded-full" disabled={isLoading}>
           {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : "ایجاد عادت"}
         </Button>
       </form>
