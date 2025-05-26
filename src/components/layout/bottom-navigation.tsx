@@ -41,7 +41,7 @@ export default function BottomNavigation() {
 
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-card shadow-[0_-2px_4px_-1px_rgba(0,0,0,0.06),_0_-4px_8px_-1px_rgba(0,0,0,0.1)] md:max-w-md md:mx-auto md:left-1/2 md:-translate-x-1/2 w-full h-24"> {/* Removed border-t, added custom top shadow */}
+    <nav className="fixed bottom-0 left-0 right-0 bg-card md:max-w-md md:mx-auto md:left-1/2 md:-translate-x-1/2 w-full h-24"> {/* Removed custom top shadow */}
       <div className="flex items-start h-full pt-4 gap-x-2">
         {displayedNavItems.map((item) => {
           const isActive = pathname === item.href;

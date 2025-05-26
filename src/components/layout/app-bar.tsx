@@ -19,10 +19,10 @@ export default function AppBar() {
   }
 
   return (
-    <header className="bg-card sticky top-0 z-40 md:max-w-md md:mx-auto md:left-1/2 md:-translate-x-1/2 w-full shadow-md" lang="fa"> {/* Removed border-b, added shadow-md */}
+    <header className="bg-card sticky top-0 z-40 md:max-w-md md:mx-auto md:left-1/2 md:-translate-x-1/2 w-full" lang="fa"> {/* Removed shadow-md */}
       <div className="container mx-auto max-w-md h-16 flex items-center justify-between px-4">
         <Link href="/profile" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-          <Avatar className="h-9 w-9"> {/* Removed border from Avatar itself if it was there */}
+          <Avatar className="h-9 w-9">
             <AvatarImage src="https://placehold.co/100x100.png" alt={userDisplayName} data-ai-hint="profile avatar" />
             <AvatarFallback>
               <User className="w-5 h-5 text-muted-foreground" />
