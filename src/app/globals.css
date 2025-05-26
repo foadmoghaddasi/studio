@@ -57,21 +57,20 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
+  
+  html {
+    @apply font-sans; /* Ensures Vazir (via Tailwind's font-sans config) is the default */
+  }
 
-  /*
-    Tailwind's base styles will apply font-family from theme.fontFamily.sans to html.
-    We've configured theme.fontFamily.sans to use var(--font-vazir).
-    The CSS variable --font-vazir is provided by next/font and applied to the html tag in layout.tsx.
-  */
+  html[dir="rtl"] {
+    direction: rtl;
+  }
   
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
-    /* font-family will be inherited from html, which gets font-sans by default from Tailwind's base styles */
-  }
-  html[dir="rtl"] {
-    direction: rtl;
+    /* font-family will be inherited from html, which is now explicitly font-sans (Vazir) */
   }
 }
