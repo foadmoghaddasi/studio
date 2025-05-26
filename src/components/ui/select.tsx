@@ -20,7 +20,12 @@ const SelectTrigger = React.forwardRef<
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      "flex h-10 w-full items-center justify-between rounded-full bg-secondary px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 shadow-sm",
+      "flex h-10 w-full items-center justify-between rounded-full px-3 py-2 text-sm ring-offset-background file:text-sm file:font-medium file:text-foreground [&>span]:line-clamp-1", // Base styles
+      "border border-[hsl(var(--input-border-color-hsl))]", // Default border
+      "bg-[var(--input-background)]", // Default background
+      "placeholder:text-[var(--input-placeholder)]", // Placeholder text color for consistency if SelectValue could show it
+      "focus:outline-none focus:border-2 focus:border-[hsl(var(--input-border-color-hsl))] focus:ring-2 focus:ring-ring focus:ring-offset-background", // Focus styles (using focus not focus-visible for SelectTrigger)
+      "disabled:cursor-not-allowed disabled:opacity-50", // Disabled styles
       className
     )}
     {...props}
@@ -119,7 +124,7 @@ const SelectItem = React.forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-primary/10 focus:text-primary data-[disabled]:pointer-events-none data-[disabled]:opacity-50", // SelectItem itself remains rounded-sm for better UX in list
+      "relative flex w-full cursor-default select-none items-center rounded-full py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-primary/10 focus:text-primary data-[disabled]:pointer-events-none data-[disabled]:opacity-50", // SelectItem itself remains rounded-sm for better UX in list
       className
     )}
     {...props}
