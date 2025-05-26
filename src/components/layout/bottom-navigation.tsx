@@ -25,7 +25,7 @@ export default function BottomNavigation() {
     return null;
   }
 
-  // Order for RTL display (Right to Left): My Habits | Archive | Settings
+  // Order for RTL display (Right to Left): My Habits (rightmost) | Archive | Settings (leftmost)
   const displayedNavItems = [...navItems].sort((a, b) => {
     const orderMap: Record<string, number> = {
       '/my-habits': 0,  // Will be rightmost for user
@@ -42,25 +42,36 @@ export default function BottomNavigation() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border shadow-lg md:max-w-md md:mx-auto md:left-1/2 md:-translate-x-1/2 w-full h-24">
-      <div className="flex items-start h-full pt-4 gap-x-2"> {/* Changed: Using gap-x-2 for spacing, removed justify-around and px-1 */}
+      <div className="flex items-start h-full pt-4 gap-x-2">
         {displayedNavItems.map((item) => {
           const isActive = pathname === item.href;
           return (
             <Link key={item.href} href={item.href} legacyBehavior>
               <a
                 className={cn(
-                  'flex flex-col items-center text-xs rounded-md transition-colors flex-1 min-w-0 group', // flex-1 remains to distribute space
-                  isActive ? 'font-semibold' : 'text-muted-foreground hover:bg-primary/10 hover:text-primary'
+                  'flex flex-col items-center text-xs rounded-md transition-colors flex-1 min-w-0 group',
+                  isActive ? 'font-semibold' : 'text-muted-foreground'
                 )}
                 aria-current={isActive ? 'page' : undefined}
               >
                 <div className={cn(
                   "flex items-center justify-center h-10 w-10 mb-2 transition-colors", 
-                  isActive ? "bg-primary rounded-full" : "group-hover:bg-primary/10 rounded-md"
+                  isActive 
+                    ? "bg-primary rounded-full" 
+                    : "group-hover:bg-primary/10 group-hover:rounded-full"
                 )}>
-                  <item.icon className={cn("h-5 w-5", isActive ? "text-primary-foreground" : "text-inherit")} />
+                  <item.icon className={cn(
+                    "h-5 w-5", 
+                    isActive 
+                      ? "text-primary-foreground" 
+                      : "text-inherit group-hover:text-primary"
+                  )} />
                 </div>
-                <span className={cn(isActive ? "text-primary" : "text-inherit")}> 
+                <span className={cn(
+                  isActive 
+                    ? "text-primary" 
+                    : "text-inherit group-hover:text-primary"
+                )}> 
                   {item.label}
                 </span>
               </a>
@@ -71,4 +82,3 @@ export default function BottomNavigation() {
     </nav>
   );
 }
-
