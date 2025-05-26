@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+// Label import removed as FormLabel from ui/form is used
 import { useHabits } from '@/providers/habit-provider';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
@@ -38,7 +38,7 @@ export default function HabitForm() {
     resolver: zodResolver(habitFormSchema),
     defaultValues: {
       title: "",
-      totalDays: '', // Changed from 21 to an empty string
+      totalDays: '', 
     },
   });
 
@@ -59,7 +59,6 @@ export default function HabitForm() {
       });
       setIsLoading(false);
     }
-    // setIsLoading(false) is handled by redirect or error toast.
   };
 
   return (
@@ -70,12 +69,11 @@ export default function HabitForm() {
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-lg">عنوان عادت</FormLabel>
+              <FormLabel className="text-sm">عنوان عادت</FormLabel>
               <FormControl>
                 <Input 
                   placeholder="مثلا: مطالعه روزانه" 
                   {...field} 
-                  className="text-lg p-3"
                   aria-label="عنوان عادت"
                 />
               </FormControl>
@@ -89,14 +87,13 @@ export default function HabitForm() {
           name="totalDays"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-lg">تعداد روز</FormLabel>
+              <FormLabel className="text-sm">تعداد روز</FormLabel>
               <FormControl>
                 <Input 
                   type="number" 
                   inputMode="numeric"
-                  placeholder="مثلا: ۴۰ روز" // Added placeholder
+                  placeholder="مثلا: ۴۰ روز" 
                   {...field} 
-                  className="text-lg p-3"
                   aria-label="تعداد روز"
                 />
               </FormControl>

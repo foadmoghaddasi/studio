@@ -25,7 +25,7 @@ export default function DarkModeToggle({ showLabel = true }: { showLabel?: boole
   return (
     <div className="flex items-center justify-between w-full">
       {showLabel && (
-        <Label htmlFor="dark-mode-switch" className="text-lg">
+        <Label htmlFor="dark-mode-switch" className="text-sm">
           {isDarkMode ? 'حالت شب' : 'حالت روز'}
         </Label>
       )}

@@ -42,7 +42,7 @@ export default function WelcomeForm() {
           placeholder="شماره تلفن همراه"
           value={phoneNumber}
           onChange={(e) => setPhoneNumber(e.target.value)}
-          className="text-lg p-3 text-center"
+          className="text-center" // text-lg and p-3 removed, will inherit from base Input
           dir="ltr" // Phone numbers are usually LTR
           required
           aria-label="شماره تلفن همراه"

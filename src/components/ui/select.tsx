@@ -20,7 +20,7 @@ const SelectTrigger = React.forwardRef<
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      "flex h-10 w-full items-center justify-between rounded-full px-3 py-2 text-sm ring-offset-background file:text-sm file:font-medium file:text-foreground [&>span]:line-clamp-1", // Base styles
+      "flex h-12 w-full items-center justify-between rounded-full px-3 py-2 text-base ring-offset-background file:text-sm file:font-medium file:text-foreground [&>span]:line-clamp-1", // Base styles: h-10 to h-12, text-sm to text-base
       "border border-[hsl(var(--input-border-color-hsl))]", // Default border
       "bg-[var(--input-background)]", // Default background
       "placeholder:text-[var(--input-placeholder)]", // Placeholder text color for consistency if SelectValue could show it
