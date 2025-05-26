@@ -44,7 +44,7 @@ export default function HabitList() {
   });
 
   return (
-    <div className="space-y-6 pb-24"> {/* Padding bottom to avoid overlap with bottom nav */}
+    <div className="space-y-6 pb-24"> {/* Added pb-24 to avoid overlap with bottom nav/FAB */}
       {sortedHabits.map((habit) => (
         <HabitCard key={habit.id} habit={habit} />
       ))}

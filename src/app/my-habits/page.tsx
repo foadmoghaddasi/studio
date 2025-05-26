@@ -6,7 +6,7 @@ import { Plus } from "lucide-react";
 
 export default function MyHabitsPage() {
   return (
-    <div className="space-y-8 pb-20" lang="fa"> {/* Added pb-20 for FAB visibility */}
+    <div className="space-y-8" lang="fa"> {/* Removed pb-20 */}
       <div className="text-center">
         <h1 className="text-2xl font-bold text-foreground">عادت‌های من</h1>
       </div>
