@@ -2,7 +2,7 @@
 "use client";
 
 import Link from 'next/link';
-import { Home, Archive as ArchiveIcon, Settings } from 'lucide-react'; // Removed User icon
+import { Home, Archive as ArchiveIcon, Settings } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/providers/auth-provider';
@@ -10,9 +10,9 @@ import { useEffect, useState } from 'react';
 
 // Define navItems without Profile
 const navItems = [
-  { href: '/settings', label: 'تنظیمات', icon: Settings },
-  { href: '/archive', label: 'آرشیو', icon: ArchiveIcon },
   { href: '/my-habits', label: 'عادت‌ها', icon: Home },
+  { href: '/archive', label: 'آرشیو', icon: ArchiveIcon },
+  { href: '/settings', label: 'تنظیمات', icon: Settings },
 ];
 
 export default function BottomNavigation() {
@@ -27,11 +27,8 @@ export default function BottomNavigation() {
   }
 
   // Order for RTL display (Right to Left): My Habits | Archive | Settings
-  // This means in the DOM (LTR rendering), the order will be: Settings | Archive | My Habits
-  // So, when displayed RTL, 'My Habits' is rightmost.
   const displayedNavItems = [...navItems].sort((a, b) => {
     const orderMap: Record<string, number> = {
-      // Smaller number means more to the right in RTL (first in DOM for RTL display)
       '/my-habits': 0,  // Will be rightmost for user
       '/archive': 1,    // Middle
       '/settings': 2,   // Will be leftmost for user
@@ -45,7 +42,7 @@ export default function BottomNavigation() {
 
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border shadow-lg md:max-w-md md:mx-auto md:left-1/2 md:-translate-x-1/2 w-full">
+    <nav className="fixed bottom-8 left-0 right-0 bg-card border-t border-border shadow-lg md:max-w-md md:mx-auto md:left-1/2 md:-translate-x-1/2 w-full">
       <div className="flex justify-around items-center h-16 px-1">
         {displayedNavItems.map((item) => (
           <Link key={item.href} href={item.href} legacyBehavior>
