@@ -3,7 +3,7 @@
 
 import type { Habit } from '@/lib/types';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button, buttonVariants } from '@/components/ui/button'; // Added buttonVariants import
+import { Button, buttonVariants } from '@/components/ui/button';
 import ProgressRing from './progress-ring';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
@@ -12,7 +12,7 @@ import { useHabits } from '@/providers/habit-provider';
 import React, { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { getMotivationalMessage } from '@/ai/flows/personalized-motivation';
-import { CheckCircle, Loader2, MoreVertical, Archive as ArchiveIconLucide, Trash2 } from 'lucide-react';
+import { CheckCircle, Loader2, MoreVertical, Archive as ArchiveIconLucide, Trash2, AlertTriangle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   DropdownMenu,
@@ -246,16 +246,17 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
 
       {habitToDelete && (
         <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
-          <AlertDialogContent dir="rtl">
-            <AlertDialogHeader>
+          <AlertDialogContent dir="rtl" className="rounded-3xl">
+            <AlertDialogHeader className="items-center">
+              <AlertTriangle className="h-12 w-12 text-destructive mb-3" />
               <AlertDialogTitle>تأیید حذف عادت</AlertDialogTitle>
-              <AlertDialogDescription>
+              <AlertDialogDescription className="text-center">
                 آیا از حذف عادت "{habitToDelete.title}" مطمئن هستید؟ این عمل قابل بازگشت نیست.
               </AlertDialogDescription>
             </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>انصراف</AlertDialogCancel>
-              <AlertDialogAction onClick={confirmDeleteHabit} className={cn(buttonVariants({ variant: "destructive" }))}>
+            <AlertDialogFooter className="mt-4">
+              <AlertDialogCancel className="flex-1">انصراف</AlertDialogCancel>
+              <AlertDialogAction onClick={confirmDeleteHabit} className={cn(buttonVariants({ variant: "destructive" }), "flex-1")}>
                 حذف
               </AlertDialogAction>
             </AlertDialogFooter>
