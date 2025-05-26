@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowRight, CheckCircle, Edit3, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { toPersianNumerals } from '@/lib/utils';
 
 export default function HabitDetailPage() {
   const params = useParams();
@@ -68,17 +69,17 @@ export default function HabitDetailPage() {
         بازگشت به لیست عادت‌ها
       </Button>
 
-      <Card className="shadow-xl">
+      <Card>
         <CardHeader className="text-center">
           <CardTitle className="text-3xl font-bold text-primary">{habit.title}</CardTitle>
           <CardDescription className="text-lg">
-            {habit.daysCompleted} روز از {habit.totalDays} روز انجام شده
+            {toPersianNumerals(habit.daysCompleted)} روز از {toPersianNumerals(habit.totalDays)} روز انجام شده
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col items-center space-y-8 py-8">
           <ProgressRing
             percentage={percentage}
-            valueText={`${habit.daysCompleted} / ${habit.totalDays}`}
+            valueText={`${toPersianNumerals(habit.daysCompleted)} / ${toPersianNumerals(habit.totalDays)}`}
             size={150}
             strokeWidth={10}
           />
@@ -120,4 +121,3 @@ export default function HabitDetailPage() {
     </div>
   );
 }
-

@@ -47,6 +47,8 @@ const motivationalMessagePrompt = ai.definePrompt({
   If it's about overcoming a negative habit (e.g., "ترک سیگار", "کاهش مصرف قند"), briefly mention a benefit of quitting or a harm of continuing that negative habit.
 
   Make the message more engaging by adding 1-2 relevant and positive emojis. For example: 🎉, 💪, 👍, 😊, 🌟, 📚, 💧, 🚀, 🎯, 💯. Do not overuse emojis; keep it natural and friendly.
+  When you include numbers in your message, ensure they are in Persian numerals (e.g., ۱، ۲، ۳). For example, if days completed is 5 and total days is 21, you should use '۵' and '۲۱' in your Persian message.
+
 
   For example:
   - If habitName is "ترک سیگار" and successful is true: "عالیه که امروز هم سیگار نکشیدی! 🚭 هر روز یک قدم به سمت سلامتی بیشتر ریه‌هات. به این روند ادامه بده! 💪"
@@ -68,6 +70,7 @@ const motivationalMessageFlow = ai.defineFlow(
     outputSchema: MotivationalMessageOutputSchema,
   },
   async input => {
+    // No need to convert numbers to Persian here, as the LLM is instructed to do so.
     const {output} = await motivationalMessagePrompt(input);
     return output!;
   }

@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "@/providers/auth-provider";
 import { Loader2 } from "lucide-react";
+import { toPersianNumerals } from "@/lib/utils";
 
 const OTP_LENGTH = 6;
 
@@ -70,6 +71,12 @@ export default function OtpForm() {
     performSubmitLogic();
   };
 
+  const formattedCountdown = () => {
+    const minutes = String(Math.floor(countdown / 60)).padStart(2, '0');
+    const seconds = String(countdown % 60).padStart(2, '0');
+    return `${toPersianNumerals(minutes)}:${toPersianNumerals(seconds)}`;
+  }
+
   return (
     <div className="flex flex-col items-center justify-center min-h-[calc(100svh-10rem)] text-center p-4" lang="fa">
       <h1 className="text-2xl font-semibold text-foreground mb-4">تایید شماره تلفن</h1>
@@ -98,7 +105,7 @@ export default function OtpForm() {
 
         <div className="text-muted-foreground">
           {countdown > 0 ? (
-            <span>ارسال مجدد کد تا {String(Math.floor(countdown / 60)).padStart(2, '0')}:{String(countdown % 60).padStart(2, '0')} دیگر</span>
+            <span>ارسال مجدد کد تا {formattedCountdown()} دیگر</span>
           ) : (
             <Button variant="link" onClick={() => setCountdown(59)} className="p-0 h-auto" disabled={isLoading}>
               ارسال مجدد کد

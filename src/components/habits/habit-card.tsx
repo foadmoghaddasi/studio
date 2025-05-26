@@ -3,7 +3,7 @@
 
 import type { Habit } from '@/lib/types';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import ProgressRing from './progress-ring';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
@@ -13,7 +13,7 @@ import React, { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { getMotivationalMessage } from '@/ai/flows/personalized-motivation';
 import { CheckCircle, Loader2, MoreVertical, Archive as ArchiveIconLucide, Trash2, AlertTriangle } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn, toPersianNumerals } from '@/lib/utils';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,6 +31,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { buttonVariants } from '@/components/ui/button';
 
 interface HabitCardProps {
   habit: Habit;
@@ -220,7 +221,7 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
         <CardContent className="flex items-center justify-between py-4">
           <div>
             <p className="text-sm text-muted-foreground">
-              پیشرفت: {habit.daysCompleted} از {habit.totalDays} روز
+              پیشرفت: {toPersianNumerals(habit.daysCompleted)} از {toPersianNumerals(habit.totalDays)} روز
             </p>
             <p className="text-xs text-muted-foreground">
               تاریخ شروع: {new Date(habit.createdAt).toLocaleDateString('fa-IR')}
@@ -228,7 +229,7 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
           </div>
           <ProgressRing
             percentage={percentage}
-            valueText={`${habit.daysCompleted}/${habit.totalDays}`}
+            valueText={`${toPersianNumerals(habit.daysCompleted)}/${toPersianNumerals(habit.totalDays)}`}
             size={70}
             strokeWidth={6}
           />
