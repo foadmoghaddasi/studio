@@ -29,11 +29,10 @@ const Switch = React.forwardRef<
         "data-[state=unchecked]:h-4 data-[state=unchecked]:w-4",
         "data-[state=unchecked]:bg-primary",
         "data-[state=unchecked]:translate-x-2 data-[state=unchecked]:rtl:-translate-x-2", // 8px offset (0.5rem)
-        // Checked state: 24x24px, background color (white), 8px offset from the other side
+        // Checked state: 24x24px, background color (white), 4px offset from edge
         "data-[state=checked]:h-6 data-[state=checked]:w-6",
         "data-[state=checked]:bg-background",
-        // Calculation for checked translate: track_inner_width (52-4=48) - thumb_width (24) - offset (8) = 16px. 16px is translate-x-4.
-        "data-[state=checked]:ltr:translate-x-4 data-[state=checked]:rtl:-translate-x-4"
+        "data-[state=checked]:ltr:translate-x-5 data-[state=checked]:rtl:-translate-x-5" // 20px offset (1.25rem)
       )}
     />
   </SwitchPrimitives.Root>
