@@ -58,15 +58,18 @@
     --chart-5: 340 75% 55%;
   }
 
-  html, body {
-    font-family: var(--font-vazir), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  }
+  /*
+    Tailwind's base styles will apply font-family from theme.fontFamily.sans to html.
+    We've configured theme.fontFamily.sans to use var(--font-vazir).
+    The CSS variable --font-vazir is provided by next/font and applied to the html tag in layout.tsx.
+  */
   
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
+    /* font-family will be inherited from html, which gets font-sans by default from Tailwind's base styles */
   }
   html[dir="rtl"] {
     direction: rtl;
