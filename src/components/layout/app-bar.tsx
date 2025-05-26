@@ -10,7 +10,8 @@ import { usePathname } from 'next/navigation';
 export default function AppBar() {
   const { isAuthenticated, isLoading } = useAuth();
   const pathname = usePathname();
-  const userName = "کاربر روزبه‌روز"; // Placeholder, sync with profile page
+  const userDisplayName = "کاربر روزبه‌روز"; // Placeholder
+  const userFirstName = userDisplayName.split(' ')[0]; // Extract first part as first name
 
   // Do not render AppBar on auth pages or if not authenticated
   if (isLoading || !isAuthenticated || ['/', '/otp'].includes(pathname)) {
@@ -22,12 +23,12 @@ export default function AppBar() {
       <div className="container mx-auto max-w-md h-16 flex items-center justify-between px-4">
         <Link href="/profile" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
           <Avatar className="h-9 w-9 border border-primary/50">
-            <AvatarImage src="https://placehold.co/100x100.png" alt={userName} data-ai-hint="profile avatar" />
+            <AvatarImage src="https://placehold.co/100x100.png" alt={userDisplayName} data-ai-hint="profile avatar" />
             <AvatarFallback>
               <User className="w-5 h-5 text-muted-foreground" />
             </AvatarFallback>
           </Avatar>
-          <span className="font-medium text-foreground">{userName}</span>
+          <span className="font-medium text-foreground">سلام {userFirstName}!</span>
         </Link>
         {/* Placeholder for potential actions like notifications or settings icon */}
         <div></div>
@@ -35,4 +36,3 @@ export default function AppBar() {
     </header>
   );
 }
-
