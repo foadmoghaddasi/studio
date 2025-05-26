@@ -68,13 +68,15 @@ export default function HabitCard({ habit }: HabitCardProps) {
 
   return (
     <Card className={cn(
-      "w-full shadow-md hover:shadow-lg transition-all duration-300",
-      !habit.isActive && "opacity-60 bg-muted/50"
+      "w-full shadow-md hover:shadow-lg transition-all duration-300 ease-in-out",
+      !habit.isActive && "opacity-60 bg-muted/50 scale-[0.985] transform" 
     )}>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <Link href={`/habits/${habit.id}`} legacyBehavior>
+        <Link href={`/habits/${habit.id}`} legacyBehavior passHref>
           <a className={cn("hover:underline", !habit.isActive && "pointer-events-none")}>
-            <CardTitle className="text-xl font-semibold">{habit.title}</CardTitle>
+            <CardTitle className={cn("text-xl font-semibold transition-colors duration-300 ease-in-out", !habit.isActive && "text-muted-foreground")}>
+              {habit.title}
+            </CardTitle>
           </a>
         </Link>
         <div className="flex items-center space-x-2 space-x-reverse">
@@ -106,8 +108,8 @@ export default function HabitCard({ habit }: HabitCardProps) {
         />
       </CardContent>
       <CardFooter className="flex flex-col items-stretch gap-3">
-        <Button 
-          onClick={handleCompleteDay} 
+        <Button
+          onClick={handleCompleteDay}
           className="w-full text-md p-5 rounded-lg transition-transform active:scale-95"
           disabled={isCompletedToday || !habit.isActive}
         >
@@ -135,3 +137,5 @@ export default function HabitCard({ habit }: HabitCardProps) {
     </Card>
   );
 }
+
+    
