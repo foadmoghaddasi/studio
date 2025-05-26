@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 import { fontFamily } from "tailwindcss/defaultTheme"; // Import defaultTheme
 
@@ -11,7 +12,7 @@ export default {
   theme: {
   	extend: {
       fontFamily: {
-        sans: [`var(--font-vazir)`, ...fontFamily.sans],
+        sans: [...fontFamily.sans], // Reverted to default Tailwind sans-serif stack
         mono: [`var(--font-geist-mono)`, ...fontFamily.mono],
       },
   		colors: {
