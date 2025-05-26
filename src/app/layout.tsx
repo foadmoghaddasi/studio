@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Vazirmatn, Geist_Mono } from 'next/font/google'; // Import Vazirmatn
 import './globals.css';
 import { ThemeProvider } from '@/providers/theme-provider';
 import { HabitProvider } from '@/providers/habit-provider';
@@ -7,9 +7,10 @@ import { Toaster } from '@/components/ui/toaster';
 import BottomNavigation from '@/components/layout/bottom-navigation';
 import AuthProvider from '@/providers/auth-provider';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
+const vazir = Vazirmatn({ // Initialize Vazirmatn
+  subsets: ['arabic', 'latin'],
+  variable: '--font-vazir', // Define a CSS variable for Vazirmatn
+  display: 'swap',
 });
 
 const geistMono = Geist_Mono({
@@ -29,7 +30,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fa" dir="rtl">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${vazir.variable} ${geistMono.variable} antialiased`}> {/* Apply Vazirmatn variable */}
         <AuthProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <HabitProvider>
