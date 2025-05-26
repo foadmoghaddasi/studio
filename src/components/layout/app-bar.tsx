@@ -18,7 +18,7 @@ export default function AppBar() {
   }
 
   return (
-    <header className="bg-card sticky top-0 z-40 md:max-w-md md:mx-auto md:left-1/2 md:-translate-x-1/2 w-full border-b border-primary" lang="fa"> 
+    <header className="bg-card sticky top-0 z-50 md:max-w-md md:mx-auto md:left-1/2 md:-translate-x-1/2 w-full border-b border-primary" lang="fa"> 
       <div className="container mx-auto max-w-md h-16 flex items-center justify-between px-4">
         <Link href="/profile" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
           <Avatar className="h-9 w-9">

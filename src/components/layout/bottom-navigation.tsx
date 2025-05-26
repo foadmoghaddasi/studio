@@ -40,7 +40,7 @@ export default function BottomNavigation() {
 
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-card md:max-w-md md:mx-auto md:left-1/2 md:-translate-x-1/2 w-full h-24 border-t border-primary"> 
+    <nav className="bg-card fixed bottom-0 left-0 right-0 md:max-w-md md:mx-auto md:left-1/2 md:-translate-x-1/2 w-full h-24 border-t border-primary z-50"> 
       <div className="flex items-start h-full pt-4 gap-x-2">
         {displayedNavItems.map((item) => {
           const isActive = pathname === item.href;
@@ -48,7 +48,7 @@ export default function BottomNavigation() {
             <Link key={item.href} href={item.href} legacyBehavior>
               <a
                 className={cn(
-                  'flex flex-col items-center text-xs rounded-md transition-colors flex-1 min-w-0 group',
+                  'group flex flex-col items-center text-xs rounded-md transition-colors flex-1 min-w-0', // Added group class
                   isActive ? 'font-semibold' : 'text-muted-foreground'
                 )}
                 aria-current={isActive ? 'page' : undefined}
@@ -57,19 +57,19 @@ export default function BottomNavigation() {
                   "flex items-center justify-center h-10 w-10 mb-2 transition-colors", 
                   isActive 
                     ? "bg-primary rounded-full" 
-                    : "group-hover:bg-primary/10 group-hover:rounded-full"
+                    : "group-hover:bg-primary/10 group-hover:rounded-full" // Hover effect targets this div
                 )}>
                   <item.icon className={cn(
                     "h-5 w-5", 
                     isActive 
                       ? "text-primary-foreground" 
-                      : "text-inherit group-hover:text-primary"
+                      : "text-inherit group-hover:text-primary" // Icon color changes on hover
                   )} />
                 </div>
                 <span className={cn(
                   isActive 
                     ? "text-primary" 
-                    : "text-inherit group-hover:text-primary"
+                    : "text-inherit group-hover:text-primary" // Text color changes on hover
                 )}> 
                   {item.label}
                 </span>
