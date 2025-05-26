@@ -75,7 +75,7 @@ export default function HabitForm() {
                 <Input 
                   placeholder="مثلا: مطالعه روزانه" 
                   {...field} 
-                  className="text-lg p-3 rounded-lg"
+                  className="text-lg p-3"
                   aria-label="عنوان عادت"
                 />
               </FormControl>
@@ -96,7 +96,7 @@ export default function HabitForm() {
                   inputMode="numeric"
                   placeholder="مثلا: ۴۰ روز" // Added placeholder
                   {...field} 
-                  className="text-lg p-3 rounded-lg"
+                  className="text-lg p-3"
                   aria-label="تعداد روز"
                 />
               </FormControl>
@@ -105,11 +105,10 @@ export default function HabitForm() {
           )}
         />
 
-        <Button type="submit" className="w-full text-lg p-6 rounded-lg" disabled={isLoading}>
+        <Button type="submit" className="w-full text-lg p-6" disabled={isLoading}>
           {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : "ایجاد عادت"}
         </Button>
       </form>
     </Form>
   );
 }
-

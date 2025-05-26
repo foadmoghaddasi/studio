@@ -152,7 +152,7 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
         <CardFooter>
           <Button
             onClick={handleUnarchiveHabit}
-            className="w-full text-md p-5 rounded-lg"
+            className="w-full text-md p-5"
             variant="default"
           >
             <ArchiveIconLucide className="ml-2 h-5 w-5 transform rotate-180" /> فعال سازی دوباره
@@ -237,7 +237,7 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
         <CardFooter className="flex flex-col items-stretch gap-3">
           <Button
             onClick={handleCompleteDay}
-            className="w-full text-md p-5 rounded-lg transition-transform active:scale-95"
+            className="w-full text-md p-5 transition-transform active:scale-95"
             disabled={isCompletedToday || !habit.isActive || habit.isArchived}
           >
             {isCompletedToday ? (

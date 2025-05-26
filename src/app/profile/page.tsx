@@ -59,7 +59,7 @@ export default function ProfilePage() {
 
       <Button 
         variant="destructive" 
-        className="w-full text-lg p-6 rounded-lg" 
+        className="w-full text-lg p-6" 
         onClick={logout}
       >
         <LogOut className="ml-2 h-5 w-5" />

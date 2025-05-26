@@ -85,7 +85,7 @@ export default function HabitDetailPage() {
           />
           <Button 
             onClick={handleCompleteDay} 
-            className="w-full max-w-xs text-lg p-6 rounded-lg transition-transform active:scale-95"
+            className="w-full max-w-xs text-lg p-6 transition-transform active:scale-95"
             disabled={isCompletedToday || !habit.isActive || isLoadingComplete}
           >
             {isLoadingComplete ? <Loader2 className="ml-2 h-5 w-5 animate-spin" /> : 
