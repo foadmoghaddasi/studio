@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { Habit } from '@/lib/types';
@@ -13,6 +14,7 @@ interface HabitContextType {
   getHabitById: (habitId: string) => Habit | undefined;
   archiveHabit: (habitId: string) => void;
   unarchiveHabit: (habitId: string) => void;
+  deleteHabit: (habitId: string) => void; // Added deleteHabit
 }
 
 const HabitContext = createContext<HabitContextType | undefined>(undefined);
@@ -28,7 +30,6 @@ export function HabitProvider({ children }: { children: ReactNode }) {
     try {
       const storedHabits = localStorage.getItem(HABITS_STORAGE_KEY);
       if (storedHabits) {
-        // Ensure all habits have the isArchived property
         const parsedHabits: Habit[] = JSON.parse(storedHabits);
         const migratedHabits = parsedHabits.map(h => ({ ...h, isArchived: h.isArchived ?? false }));
         setHabits(migratedHabits);
@@ -55,7 +56,7 @@ export function HabitProvider({ children }: { children: ReactNode }) {
       id: Date.now().toString(),
       daysCompleted: 0,
       isActive: true,
-      isArchived: false, // Initialize isArchived
+      isArchived: false,
       createdAt: new Date().toISOString(),
     };
     setHabits((prevHabits) => [...prevHabits, newHabit].sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
@@ -118,7 +119,11 @@ export function HabitProvider({ children }: { children: ReactNode }) {
         habit.id === habitId ? { ...habit, isArchived: false, isActive: true } : habit
       )
     );
-    router.push('/my-habits'); // Navigate to main habits page after unarchiving
+    router.push('/my-habits');
+  };
+
+  const deleteHabit = (habitId: string) => {
+    setHabits((prevHabits) => prevHabits.filter((habit) => habit.id !== habitId));
   };
 
   if (!isLoaded) {
@@ -126,7 +131,7 @@ export function HabitProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <HabitContext.Provider value={{ habits, addHabit, updateHabit, completeDay, toggleHabitActive, getHabitById, archiveHabit, unarchiveHabit }}>
+    <HabitContext.Provider value={{ habits, addHabit, updateHabit, completeDay, toggleHabitActive, getHabitById, archiveHabit, unarchiveHabit, deleteHabit }}>
       {children}
     </HabitContext.Provider>
   );
