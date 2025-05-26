@@ -1,6 +1,6 @@
 
 import type { Metadata } from 'next';
-import { Vazirmatn, Geist_Mono } from 'next/font/google'; // Import Vazirmatn
+import { Vazirmatn, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/providers/theme-provider';
 import { HabitProvider } from '@/providers/habit-provider';
