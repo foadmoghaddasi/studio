@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -52,9 +53,9 @@ export default function WelcomeForm() {
       </form>
 
       <div className="flex items-center w-full max-w-sm my-8">
-        <Separator className="flex-grow" />
+        <Separator className="flex-1" />
         <span className="px-4 text-muted-foreground">یا</span>
-        <Separator className="flex-grow" />
+        <Separator className="flex-1" />
       </div>
 
       <Button variant="outline" className="w-full max-w-sm text-lg p-6 rounded-lg" onClick={handleGoogleLogin}>
