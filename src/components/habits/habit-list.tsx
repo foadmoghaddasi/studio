@@ -5,17 +5,19 @@ import { useHabits } from '@/providers/habit-provider';
 import HabitCard from './habit-card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { ArrowDown, ListX } from 'lucide-react'; // ListX for empty habits
+import { ArrowDown, ListX } from 'lucide-react';
 import type { Habit } from '@/lib/types';
 
 export default function HabitList() {
   const { habits } = useHabits();
 
-  if (habits.length === 0) {
+  const activeHabits = habits.filter(habit => !habit.isArchived);
+
+  if (activeHabits.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center text-center space-y-6 py-12 min-h-[calc(100svh-15rem)]">
         <ListX className="w-20 h-20 text-primary opacity-50" />
-        <h2 className="text-2xl font-semibold text-foreground">هنوز عادتی اضافه نکردی</h2>
+        <h2 className="text-2xl font-semibold text-foreground">هنوز عادتی اضافه نکردی یا همه آرشیو شدن</h2>
         <p className="text-muted-foreground max-w-xs">
           خوشحالم که اینجایی... حالا می‌تونی اولین تغییر زندگیت رو از اینجا شروع کنی.
         </p>
@@ -29,7 +31,7 @@ export default function HabitList() {
     );
   }
 
-  const sortedHabits = [...habits].sort((a: Habit, b: Habit) => {
+  const sortedHabits = [...activeHabits].sort((a: Habit, b: Habit) => {
     // Active habits first
     if (a.isActive && !b.isActive) {
       return -1;
@@ -37,7 +39,7 @@ export default function HabitList() {
     if (!a.isActive && b.isActive) {
       return 1;
     }
-    // If both are active or both inactive, sort by creation date (newest first)
+    // If both are active or both inactive (within non-archived), sort by creation date (newest first)
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
 

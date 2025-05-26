@@ -4,6 +4,7 @@ export interface Habit {
   totalDays: number;
   daysCompleted: number;
   isActive: boolean;
+  isArchived: boolean; // Added for archiving
   createdAt: string; 
   lastCheckedIn?: string; // ISO date string for the last check-in
   // We can add more specific check-in history if needed later
