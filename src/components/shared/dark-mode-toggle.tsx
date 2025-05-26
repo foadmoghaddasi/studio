@@ -17,16 +17,16 @@ export default function DarkModeToggle({ showLabel = true }: { showLabel?: boole
 
   if (!mounted) {
     // Render a placeholder or null to avoid hydration mismatch
-    return <div className="h-10 w-24 rounded-md bg-muted animate-pulse" />;
+    return <div className="h-10 w-full rounded-md bg-muted animate-pulse" />;
   }
 
   const isDarkMode = theme === 'dark';
 
   return (
-    <div className="flex items-center space-x-2 space-x-reverse">
+    <div className="flex items-center justify-between w-full">
       {showLabel && (
         <Label htmlFor="dark-mode-switch" className="text-lg">
-          {isDarkMode ? 'حالت تاریک' : 'حالت روشن'}
+          {isDarkMode ? 'حالت شب' : 'حالت روز'}
         </Label>
       )}
       <div className="flex items-center">
@@ -36,11 +36,10 @@ export default function DarkModeToggle({ showLabel = true }: { showLabel?: boole
           checked={isDarkMode}
           onCheckedChange={() => setTheme(isDarkMode ? 'light' : 'dark')}
           className="mx-2"
-          aria-label={isDarkMode ? "تغییر به حالت روشن" : "تغییر به حالت تاریک"}
+          aria-label={isDarkMode ? "تغییر به حالت روز" : "تغییر به حالت شب"}
         />
         <Moon className={`h-6 w-6 transition-opacity ${isDarkMode ? 'opacity-100 text-primary' : 'opacity-50'}`} />
       </div>
     </div>
   );
 }
-
