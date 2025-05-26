@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -43,8 +44,10 @@ export default function BottomNavigation() {
           <Link key={item.href} href={item.href} legacyBehavior>
             <a
               className={cn(
-                'flex flex-col items-center justify-center text-xs p-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors',
-                pathname === item.href ? 'text-primary font-semibold' : 'text-muted-foreground'
+                'flex flex-col items-center justify-center text-xs p-2 rounded-md transition-colors',
+                pathname === item.href
+                  ? 'bg-primary/10 text-primary font-semibold' // Active item
+                  : 'text-muted-foreground hover:bg-primary/10 hover:text-primary' // Inactive item, with its specific hover
               )}
               aria-current={pathname === item.href ? 'page' : undefined}
             >
