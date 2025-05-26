@@ -96,7 +96,7 @@ export default function OtpForm() {
               onChange={(e) => handleChange(e.target as HTMLInputElement, index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
               ref={(el) => (inputRefs.current[index] = el)}
-              className="w-12 h-14 text-2xl text-center rounded-lg border-2 focus:border-primary focus:ring-primary transition-all"
+              className="w-12 h-14 text-2xl text-center rounded-full border-2 focus:border-primary focus:ring-primary transition-all"
               aria-label={`OTP digit ${index + 1}`}
               disabled={isLoading}
             />
@@ -114,10 +114,10 @@ export default function OtpForm() {
         </div>
 
         <div className="space-y-4">
-          <Button type="submit" className="w-full text-lg p-6 rounded-lg" disabled={isLoading || otp.join("").length !== OTP_LENGTH}>
+          <Button type="submit" className="w-full text-lg p-6 rounded-full" disabled={isLoading || otp.join("").length !== OTP_LENGTH}>
             {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : "ادامه"}
           </Button>
-          <Button variant="outline" className="w-full text-lg p-6 rounded-lg" onClick={() => router.back()} disabled={isLoading}>
+          <Button variant="outline" className="w-full text-lg p-6 rounded-full" onClick={() => router.back()} disabled={isLoading}>
             بازگشت
           </Button>
         </div>
