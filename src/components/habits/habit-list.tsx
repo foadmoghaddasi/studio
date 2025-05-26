@@ -23,7 +23,7 @@ export default function HabitList() {
         </p>
         <ArrowDown className="w-10 h-10 text-primary animate-bounce mt-4" />
         <Link href="/create-habit" legacyBehavior>
-          <Button size="lg" className="text-lg p-7 rounded-xl shadow-lg">
+          <Button className="text-base px-4 py-6 rounded-xl shadow-lg">
             ایجاد اولین عادت
           </Button>
         </Link>
@@ -51,4 +51,3 @@ export default function HabitList() {
     </div>
   );
 }
-
