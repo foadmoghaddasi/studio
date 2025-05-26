@@ -5,33 +5,36 @@
 
 @layer base {
   :root {
-    --background: 150 20% 97%; /* #F2F4F3 - Very light greenish-gray */
+    --background: 0 0% 98%; /* #FAFAFA */
     --foreground: 0 0% 15%; /* Dark Gray */
 
-    --muted: 0 0% 85%;
-    --muted-foreground: 0 0% 45%;
+    /* Effective card background and foreground */
+    --card-background-hsl: 170 100% 37%; /* #00BFA6 base for light cards */
+    --card-background-opacity: 0.05;
+    --card-effective-background: hsl(var(--card-background-hsl) / var(--card-background-opacity));
+    --card-foreground: 0 0% 15%; /* Dark Gray for readability on light teal card */
 
     --popover: 0 0% 99%; /* Slightly off-white from background */
     --popover-foreground: 0 0% 15%;
 
-    --card: 0 0% 98%; /* Slightly off-white from background, different from popover */
-    --card-foreground: 0 0% 15%;
+    --muted: 210 15% 90%;
+    --muted-foreground: 210 10% 50%;
 
-    --border: 0 0% 89.8%;
-    --input: 0 0% 92%; /* Original input color, might be used by other components */
+    --border: 0 0% 89.8%; /* Kept for rings or explicit borders if any */
+    --input: 0 0% 92%; /* Primarily for rings, actual input styles use specific vars */
 
-    --primary: 170 100% 37%; /* #00BFA6 - Turquoise Green (was 170 60% 45%) */
+    --primary: 170 100% 37%; /* #00BFA6 - Turquoise Green */
     --primary-foreground: 0 0% 100%; /* White */
 
-    --secondary: 0 0% 92%; /* Light Gray */
+    --secondary: 210 20% 96%; /* Very light blueish gray, distinct from card */
     --secondary-foreground: 0 0% 20%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --ring: 170 100% 37%; /* #00BFA6 (was 170 60% 45%) */
+    --ring: 170 100% 37%; /* #00BFA6 */
 
-    --radius: 0.75rem; /* Default radius for components like Card, Popover */
+    --radius: 0.75rem;
 
     --chart-1: 170 100% 37%;
     --chart-2: 210 60% 55%;
@@ -48,19 +51,23 @@
     --sidebar-border: 0 0% 88%;
     --sidebar-ring: 170 100% 37%;
 
-    /* New Input specific colors */
-    --input-border-color-hsl: 170 100% 37%; /* #00BFA6 */
-    --input-bg-color-hsl: 170 100% 37%; 
+    /* Input specific colors (using primary color #00BFA6) */
+    --input-border-color-hsl: 170 100% 37%;
+    --input-bg-color-hsl: 170 100% 37%;
     --input-placeholder-color-hsl: 170 100% 37%;
 
     --input-border-color: hsl(var(--input-border-color-hsl));
-    --input-background: hsl(var(--input-bg-color-hsl) / 0.05);
-    --input-placeholder: hsl(var(--input-placeholder-color-hsl) / 0.5);
+    --input-background: hsl(var(--input-bg-color-hsl) / 0.05); /* 5% opacity */
+    --input-placeholder: hsl(var(--input-placeholder-color-hsl) / 0.5); /* 50% opacity */
   }
 
   .dark {
     --background: 0 0% 8%; /* Darker than card/popover */
     --foreground: 0 0% 95%; 
+
+    /* Effective card background and foreground for dark mode */
+    --card-effective-background: hsl(0 0% 10%);
+    --card-foreground: 0 0% 95%;
 
     --muted: 0 0% 15%;
     --muted-foreground: 0 0% 60%;
@@ -68,22 +75,19 @@
     --popover: 0 0% 12%; /* Slightly lighter than background */
     --popover-foreground: 0 0% 95%;
 
-    --card: 0 0% 10%; /* Slightly lighter than background, different from popover */
-    --card-foreground: 0 0% 95%;
-
     --border: 0 0% 14.9%;
-    --input: 0 0% 12%; /* Original input color */
+    --input: 0 0% 12%; /* Original input color for rings in dark */
 
-    --primary: 170 100% 42%; /* #00D9AC - Adjusted for dark mode (was 170 60% 50%) */
+    --primary: 170 100% 42%; /* #00D9AC - Adjusted for dark mode */
     --primary-foreground: 0 0% 10%; /* Dark text on light primary */
 
-    --secondary: 0 0% 15%; /* Medium Dark Gray, for input backgrounds if not using custom */
+    --secondary: 0 0% 15%;
     --secondary-foreground: 0 0% 90%;
 
     --destructive: 0 63% 31%; 
     --destructive-foreground: 0 0% 100%;
 
-    --ring: 170 100% 42%; /* #00D9AC (was 170 60% 50%) */
+    --ring: 170 100% 42%; /* #00D9AC */
     
     --chart-1: 170 100% 42%;
     --chart-2: 210 55% 60%;
