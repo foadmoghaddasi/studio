@@ -24,7 +24,7 @@ export default function AppBar() {
           <Avatar className="h-9 w-9 border border-primary/50">
             <AvatarImage src="https://placehold.co/100x100.png" alt={userName} data-ai-hint="profile avatar" />
             <AvatarFallback>
-              <User className="w-5 h-5 text-muted-foreground" />
+              <User className="w-5 h-5 text-muted-foreground" fill="currentColor" />
             </AvatarFallback>
           </Avatar>
           <span className="font-medium text-foreground">{userName}</span>

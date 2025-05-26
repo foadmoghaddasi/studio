@@ -30,7 +30,7 @@ export default function ProfilePage() {
           <Avatar className="w-24 h-24 mb-4 border-2 border-primary">
             <AvatarImage src="https://placehold.co/100x100.png" alt={userName} data-ai-hint="profile avatar" />
             <AvatarFallback>
-              <User className="w-12 h-12 text-muted-foreground" />
+              <User className="w-12 h-12 text-muted-foreground" fill="currentColor" />
             </AvatarFallback>
           </Avatar>
           <CardTitle className="text-2xl">{userName}</CardTitle>
@@ -39,17 +39,17 @@ export default function ProfilePage() {
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
             <div className="p-4 bg-background rounded-lg shadow">
-              <BarChart3 className="w-8 h-8 mx-auto text-primary mb-2" />
+              <BarChart3 className="w-8 h-8 mx-auto text-primary mb-2" fill="currentColor" />
               <p className="text-2xl font-semibold">{totalHabits}</p>
               <p className="text-sm text-muted-foreground">مجموع عادت‌ها</p>
             </div>
             <div className="p-4 bg-background rounded-lg shadow">
-              <TrendingUp className="w-8 h-8 mx-auto text-primary mb-2" />
+              <TrendingUp className="w-8 h-8 mx-auto text-primary mb-2" fill="currentColor" />
               <p className="text-2xl font-semibold">{successfulDays}</p>
               <p className="text-sm text-muted-foreground">روزهای موفق</p>
             </div>
             <div className="p-4 bg-background rounded-lg shadow">
-              <CheckSquare className="w-8 h-8 mx-auto text-primary mb-2" />
+              <CheckSquare className="w-8 h-8 mx-auto text-primary mb-2" fill="currentColor" />
               <p className="text-2xl font-semibold">{activeHabitsCount}</p>
               <p className="text-sm text-muted-foreground">عادت فعال</p>
             </div>
@@ -66,7 +66,7 @@ export default function ProfilePage() {
         className="w-full text-lg p-6 rounded-lg" 
         onClick={logout}
       >
-        <LogOut className="ml-2 h-5 w-5" />
+        <LogOut className="ml-2 h-5 w-5" fill="currentColor" />
         خروج از حساب کاربری
       </Button>
     </div>

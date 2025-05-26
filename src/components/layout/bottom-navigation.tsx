@@ -25,7 +25,7 @@ export default function BottomNavigation() {
     return null;
   }
 
-  // Order for RTL display (Right to Left based on last user request): My Habits | Archive | Settings
+  // Order for RTL display (Right to Left): My Habits | Archive | Settings
   const displayedNavItems = [...navItems].sort((a, b) => {
     const orderMap: Record<string, number> = {
       '/my-habits': 0,  // Will be rightmost for user
@@ -55,12 +55,12 @@ export default function BottomNavigation() {
                 aria-current={isActive ? 'page' : undefined}
               >
                 <div className={cn(
-                  "flex items-center justify-center h-10 w-10 mb-2 transition-colors", // Changed mb-4 to mb-2
+                  "flex items-center justify-center h-10 w-10 mb-2 transition-colors", 
                   isActive ? "bg-primary rounded-full" : "group-hover:bg-primary/10 rounded-md"
                 )}>
-                  <item.icon className={cn("h-5 w-5", isActive ? "text-primary-foreground" : "text-inherit")} />
+                  <item.icon className={cn("h-5 w-5", isActive ? "text-primary-foreground" : "text-inherit")} fill="currentColor" />
                 </div>
-                <span className={cn(isActive ? "text-primary" : "text-inherit")}> {/* Changed: Active text color is now text-primary */}
+                <span className={cn(isActive ? "text-primary" : "text-inherit")}> 
                   {item.label}
                 </span>
               </a>

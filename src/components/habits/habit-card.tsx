@@ -136,7 +136,7 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
             className="w-full text-md p-5 rounded-lg"
             variant="default"
           >
-            <ArchiveIconLucide className="ml-2 h-5 w-5 transform rotate-180" /> فعال سازی دوباره
+            <ArchiveIconLucide className="ml-2 h-5 w-5 transform rotate-180" fill="currentColor" /> فعال سازی دوباره
           </Button>
         </CardFooter>
       </Card>
@@ -175,13 +175,13 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
              <DropdownMenu dir="rtl">
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-8 w-8">
-                  <MoreVertical className="h-5 w-5" />
+                  <MoreVertical className="h-5 w-5" /> {/* MoreVertical is thin, fill might make it a solid bar. Let's try. */}
                   <span className="sr-only">گزینه‌ها</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onSelect={handleArchiveHabit}>
-                  <ArchiveIconLucide className="ml-2 h-4 w-4" />
+                  <ArchiveIconLucide className="ml-2 h-4 w-4" fill="currentColor" />
                   آرشیو عادت
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
@@ -192,7 +192,7 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
                   }}
                   className="text-destructive hover:bg-destructive/10 focus:bg-destructive/10 focus:text-destructive data-[highlighted]:bg-destructive/10 data-[highlighted]:text-destructive"
                 >
-                  <Trash2 className="ml-2 h-4 w-4" />
+                  <Trash2 className="ml-2 h-4 w-4" fill="currentColor" />
                   حذف عادت
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -223,7 +223,7 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
           >
             {isCompletedToday ? (
               <>
-                <CheckCircle className="ml-2 h-5 w-5" />
+                <CheckCircle className="ml-2 h-5 w-5" fill="currentColor" />
                 امروز انجام شد!
               </>
             ) : (
@@ -248,7 +248,7 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
         <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
           <AlertDialogContent dir="rtl" className="rounded-3xl">
             <AlertDialogHeader className="items-center">
-              <AlertTriangle className="h-12 w-12 text-destructive mb-3" />
+              <AlertTriangle className="h-12 w-12 text-destructive mb-3" fill="currentColor" />
               <AlertDialogTitle>تأیید حذف عادت</AlertDialogTitle>
               <AlertDialogDescription className="text-center">
                 آیا از حذف عادت "{habitToDelete.title}" مطمئن هستید؟ این عمل قابل بازگشت نیست.

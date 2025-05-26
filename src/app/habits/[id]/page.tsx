@@ -63,7 +63,7 @@ export default function HabitDetailPage() {
   return (
     <div className="space-y-6 pb-20" lang="fa">
       <Button variant="ghost" onClick={() => router.push('/my-habits')} className="mb-4">
-        <ArrowRight className="ml-2 h-4 w-4" />
+        <ArrowRight className="ml-2 h-4 w-4" fill="currentColor" />
         بازگشت به لیست عادت‌ها
       </Button>
 
@@ -89,7 +89,7 @@ export default function HabitDetailPage() {
             {isLoadingComplete ? <Loader2 className="ml-2 h-5 w-5 animate-spin" /> : 
               isCompletedToday ? (
               <>
-                <CheckCircle className="ml-2 h-5 w-5" />
+                <CheckCircle className="ml-2 h-5 w-5" fill="currentColor" />
                 امروز انجام شد!
               </>
             ) : (
@@ -101,7 +101,7 @@ export default function HabitDetailPage() {
         <CardFooter>
           {/* Placeholder for future edit functionality */}
           {/* <Button variant="outline" size="sm" className="text-muted-foreground">
-            <Edit3 className="ml-2 h-4 w-4" />
+            <Edit3 className="ml-2 h-4 w-4" fill="currentColor"/>
             ویرایش عادت
           </Button> */}
         </CardFooter>
