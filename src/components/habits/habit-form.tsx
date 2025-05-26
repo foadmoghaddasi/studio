@@ -67,7 +67,7 @@ export default function HabitForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" lang="fa"> {/* Changed space-y-8 to space-y-4 */}
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pb-20" lang="fa"> {/* Changed space-y-8 to space-y-4, Added pb-20 for fixed button */}
         <FormField
           control={form.control}
           name="title"
@@ -105,10 +105,12 @@ export default function HabitForm() {
             </FormItem>
           )}
         />
-
-        <Button type="submit" className="w-full text-lg p-6 rounded-full" disabled={isLoading}>
-          {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : "ایجاد عادت"}
-        </Button>
+        
+        <div className="fixed inset-x-0 bottom-[6rem] bg-background p-4 border-t border-primary md:max-w-md md:mx-auto">
+          <Button type="submit" className="w-full text-lg p-6 rounded-full" disabled={isLoading}>
+            {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : "ایجاد عادت"}
+          </Button>
+        </div>
       </form>
     </Form>
   );
