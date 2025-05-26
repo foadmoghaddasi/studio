@@ -42,8 +42,8 @@ export default function BottomNavigation() {
 
 
   return (
-    <nav className="fixed bottom-8 left-0 right-0 bg-card border-t border-border shadow-lg md:max-w-md md:mx-auto md:left-1/2 md:-translate-x-1/2 w-full">
-      <div className="flex justify-around items-center h-16 px-1">
+    <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border shadow-lg md:max-w-md md:mx-auto md:left-1/2 md:-translate-x-1/2 w-full">
+      <div className="flex justify-around items-center h-28 px-1"> {/* Changed h-16 to h-28 */}
         {displayedNavItems.map((item) => (
           <Link key={item.href} href={item.href} legacyBehavior>
             <a
@@ -55,7 +55,7 @@ export default function BottomNavigation() {
               )}
               aria-current={pathname === item.href ? 'page' : undefined}
             >
-              <item.icon className="h-5 w-5 mb-0.5" />
+              <item.icon className="h-5 w-5 mb-4" /> {/* Changed mb-0.5 to mb-4 */}
               {item.label}
             </a>
           </Link>
@@ -64,4 +64,3 @@ export default function BottomNavigation() {
     </nav>
   );
 }
-

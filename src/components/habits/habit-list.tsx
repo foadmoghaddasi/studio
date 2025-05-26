@@ -44,7 +44,7 @@ export default function HabitList() {
   });
 
   return (
-    <div className="space-y-6 pb-32"> {/* Changed pb-24 to pb-32 */}
+    <div className="space-y-6 pb-36"> {/* Changed pb-32 to pb-36 */}
       {sortedHabits.map((habit) => (
         <HabitCard key={habit.id} habit={habit} />
       ))}

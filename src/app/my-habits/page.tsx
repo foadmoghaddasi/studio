@@ -15,7 +15,7 @@ export default function MyHabitsPage() {
       <Link href="/create-habit" passHref legacyBehavior>
         <a
           aria-label="ایجاد عادت جدید"
-          className="fixed bottom-28 right-6 z-30 h-14 w-14 bg-primary text-primary-foreground rounded-full flex items-center justify-center shadow-lg hover:bg-primary/90 transition-colors"
+          className="fixed bottom-32 right-6 z-30 h-14 w-14 bg-primary text-primary-foreground rounded-full flex items-center justify-center shadow-lg hover:bg-primary/90 transition-colors" /* Changed bottom-28 to bottom-32 */
         >
           <Plus className="h-7 w-7" />
         </a>
