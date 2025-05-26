@@ -4,7 +4,7 @@
 import { useTheme } from 'next-themes';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Moon, Sun } from 'lucide-react';
+import { Moon } from 'lucide-react'; // Sun import removed
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 
@@ -18,7 +18,7 @@ export default function DarkModeToggle({ showLabel = true }: { showLabel?: boole
 
   if (!mounted) {
     // Render a placeholder or null to avoid hydration mismatch
-    return <div className="h-10 w-full rounded-md bg-muted animate-pulse" />;
+    return <div className={cn("h-10 rounded-md bg-muted animate-pulse", showLabel ? "w-full" : "w-16" )} />;
   }
 
   const isDarkMode = theme === 'dark';
@@ -31,7 +31,7 @@ export default function DarkModeToggle({ showLabel = true }: { showLabel?: boole
         </Label>
       )}
       <div className="flex items-center">
-        <Sun className={`h-6 w-6 transition-opacity ${isDarkMode ? 'opacity-50' : 'opacity-100 text-yellow-500'}`} />
+        {/* Sun icon and its conditional classes removed */}
         <Switch
           id="dark-mode-switch"
           checked={isDarkMode}
