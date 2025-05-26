@@ -1,9 +1,10 @@
+
 "use client";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "@/providers/auth-provider";
 import { Loader2 } from "lucide-react";
 
@@ -28,6 +29,23 @@ export default function OtpForm() {
     inputRefs.current[0]?.focus();
   }, []);
 
+  const performSubmitLogic = useCallback(() => {
+    if (isLoading) return; // Prevent multiple submissions
+    setIsLoading(true);
+    // Simulate API call & login
+    setTimeout(() => {
+      login(); // This will redirect to /my-habits
+      // setIsLoading(false); // Not strictly necessary as it will redirect and unmount
+    }, 1000);
+  }, [isLoading, login]);
+
+  useEffect(() => {
+    const otpString = otp.join("");
+    if (otpString.length === OTP_LENGTH && !isLoading) {
+      performSubmitLogic();
+    }
+  }, [otp, isLoading, performSubmitLogic]);
+
   const handleChange = (element: HTMLInputElement, index: number) => {
     if (isNaN(Number(element.value))) return; // Only allow numbers
 
@@ -49,12 +67,7 @@ export default function OtpForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    // Simulate API call & login
-    setTimeout(() => {
-      login(); // This will redirect to /my-habits
-      setIsLoading(false);
-    }, 1000);
+    performSubmitLogic();
   };
 
   return (
@@ -78,6 +91,7 @@ export default function OtpForm() {
               ref={(el) => (inputRefs.current[index] = el)}
               className="w-12 h-14 text-2xl text-center rounded-lg border-2 focus:border-primary focus:ring-primary transition-all"
               aria-label={`OTP digit ${index + 1}`}
+              disabled={isLoading}
             />
           ))}
         </div>
@@ -86,7 +100,7 @@ export default function OtpForm() {
           {countdown > 0 ? (
             <span>ارسال مجدد کد تا {String(Math.floor(countdown / 60)).padStart(2, '0')}:{String(countdown % 60).padStart(2, '0')} دیگر</span>
           ) : (
-            <Button variant="link" onClick={() => setCountdown(59)} className="p-0 h-auto">
+            <Button variant="link" onClick={() => setCountdown(59)} className="p-0 h-auto" disabled={isLoading}>
               ارسال مجدد کد
             </Button>
           )}
