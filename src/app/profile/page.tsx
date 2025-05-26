@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -22,7 +23,7 @@ export default function ProfilePage() {
 
   return (
     <div className="space-y-8 pb-20" lang="fa">
-      <h1 className="text-3xl font-bold text-foreground text-center">پروفایل کاربری</h1>
+      <h1 className="text-3xl font-bold text-foreground text-center">تنظیمات</h1>
 
       <Card className="shadow-lg">
         <CardHeader className="items-center text-center">

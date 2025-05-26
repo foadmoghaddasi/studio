@@ -2,13 +2,15 @@
 "use client";
 
 import Link from 'next/link';
-import { Home, Archive as ArchiveIcon } from 'lucide-react'; // Removed PlusCircle and User icon
+import { Home, Archive as ArchiveIcon, Settings } from 'lucide-react'; // Added Settings
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/providers/auth-provider';
 import { useEffect, useState } from 'react';
 
+// Updated navItems: Settings, Archive, Home (for RTL display: Settings | Archive | Home)
 const navItems = [
+  { href: '/profile', label: 'تنظیمات', icon: Settings },
   { href: '/archive', label: 'آرشیو', icon: ArchiveIcon },
   { href: '/my-habits', label: 'عادت‌ها', icon: Home },
 ];
@@ -24,11 +26,13 @@ export default function BottomNavigation() {
     return null;
   }
 
-  // Sort items to ensure 'my-habits' (Home) is consistently on the right for RTL
+  // Sort items for RTL: Home (right), Archive (middle), Settings (left)
   const displayedNavItems = [...navItems].sort((a, b) => {
-    if (a.href === '/my-habits') return 1; 
-    if (b.href === '/my-habits') return -1;
-    return 0; 
+    if (a.href === '/my-habits') return 1;  // Pushes 'Home' to the end (right in RTL)
+    if (b.href === '/my-habits') return -1; // Keeps other items before 'Home'
+    if (a.href === '/profile') return -1; // Pushes 'Settings' to the beginning (left in RTL)
+    if (b.href === '/profile') return 1;  // Keeps other items after 'Settings'
+    return 0; // Archive will be in the middle by default
   });
 
 
