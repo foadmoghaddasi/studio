@@ -25,7 +25,7 @@ export default function BottomNavigation() {
     return null;
   }
 
-  // Order for RTL display (Right to Left): My Habits | Archive | Settings
+  // Order for RTL display (Right to Left based on last user request): My Habits | Archive | Settings
   const displayedNavItems = [...navItems].sort((a, b) => {
     const orderMap: Record<string, number> = {
       '/my-habits': 0,  // Will be rightmost for user
@@ -41,26 +41,26 @@ export default function BottomNavigation() {
 
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border shadow-lg md:max-w-md md:mx-auto md:left-1/2 md:-translate-x-1/2 w-full h-24"> {/* Changed h-28 to h-24 */}
-      <div className="flex justify-around items-start h-full px-1 pt-4">
+    <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border shadow-lg md:max-w-md md:mx-auto md:left-1/2 md:-translate-x-1/2 w-full h-24">
+      <div className="flex items-start h-full pt-4 gap-x-2"> {/* Changed: Using gap-x-2 for spacing, removed justify-around and px-1 */}
         {displayedNavItems.map((item) => {
           const isActive = pathname === item.href;
           return (
             <Link key={item.href} href={item.href} legacyBehavior>
               <a
                 className={cn(
-                  'flex flex-col items-center text-xs rounded-md transition-colors flex-1 min-w-0 group',
+                  'flex flex-col items-center text-xs rounded-md transition-colors flex-1 min-w-0 group', // flex-1 remains to distribute space
                   isActive ? 'font-semibold' : 'text-muted-foreground hover:bg-primary/10 hover:text-primary'
                 )}
                 aria-current={isActive ? 'page' : undefined}
               >
                 <div className={cn(
-                  "flex items-center justify-center h-10 w-10 mb-4 transition-colors", // Increased icon wrapper height for better circle, kept mb-4 for 16px gap
+                  "flex items-center justify-center h-10 w-10 mb-4 transition-colors",
                   isActive ? "bg-primary rounded-full" : "group-hover:bg-primary/10 rounded-md"
                 )}>
                   <item.icon className={cn("h-5 w-5", isActive ? "text-primary-foreground" : "text-inherit")} />
                 </div>
-                <span className={cn(isActive ? "text-primary-foreground" : "text-inherit")}>
+                <span className={cn(isActive ? "text-primary" : "text-inherit")}> {/* Changed: Active text color is now text-primary */}
                   {item.label}
                 </span>
               </a>
@@ -71,3 +71,4 @@ export default function BottomNavigation() {
     </nav>
   );
 }
+
