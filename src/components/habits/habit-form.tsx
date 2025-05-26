@@ -106,7 +106,7 @@ export default function HabitForm() {
           )}
         />
         
-        <div className="fixed inset-x-0 bottom-[6rem] bg-background p-4 border-t border-primary md:max-w-md md:mx-auto">
+        <div className="fixed inset-x-0 bottom-[7.5rem] bg-background p-4 md:max-w-md md:mx-auto">
           <Button type="submit" className="w-full text-lg p-6 rounded-full" disabled={isLoading}>
             {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : "ایجاد عادت"}
           </Button>
