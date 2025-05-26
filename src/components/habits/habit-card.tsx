@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { Habit } from '@/lib/types';
@@ -8,11 +9,11 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import { useHabits } from '@/providers/habit-provider';
-import MotivationalQuote from './motivational-quote';
 import React, { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { getMotivationalMessage } from '@/ai/flows/personalized-motivation';
 import { CheckCircle, Loader2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface HabitCardProps {
   habit: Habit;
@@ -66,10 +67,13 @@ export default function HabitCard({ habit }: HabitCardProps) {
   const percentage = habit.totalDays > 0 ? (habit.daysCompleted / habit.totalDays) * 100 : 0;
 
   return (
-    <Card className="w-full shadow-md hover:shadow-lg transition-shadow duration-300">
+    <Card className={cn(
+      "w-full shadow-md hover:shadow-lg transition-all duration-300",
+      !habit.isActive && "opacity-60 bg-muted/50"
+    )}>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <Link href={`/habits/${habit.id}`} legacyBehavior>
-          <a className="hover:underline">
+          <a className={cn("hover:underline", !habit.isActive && "pointer-events-none")}>
             <CardTitle className="text-xl font-semibold">{habit.title}</CardTitle>
           </a>
         </Link>
