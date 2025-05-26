@@ -9,7 +9,7 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import { useHabits } from '@/providers/habit-provider';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { getMotivationalMessage } from '@/ai/flows/personalized-motivation';
 import { CheckCircle, Loader2, MoreVertical, Archive as ArchiveIconLucide, Trash2, AlertTriangle } from 'lucide-react';
@@ -38,48 +38,66 @@ interface HabitCardProps {
 }
 
 export default function HabitCard({ habit, isArchiveView = false }: HabitCardProps) {
-  const { completeDay, toggleHabitActive, archiveHabit, unarchiveHabit, deleteHabit } = useHabits();
+  const { completeDay, toggleHabitActive, archiveHabit, unarchiveHabit, deleteHabit, setHabitMotivationalMessage } = useHabits();
   const { toast } = useToast();
   const [motivationalMessage, setMotivationalMessage] = useState<string | null>(null);
   const [isLoadingMotivation, setIsLoadingMotivation] = useState(false);
-  const [isCompletedToday, setIsCompletedToday] = useState(() => {
-    if (!habit.lastCheckedIn || habit.isArchived) return false;
-    const today = new Date().toISOString().split('T')[0];
-    return habit.lastCheckedIn.startsWith(today);
-  });
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [habitToDelete, setHabitToDelete] = useState<Habit | null>(null);
+
+  // Derived state: isCompletedToday
+  const isCompletedToday = habit.lastCheckedIn?.startsWith(new Date().toISOString().split('T')[0]) ?? false;
+
+  useEffect(() => {
+    const today = new Date().toISOString().split('T')[0];
+    const isCurrentlyCompletedToday = habit.lastCheckedIn?.startsWith(today) ?? false;
+
+    if (isCurrentlyCompletedToday && habit.lastMotivationalMessage && habit.lastMotivationalMessage.date === today) {
+      if (motivationalMessage !== habit.lastMotivationalMessage.message) {
+        setMotivationalMessage(habit.lastMotivationalMessage.message);
+      }
+      setIsLoadingMotivation(false);
+    } else if (!isCurrentlyCompletedToday) {
+      if (motivationalMessage !== null) {
+        setMotivationalMessage(null);
+      }
+    }
+  }, [habit, motivationalMessage]);
 
 
   const handleCompleteDay = async () => {
     if (habit.isArchived) return;
-    const updatedHabit = completeDay(habit.id);
+    const updatedHabit = completeDay(habit.id); // This updates habit.lastCheckedIn in provider
+
     if (updatedHabit && updatedHabit.lastCheckedIn?.startsWith(new Date().toISOString().split('T')[0])) {
-      setIsCompletedToday(true);
       toast({
         title: "عالی بود!",
         description: `عادت "${updatedHabit.title}" برای امروز ثبت شد.`,
       });
 
-      setIsLoadingMotivation(true);
-      try {
-        const motivation = await getMotivationalMessage({
-          habitName: updatedHabit.title,
-          daysCompleted: updatedHabit.daysCompleted,
-          totalDays: updatedHabit.totalDays,
-          successful: true,
-        });
-        setMotivationalMessage(motivation.message);
-      } catch (error) {
-        console.error("Failed to fetch motivational message", error);
-        setMotivationalMessage("ادامه بده، تو می‌تونی!"); 
-      } finally {
+      const today = new Date().toISOString().split('T')[0];
+      if (updatedHabit.lastMotivationalMessage && updatedHabit.lastMotivationalMessage.date === today) {
+        setMotivationalMessage(updatedHabit.lastMotivationalMessage.message);
         setIsLoadingMotivation(false);
+      } else {
+        setIsLoadingMotivation(true);
+        try {
+          const motivation = await getMotivationalMessage({
+            habitName: updatedHabit.title,
+            daysCompleted: updatedHabit.daysCompleted,
+            totalDays: updatedHabit.totalDays,
+            successful: true, 
+          });
+          setHabitMotivationalMessage(updatedHabit.id, motivation.message); 
+          setMotivationalMessage(motivation.message); 
+        } catch (error) {
+          console.error("Failed to fetch motivational message", error);
+          setMotivationalMessage("ادامه بده، تو می‌تونی!"); 
+        } finally {
+          setIsLoadingMotivation(false);
+        }
       }
-    } else if (updatedHabit?.lastCheckedIn && !updatedHabit.lastCheckedIn.startsWith(new Date().toISOString().split('T')[0])) {
-      setIsCompletedToday(false);
-    }
-     else {
+    } else {
        toast({
         title: "توجه",
         description: `عادت "${habit.title}" قبلاً برای امروز ثبت شده یا امکان ثبت وجود ندارد.`,
@@ -266,4 +284,3 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
     </>
   );
 }
-
