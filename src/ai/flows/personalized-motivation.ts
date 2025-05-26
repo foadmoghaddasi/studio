@@ -40,9 +40,19 @@ const motivationalMessagePrompt = ai.definePrompt({
   Total Days: {{{totalDays}}}
   Successful Today: {{#if successful}}Yes{{else}}No{{/if}}
 
-  The message should be encouraging and relevant to the user's progress. Keep it short and positive.
-  If the user was successful today, congratulate them and encourage them to continue. If not, remind them of their goal and encourage them to try again tomorrow.
-  The message should be in Persian (Farsi) and use a friendly tone.
+  The message should be encouraging and relevant to the user's progress.
+  When crafting the message, consider the nature of the habit "{{{habitName}}}".
+  If it's a positive habit (e.g., "ورزش روزانه", "مطالعه کتاب"), briefly mention a benefit of this habit.
+  If it's about overcoming a negative habit (e.g., "ترک سیگار", "کاهش مصرف قند"), briefly mention a benefit of quitting or a harm of continuing that negative habit.
+
+  For example:
+  - If habitName is "ترک سیگار" and successful is true: "عالیه که امروز هم سیگار نکشیدی! هر روز یک قدم به سمت سلامتی بیشتر ریه‌هات. به این روند ادامه بده!"
+  - If habitName is "مطالعه روزانه" and successful is true: "فوق‌العاده‌ست که امروز هم مطالعه کردی! هر صفحه دریچه‌ای به دنیای جدیدی از دانش باز می‌کنه. همینطور پیش برو!"
+  - If habitName is "نوشیدن آب کافی" and successful is false: "امروز نشد به اندازه کافی آب بنوشی، اشکالی نداره. یادت باشه که هیدراته نگه داشتن بدن چقدر برای سلامتی مهمه. فردا دوباره تلاش کن!"
+
+  Keep the message short and positive, even when the user wasn't successful today.
+  If the user was successful today, congratulate them and encourage them to continue. If not, remind them of their goal and encourage them to try again tomorrow, possibly linking it to the benefit/harm.
+  The message MUST be in Persian (Farsi) and use a friendly tone.
   `,
 });
 
