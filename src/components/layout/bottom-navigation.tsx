@@ -2,13 +2,12 @@
 "use client";
 
 import Link from 'next/link';
-import { Home, Archive as ArchiveIcon, Settings } from 'lucide-react'; // Added Settings
+import { Home, Archive as ArchiveIcon, Settings } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/providers/auth-provider';
 import { useEffect, useState } from 'react';
 
-// Updated navItems: Settings, Archive, Home (for RTL display: Settings | Archive | Home)
 const navItems = [
   { href: '/profile', label: 'تنظیمات', icon: Settings },
   { href: '/archive', label: 'آرشیو', icon: ArchiveIcon },
@@ -26,13 +25,19 @@ export default function BottomNavigation() {
     return null;
   }
 
-  // Sort items for RTL: Home (right), Archive (middle), Settings (left)
+  // Sort items for RTL display (Right to Left): Settings | Archive | My Habits
+  // This means in the DOM (LTR rendering), the order will be: My Habits | Archive | Settings
   const displayedNavItems = [...navItems].sort((a, b) => {
-    if (a.href === '/my-habits') return 1;  // Pushes 'Home' to the end (right in RTL)
-    if (b.href === '/my-habits') return -1; // Keeps other items before 'Home'
-    if (a.href === '/profile') return -1; // Pushes 'Settings' to the beginning (left in RTL)
-    if (b.href === '/profile') return 1;  // Keeps other items after 'Settings'
-    return 0; // Archive will be in the middle by default
+    const orderMap: Record<string, number> = {
+      '/my-habits': 0, // Will be leftmost in DOM, thus rightmost for user in RTL after flex displays it
+      '/archive': 1,   // Middle
+      '/profile': 2,   // Will be rightmost in DOM, thus leftmost for user in RTL
+    };
+
+    const orderA = orderMap[a.href] ?? 99;
+    const orderB = orderMap[b.href] ?? 99;
+
+    return orderA - orderB;
   });
 
 
@@ -59,3 +64,4 @@ export default function BottomNavigation() {
     </nav>
   );
 }
+
