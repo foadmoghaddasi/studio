@@ -122,7 +122,7 @@ export default function HabitForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pb-20" lang="fa">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pb-28" lang="fa"> {/* Removed pb-20, added pb-28 */}
         
         <FormField
           control={form.control}
@@ -392,15 +392,12 @@ export default function HabitForm() {
           />
         )}
         
-        <div className="fixed inset-x-0 bottom-[7.5rem] bg-background p-4 md:max-w-md md:mx-auto">
-          <Button type="submit" className="w-full text-lg p-6 rounded-full" disabled={isLoading}>
-            {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : "ایجاد عادت"}
-          </Button>
-        </div>
+        {/* Removed fixed positioning div, button is now in normal flow */}
+        <Button type="submit" className="w-full text-lg p-6 rounded-full" disabled={isLoading}>
+          {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : "ایجاد عادت"}
+        </Button>
       </form>
     </Form>
   );
 }
-    
-
     
