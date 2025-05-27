@@ -5,21 +5,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/providers/auth-provider";
-import { useHabits } from "@/providers/habit-provider";
-import { toPersianNumerals } from "@/lib/utils";
-import { User, LogOut, BarChart3, TrendingUp, CheckSquare } from "lucide-react";
+// useHabits and related stats calculations are removed as they are moved to my-habits page
+import { User, LogOut } from "lucide-react"; // Removed unused stat icons
 
 export default function ProfilePage() {
   const { logout } = useAuth();
-  const { habits } = useHabits();
 
   // Mock data - replace with actual data if available
   const userName = "کاربر روزبه‌روز"; 
   const userPhoneNumber = "۰۹۱۲۳۴۵۶۷۸۹"; // Placeholder
-
-  const totalHabits = habits.length;
-  const successfulDays = habits.reduce((sum, habit) => sum + habit.daysCompleted, 0);
-  const activeHabitsCount = habits.filter(h => h.isActive).length;
 
   return (
     <div className="space-y-8 pb-20" lang="fa">
@@ -36,30 +30,12 @@ export default function ProfilePage() {
           <CardTitle className="text-2xl">{userName}</CardTitle>
           <p className="text-muted-foreground">{userPhoneNumber}</p>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-            <div className="p-4 bg-background rounded-lg shadow">
-              <BarChart3 className="w-8 h-8 mx-auto text-primary mb-2" />
-              <p className="text-2xl font-semibold">{toPersianNumerals(totalHabits)}</p>
-              <p className="text-sm text-muted-foreground">مجموع عادت‌ها</p>
-            </div>
-            <div className="p-4 bg-background rounded-lg shadow">
-              <TrendingUp className="w-8 h-8 mx-auto text-primary mb-2" />
-              <p className="text-2xl font-semibold">{toPersianNumerals(successfulDays)}</p>
-              <p className="text-sm text-muted-foreground">روزهای موفق</p>
-            </div>
-            <div className="p-4 bg-background rounded-lg shadow">
-              <CheckSquare className="w-8 h-8 mx-auto text-primary mb-2" />
-              <p className="text-2xl font-semibold">{toPersianNumerals(activeHabitsCount)}</p>
-              <p className="text-sm text-muted-foreground">عادت فعال</p>
-            </div>
-          </div>
-        </CardContent>
+        {/* CardContent containing stats is removed */}
       </Card>
 
       <Button 
         variant="destructive" 
-        className="w-full text-lg p-6" 
+        className="w-full text-lg p-6 rounded-full" 
         onClick={logout}
       >
         <LogOut className="ml-2 h-5 w-5" />
@@ -68,3 +44,4 @@ export default function ProfilePage() {
     </div>
   );
 }
+
