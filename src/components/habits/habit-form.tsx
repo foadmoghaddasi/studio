@@ -26,6 +26,7 @@ import {
   FormControl,
   FormDescription,
   FormField,
+  FormItem, // Added FormItem here
   FormLabel as ShadcnFormLabel, 
   FormMessage,
 } from "@/components/ui/form";
@@ -38,7 +39,7 @@ import {
   DialogClose,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"; // Added Tabs import
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const habitFormSchema = z.object({
   habitType: z.enum(['build', 'break'], { required_error: "نوع عادت را مشخص کنید." }),
@@ -270,13 +271,13 @@ export default function HabitForm() {
                             >
                               <Info className="h-5 w-5 text-primary" />
                             </Button>
+                             <Label
+                              htmlFor={radioId}
+                              className="font-normal text-base cursor-pointer"
+                            >
+                              {option.label}
+                            </Label>
                           </div>
-                          <Label
-                            htmlFor={radioId}
-                            className="font-normal text-base cursor-pointer"
-                          >
-                            {option.label}
-                          </Label>
                         </div>
                       );
                     })}
@@ -446,9 +447,11 @@ export default function HabitForm() {
             />
           )}
           
-          <Button type="submit" className="w-full text-lg p-6 rounded-full" disabled={isLoading}>
-            {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : "ایجاد عادت"}
-          </Button>
+          <div className="pt-4"> {/* Added padding-top to push button down slightly */}
+            <Button type="submit" className="w-full text-lg p-6 rounded-full" disabled={isLoading}>
+              {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : "ایجاد عادت"}
+            </Button>
+          </div>
         </form>
       </Form>
 
@@ -474,6 +477,8 @@ export default function HabitForm() {
     </>
   );
 }
+    
+
     
 
     
