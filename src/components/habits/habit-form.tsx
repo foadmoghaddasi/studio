@@ -38,7 +38,8 @@ import {
   DialogClose,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+// RadioGroup and RadioGroupItem are no longer used directly for strategy selection
+// import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 
@@ -52,12 +53,12 @@ const habitFormSchema = z.object({
   reminderTime: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, { message: "زمان معتبر نیست (HH:MM)" }).optional().or(z.literal("")),
 
   days2190: z.enum(['21', '90']).optional(),
-  twoMinuteSteps: z.array(z.string().min(1, {message: "قدم نمی‌تواند خالی باشد."})).optional().default(['']), 
+  twoMinuteSteps: z.array(z.string()).optional().default(['']), 
   twoMinuteReminderFrequency: z.string().optional(),
   ifThenRules: z.array(
     z.object({
-      ifCondition: z.string().min(1, { message: "شرط (اگر) نمی‌تواند خالی باشد." }),
-      thenAction: z.string().min(1, { message: "عمل (آنگاه) نمی‌تواند خالی باشد." }),
+      ifCondition: z.string(),
+      thenAction: z.string(),
     })
   ).optional().default([{ ifCondition: '', thenAction: '' }]),
   
@@ -145,15 +146,21 @@ export default function HabitForm() {
       totalDaysForHabit = 40;
     } else if (data.strategy === '2-minute') {
       if (data.twoMinuteSteps && data.twoMinuteSteps.length > 0) {
-        strategyDetails.twoMinuteSteps = data.twoMinuteSteps.filter(step => step && step.trim() !== "").join('\n');
+        const validSteps = data.twoMinuteSteps.filter(step => step && step.trim() !== "");
+        if (validSteps.length > 0) {
+          strategyDetails.twoMinuteSteps = validSteps.join('\n');
+        }
       }
       strategyDetails.twoMinuteReminderFrequency = data.twoMinuteReminderFrequency;
     } else if (data.strategy === 'if-then') {
        if (data.ifThenRules && data.ifThenRules.length > 0) {
-        strategyDetails.ifThenRules = data.ifThenRules
-          .filter(rule => rule.ifCondition.trim() !== "" && rule.thenAction.trim() !== "")
-          .map(rule => `اگر [${rule.ifCondition}]، آنگاه [${rule.thenAction}]`)
-          .join('\n');
+        const validRules = data.ifThenRules
+          .filter(rule => rule.ifCondition.trim() !== "" || rule.thenAction.trim() !== ""); // Changed to OR to keep rules if at least one part is filled
+        if (validRules.length > 0) {
+          strategyDetails.ifThenRules = validRules
+            .map(rule => `اگر [${rule.ifCondition.trim()}]، آنگاه [${rule.thenAction.trim()}]`)
+            .join('\n');
+        }
       }
     }
     
@@ -174,9 +181,11 @@ export default function HabitForm() {
       });
       router.push('/my-habits');
     } catch (error) {
+      console.error("Error creating habit:", error); // Log the actual error
       toast({
         title: "خطا",
-        description: "مشکلی در ایجاد عادت پیش آمد.",
+        // description: "مشکلی در ایجاد عادت پیش آمد.",
+        description: error instanceof Error ? error.message : "مشکلی در ایجاد عادت پیش آمد.",
         variant: "destructive",
       });
       setIsLoading(false);
@@ -399,7 +408,7 @@ export default function HabitForm() {
                       onChange={(e) => {
                         const value = parseInt(e.target.value);
                         if (isNaN(value)) {
-                          field.onChange(''); 
+                          field.onChange(undefined); // Or handle as needed, e.g., field.onChange(null) or keep previous if invalid
                         } else {
                           field.onChange(value);
                         }
@@ -445,6 +454,13 @@ export default function HabitForm() {
                         )}
                       </div>
                     ))}
+                     {form.formState.errors.twoMinuteSteps && typeof form.formState.errors.twoMinuteSteps === 'object' && 'message' in form.formState.errors.twoMinuteSteps && (
+                        <FormMessage>{form.formState.errors.twoMinuteSteps.message}</FormMessage>
+                     )}
+                     {/* Display errors for individual steps if any */}
+                     {Array.isArray(form.formState.errors.twoMinuteSteps) && form.formState.errors.twoMinuteSteps.map((error, index) => 
+                        error && error.message && <FormMessage key={`step_err_${index}`}>{error.message}</FormMessage>
+                     )}
                   </div>
                   <Button
                     type="button"
@@ -455,7 +471,6 @@ export default function HabitForm() {
                     <Plus className="ml-2 h-4 w-4" />
                     افزودن قدم
                   </Button>
-                  <FormMessage>{form.formState.errors.twoMinuteSteps?.message}</FormMessage>
                 </FormItem>
               )}
             />
@@ -538,6 +553,14 @@ export default function HabitForm() {
                         />
                       </div>
                     ))}
+                    {form.formState.errors.ifThenRules && typeof form.formState.errors.ifThenRules === 'object' && 'message' in form.formState.errors.ifThenRules && (
+                        <FormMessage>{form.formState.errors.ifThenRules.message}</FormMessage>
+                     )}
+                     {/* Display errors for individual rules if any */}
+                     {Array.isArray(form.formState.errors.ifThenRules) && form.formState.errors.ifThenRules.map((error, index) => 
+                        error && (error.ifCondition?.message || error.thenAction?.message) && 
+                        <FormMessage key={`rule_err_${index}`}>{error.ifCondition?.message || error.thenAction?.message}</FormMessage>
+                     )}
                   </div>
                   <Button
                     type="button"
@@ -548,14 +571,6 @@ export default function HabitForm() {
                     <Plus className="ml-2 h-4 w-4" />
                     افزودن قاعده اگر-آنگاه
                   </Button>
-                  <FormMessage>{form.formState.errors.ifThenRules?.message}</FormMessage>
-                  {/* Display root errors for the array if any */}
-                  {form.formState.errors.ifThenRules && !form.formState.errors.ifThenRules.root && (
-                    <FormMessage>
-                      {form.formState.errors.ifThenRules.map?.[0]?.ifCondition?.message || 
-                       form.formState.errors.ifThenRules.map?.[0]?.thenAction?.message}
-                    </FormMessage>
-                  )}
                 </FormItem>
               )}
             />
@@ -594,3 +609,4 @@ export default function HabitForm() {
     
 
     
+
