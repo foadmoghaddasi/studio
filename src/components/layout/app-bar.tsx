@@ -27,7 +27,7 @@ export default function AppBar() {
   }
 
   return (
-    <header className="bg-card sticky top-0 z-50 md:max-w-md md:mx-auto md:left-1/2 md:-translate-x-1/2 w-full">
+    <header className="bg-card sticky top-0 z-50 md:max-w-md md:mx-auto md:left-1/2 md:-translate-x-1/2 w-full border-b border-primary">
       <div className="container mx-auto max-w-md h-16 flex items-center px-4">
         {/* Left: Avatar */}
         <div className="flex-shrink-0">
@@ -51,8 +51,8 @@ export default function AppBar() {
 
         {/* Right: Search Icon Button */}
         <div className="flex-shrink-0">
-          <Button variant="ghost" size="icon" className="rounded-full h-10 w-10">
-            <Search className="h-5 w-5 text-foreground" />
+          <Button variant="ghost" size="icon" className="bg-primary/5">
+            <Search className="h-5 w-5 text-primary" />
             <span className="sr-only">جستجو</span>
           </Button>
         </div>
