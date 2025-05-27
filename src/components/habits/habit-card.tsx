@@ -3,7 +3,7 @@
 
 import type { Habit } from '@/lib/types';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import ProgressRing from './progress-ring';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
@@ -31,7 +31,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { buttonVariants } from '@/components/ui/button';
 
 interface HabitCardProps {
   habit: Habit;
@@ -283,8 +282,11 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter className="mt-4">
-              <AlertDialogCancel className="flex-1 rounded-full">انصراف</AlertDialogCancel>
-              <AlertDialogAction onClick={confirmDeleteHabit} className={cn(buttonVariants({ variant: "destructive" }), "flex-1 rounded-full")}>
+              <AlertDialogCancel className="flex-1 rounded-full h-12">انصراف</AlertDialogCancel>
+              <AlertDialogAction 
+                onClick={confirmDeleteHabit} 
+                className={cn(buttonVariants({ variant: "destructive" }), "flex-1 rounded-full h-12")}
+              >
                 حذف
               </AlertDialogAction>
             </AlertDialogFooter>
