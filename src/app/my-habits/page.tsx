@@ -20,12 +20,27 @@ export default function MyHabitsPage() {
     0
   );
   
-  const totalTargetDaysForNonArchived = nonArchivedHabits.reduce(
-    (sum, habit) => sum + habit.totalDays,
-    0
-  );
-  
-  const uncompletedDays = totalTargetDaysForNonArchived - successfulDays;
+  const unsuccessfulDays = nonArchivedHabits.reduce((sum, habit) => {
+    const startDate = new Date(habit.createdAt.split('T')[0]);
+    const todayDateStr = new Date().toISOString().split('T')[0];
+    const todayStart = new Date(todayDateStr);
+
+    // Calculate days elapsed from habit start date until (but not including) today
+    const daysElapsedBeforeToday = Math.max(0, Math.floor((todayStart.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)));
+
+    let completionsBeforeToday = habit.daysCompleted;
+    // If the habit was checked in today, one of the completions was for today,
+    // so subtract it to get completions *before* today.
+    if (habit.lastCheckedIn?.startsWith(todayDateStr) && habit.daysCompleted > 0) {
+      completionsBeforeToday--;
+    }
+    
+    // Unsuccessful days for this habit are days elapsed before today minus completions before today
+    const currentHabitUnsuccessfulDays = Math.max(0, daysElapsedBeforeToday - completionsBeforeToday);
+    
+    return sum + currentHabitUnsuccessfulDays;
+  }, 0);
+
 
   return (
     <div className="space-y-8" lang="fa">
@@ -44,8 +59,8 @@ export default function MyHabitsPage() {
           <p className="text-xl font-bold text-sky-800 dark:text-sky-100 mt-1">{toPersianNumerals(successfulDays)}</p>
         </div>
         <div className="bg-violet-100 dark:bg-violet-900 p-4 rounded-3xl text-center">
-          <p className="text-xs text-violet-600 dark:text-violet-300 font-medium">روزهای انجام نشده</p>
-          <p className="text-xl font-bold text-violet-800 dark:text-violet-100 mt-1">{toPersianNumerals(uncompletedDays)}</p>
+          <p className="text-xs text-violet-600 dark:text-violet-300 font-medium">روز های ناموفق</p>
+          <p className="text-xl font-bold text-violet-800 dark:text-violet-100 mt-1">{toPersianNumerals(unsuccessfulDays)}</p>
         </div>
       </div>
       
@@ -62,3 +77,4 @@ export default function MyHabitsPage() {
     </div>
   );
 }
+
