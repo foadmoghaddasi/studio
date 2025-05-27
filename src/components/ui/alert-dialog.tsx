@@ -66,7 +66,7 @@ const AlertDialogFooter = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      "flex flex-row gap-2", // Changed: Always row, consistent gap
+      "flex flex-row gap-2", 
       className
     )}
     {...props}
@@ -118,8 +118,8 @@ const AlertDialogCancel = React.forwardRef<
   <AlertDialogPrimitive.Cancel
     ref={ref}
     className={cn(
-      buttonVariants({ variant: "outline" }), 
-      "mt-2 sm:mt-0",
+      buttonVariants({ variant: "ghost" }), // Use ghost for base styling
+      "bg-background text-foreground hover:bg-muted/90 border border-border", // Soft white/light gray bg, primary border
       className
     )}
     {...props}
