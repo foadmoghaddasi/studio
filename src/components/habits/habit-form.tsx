@@ -26,7 +26,6 @@ import {
   FormControl,
   FormDescription,
   FormField,
-  FormItem,
   FormLabel as ShadcnFormLabel, 
   FormMessage,
 } from "@/components/ui/form";
@@ -186,9 +185,9 @@ export default function HabitForm() {
                     onValueChange={field.onChange}
                     className="w-full"
                   >
-                    <TabsList className="grid w-full grid-cols-2">
-                      <TabsTrigger value="build">ساخت عادت جدید</TabsTrigger>
-                      <TabsTrigger value="break">ترک عادت بد</TabsTrigger>
+                    <TabsList className="grid w-full grid-cols-2 rounded-full">
+                      <TabsTrigger value="build" className="rounded-full">ساخت عادت جدید</TabsTrigger>
+                      <TabsTrigger value="break" className="rounded-full">ترک عادت بد</TabsTrigger>
                     </TabsList>
                   </Tabs>
                 </FormControl>
@@ -261,23 +260,23 @@ export default function HabitForm() {
                         >
                           <div className="flex items-center space-x-2 space-x-reverse">
                             <RadioGroupItem value={option.value} id={radioId} />
-                            <Label
-                              htmlFor={radioId}
-                              className="font-normal text-base cursor-pointer"
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleStrategyInfoClick(option.value)}
+                              className="h-8 w-8 rounded-full hover:bg-primary/10"
+                              aria-label={`اطلاعات بیشتر درباره ${option.label}`}
                             >
-                              {option.label}
-                            </Label>
+                              <Info className="h-5 w-5 text-primary" />
+                            </Button>
                           </div>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleStrategyInfoClick(option.value)}
-                            className="h-8 w-8 rounded-full hover:bg-primary/10"
-                            aria-label={`اطلاعات بیشتر درباره ${option.label}`}
+                          <Label
+                            htmlFor={radioId}
+                            className="font-normal text-base cursor-pointer"
                           >
-                            <Info className="h-5 w-5 text-primary" />
-                          </Button>
+                            {option.label}
+                          </Label>
                         </div>
                       );
                     })}
@@ -475,6 +474,8 @@ export default function HabitForm() {
     </>
   );
 }
+    
+
     
 
     
