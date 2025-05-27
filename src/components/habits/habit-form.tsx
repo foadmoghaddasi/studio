@@ -14,10 +14,12 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { useHabits, type NewHabitData } from '@/providers/habit-provider';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
-import { Calendar as CalendarIcon, Loader2, Info } from 'lucide-react'; // Added Info icon
+import { Calendar as CalendarIcon, Loader2, Info } from 'lucide-react';
 import { format } from 'date-fns';
+// import faIR from 'date-fns/locale/fa-IR'; // Reverted due to incompatibility
 import { cn } from '@/lib/utils';
 import type { HabitStrategyDetails } from '@/lib/types';
+import { Label } from "@/components/ui/label"; // Added standard Label import
 
 import {
   Form,
@@ -25,7 +27,7 @@ import {
   FormDescription,
   FormField,
   FormItem,
-  FormLabel,
+  FormLabel as ShadcnFormLabel, // Renamed to avoid conflict with standard Label
   FormMessage,
 } from "@/components/ui/form";
 import {
@@ -36,7 +38,7 @@ import {
   DialogDescription,
   DialogClose,
   DialogFooter,
-} from "@/components/ui/dialog"; // Added Dialog components
+} from "@/components/ui/dialog";
 
 const habitFormSchema = z.object({
   habitType: z.enum(['build', 'break'], { required_error: "نوع عادت را مشخص کنید." }),
@@ -113,7 +115,7 @@ export default function HabitForm() {
     setIsLoading(true);
     
     const strategyDetails: HabitStrategyDetails = {
-      startDate: data.startDate ? format(data.startDate, 'yyyy-MM-dd') : undefined,
+      startDate: data.startDate ? format(data.startDate, 'yyyy-MM-dd') : undefined, // Using standard date-fns format
       reminderTime: data.reminderTime || undefined,
     };
 
@@ -176,7 +178,7 @@ export default function HabitForm() {
             name="habitType"
             render={({ field }) => (
               <FormItem className="space-y-3">
-                <FormLabel className="text-sm">۱. نوع عادت</FormLabel>
+                <ShadcnFormLabel className="text-sm">۱. نوع عادت</ShadcnFormLabel>
                 <FormControl>
                   <RadioGroup
                     onValueChange={field.onChange}
@@ -185,11 +187,11 @@ export default function HabitForm() {
                   >
                     <FormItem className="flex items-center space-x-2 space-x-reverse">
                       <FormControl><RadioGroupItem value="build" /></FormControl>
-                      <FormLabel className="font-normal">ساخت عادت جدید</FormLabel>
+                      <ShadcnFormLabel className="font-normal">ساخت عادت جدید</ShadcnFormLabel>
                     </FormItem>
                     <FormItem className="flex items-center space-x-2 space-x-reverse">
                       <FormControl><RadioGroupItem value="break" /></FormControl>
-                      <FormLabel className="font-normal">ترک عادت بد</FormLabel>
+                      <ShadcnFormLabel className="font-normal">ترک عادت بد</ShadcnFormLabel>
                     </FormItem>
                   </RadioGroup>
                 </FormControl>
@@ -203,7 +205,7 @@ export default function HabitForm() {
             name="title"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm">۲. نام عادت</FormLabel>
+                <ShadcnFormLabel className="text-sm">۲. نام عادت</ShadcnFormLabel>
                 <FormControl>
                   <Input placeholder="مثلا: مطالعه روزانه یا ترک سیگار" {...field} />
                 </FormControl>
@@ -217,7 +219,7 @@ export default function HabitForm() {
             name="goalDescription"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm">هدف از این عادت (اختیاری)</FormLabel>
+                <ShadcnFormLabel className="text-sm">هدف از این عادت (اختیاری)</ShadcnFormLabel>
                 <FormControl>
                   <Textarea placeholder="مثلا: ورزش حداقل ۳۰ دقیقه در روز یا ترک کامل سیگار..." {...field} />
                 </FormControl>
@@ -231,7 +233,7 @@ export default function HabitForm() {
             name="triggers"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm">۳. محرک‌ها (اختیاری)</FormLabel>
+                <ShadcnFormLabel className="text-sm">۳. محرک‌ها (اختیاری)</ShadcnFormLabel>
                 <FormDescription>موقعیت‌ها، زمان‌ها یا احساساتی که این عادت را تحریک می‌کنند (هر کدام در یک خط یا با کاما جدا کنید).</FormDescription>
                 <FormControl>
                   <Textarea placeholder="مثلا: بعد از بیدار شدن، وقتی استرس دارم، ساعت ۱۰ شب" {...field} />
@@ -246,38 +248,44 @@ export default function HabitForm() {
             name="strategy"
             render={({ field }) => (
               <FormItem className="space-y-3">
-                <FormLabel className="text-sm">۴. روش ترک یا ساخت عادت</FormLabel>
+                <ShadcnFormLabel className="text-sm">۴. روش ترک یا ساخت عادت</ShadcnFormLabel>
                 <FormControl>
                   <RadioGroup
                     onValueChange={field.onChange}
                     defaultValue={field.value}
-                    className="grid grid-cols-1 gap-3" // Changed to gap-3 for a bit more space
+                    className="grid grid-cols-1 gap-3"
                   >
-                    {strategyOptions.map((option) => (
-                      <FormItem 
-                        key={option.value} 
-                        className="flex items-center justify-between p-3 border rounded-full bg-[var(--input-background)] border-[var(--input-border-color)]"
-                      >
-                        <div className="flex items-center space-x-2 space-x-reverse">
-                          <FormControl>
-                            <RadioGroupItem value={option.value} id={`strategy-${option.value}`} />
-                          </FormControl>
-                          <FormLabel htmlFor={`strategy-${option.value}`} className="font-normal text-base !pr-0 cursor-pointer">
-                            {option.label}
-                          </FormLabel>
-                        </div>
-                        <Button 
-                          type="button" 
-                          variant="ghost" 
-                          size="icon" 
-                          onClick={() => handleStrategyInfoClick(option.value)}
-                          className="h-8 w-8 rounded-full hover:bg-primary/10"
-                          aria-label={`اطلاعات بیشتر درباره ${option.label}`}
+                    {strategyOptions.map((option) => {
+                      const radioId = `strategy-option-${option.value}`;
+                      return (
+                        <div // This div is the "card" for each radio option
+                          key={option.value}
+                          className="flex items-center justify-between p-3 border rounded-full bg-[var(--input-background)] border-[var(--input-border-color)]"
                         >
-                          <Info className="h-5 w-5 text-primary" />
-                        </Button>
-                      </FormItem>
-                    ))}
+                          {/* Group for Radio and Text */}
+                          <div className="flex items-center space-x-2 space-x-reverse">
+                            <RadioGroupItem value={option.value} id={radioId} />
+                            <Label
+                              htmlFor={radioId}
+                              className="font-normal text-base cursor-pointer"
+                            >
+                              {option.label}
+                            </Label>
+                          </div>
+                          {/* Info Button */}
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleStrategyInfoClick(option.value)}
+                            className="h-8 w-8 rounded-full hover:bg-primary/10"
+                            aria-label={`اطلاعات بیشتر درباره ${option.label}`}
+                          >
+                            <Info className="h-5 w-5 text-primary" />
+                          </Button>
+                        </div>
+                      );
+                    })}
                   </RadioGroup>
                 </FormControl>
                 <FormMessage />
@@ -292,7 +300,7 @@ export default function HabitForm() {
                 name="startDate"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel className="text-sm">تاریخ شروع</FormLabel>
+                    <ShadcnFormLabel className="text-sm">تاریخ شروع</ShadcnFormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>
@@ -305,7 +313,7 @@ export default function HabitForm() {
                             )}
                           >
                             <CalendarIcon className="ml-2 h-4 w-4 opacity-50" />
-                            {field.value ? format(field.value, 'PPP EEE') : <span>تاریخ را انتخاب کنید</span>}
+                            {field.value ? format(field.value, 'PPP EEE'/*, { locale: faIR }*/) : <span>تاریخ را انتخاب کنید</span>}
                           </Button>
                         </FormControl>
                       </PopoverTrigger>
@@ -315,6 +323,7 @@ export default function HabitForm() {
                           selected={field.value}
                           onSelect={field.onChange}
                           initialFocus
+                          // locale={faIR} // Temporarily removed due to import issues
                         />
                       </PopoverContent>
                     </Popover>
@@ -327,7 +336,7 @@ export default function HabitForm() {
                 name="reminderTime"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm">زمان یادآوری (اختیاری)</FormLabel>
+                    <ShadcnFormLabel className="text-sm">زمان یادآوری (اختیاری)</ShadcnFormLabel>
                     <FormControl>
                       <Input type="time" placeholder="مثلا: 10:30" {...field} />
                     </FormControl>
@@ -344,7 +353,7 @@ export default function HabitForm() {
               name="days2190"
               render={({ field }) => (
                 <FormItem className="space-y-3">
-                  <FormLabel className="text-sm">مدت زمان هدف (قانون ۲۱/۹۰)</FormLabel>
+                  <ShadcnFormLabel className="text-sm">مدت زمان هدف (قانون ۲۱/۹۰)</ShadcnFormLabel>
                   <FormDescription>۲۱ روز برای شروع تغییر، ۹۰ روز برای تثبیت.</FormDescription>
                   <FormControl>
                     <RadioGroup
@@ -354,11 +363,11 @@ export default function HabitForm() {
                     >
                       <FormItem className="flex items-center space-x-2 space-x-reverse">
                         <FormControl><RadioGroupItem value="21" /></FormControl>
-                        <FormLabel className="font-normal text-base">۲۱ روز</FormLabel>
+                        <ShadcnFormLabel className="font-normal text-base">۲۱ روز</ShadcnFormLabel>
                       </FormItem>
                       <FormItem className="flex items-center space-x-2 space-x-reverse">
                         <FormControl><RadioGroupItem value="90" /></FormControl>
-                        <FormLabel className="font-normal text-base">۹۰ روز</FormLabel>
+                        <ShadcnFormLabel className="font-normal text-base">۹۰ روز</ShadcnFormLabel>
                       </FormItem>
                     </RadioGroup>
                   </FormControl>
@@ -374,7 +383,7 @@ export default function HabitForm() {
               name="programDuration"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-sm">مدت کل برنامه (روز)</FormLabel>
+                  <ShadcnFormLabel className="text-sm">مدت کل برنامه (روز)</ShadcnFormLabel>
                   <FormControl>
                     <Input type="number" inputMode="numeric" placeholder="مثلا: ۳۰" {...field} 
                       onChange={(e) => {
@@ -401,7 +410,7 @@ export default function HabitForm() {
                 name="twoMinuteSteps"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm">قدم‌های کوچک (قانون ۲ دقیقه)</FormLabel>
+                    <ShadcnFormLabel className="text-sm">قدم‌های کوچک (قانون ۲ دقیقه)</ShadcnFormLabel>
                     <FormDescription>هر قدم را در یک خط جدید وارد کنید (مثال: پوشیدن کفش ورزشی - ۱ دقیقه).</FormDescription>
                     <FormControl>
                       <Textarea placeholder="قدم ۱: ... (۱ دقیقه)&#x0a;قدم ۲: ... (۲ دقیقه)" {...field} />
@@ -415,7 +424,7 @@ export default function HabitForm() {
                 name="twoMinuteReminderFrequency"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm">فرکانس یادآوری (اختیاری)</FormLabel>
+                    <ShadcnFormLabel className="text-sm">فرکانس یادآوری (اختیاری)</ShadcnFormLabel>
                     <FormControl>
                       <Input placeholder="مثلا: هر ۲ ساعت" {...field} />
                     </FormControl>
@@ -432,7 +441,7 @@ export default function HabitForm() {
               name="ifThenRules"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-sm">قواعد اگر-آنگاه</FormLabel>
+                  <ShadcnFormLabel className="text-sm">قواعد اگر-آنگاه</ShadcnFormLabel>
                   <FormDescription>هر قاعده را در یک خط جدید وارد کنید (مثال: اگر [هوس قهوه بعد از شام کردم]، آنگاه [چای گیاهی می‌نوشم]).</FormDescription>
                   <FormControl>
                     <Textarea placeholder="اگر [محرک]، آنگاه [رفتار جایگزین]" {...field} />
