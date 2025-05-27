@@ -5,9 +5,9 @@ import { useState } from 'react';
 import { useForm, type SubmitHandler, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -15,8 +15,8 @@ import { useHabits, type NewHabitData } from '@/providers/habit-provider';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { Calendar as CalendarIcon, Loader2 } from 'lucide-react';
-import { format } from 'date-fns-jalali'; // Using date-fns-jalali for Persian calendar
-import fa from 'date-fns-jalali/locale/fa'; // Import the Persian locale
+import { format } from 'date-fns'; // Using standard date-fns format
+// import fa from 'date-fns-jalali/locale/fa'; // Removed Jalali locale import
 import { cn } from '@/lib/utils';
 import type { HabitStrategyDetails } from '@/lib/types';
 
@@ -75,7 +75,7 @@ export default function HabitForm() {
     setIsLoading(true);
     
     const strategyDetails: HabitStrategyDetails = {
-      startDate: data.startDate ? format(data.startDate, 'yyyy-MM-dd') : undefined, // format doesn't need locale for yyyy-MM-dd
+      startDate: data.startDate ? format(data.startDate, 'yyyy-MM-dd') : undefined,
       reminderTime: data.reminderTime || undefined,
     };
 
@@ -248,12 +248,12 @@ export default function HabitForm() {
                         <Button
                           variant={"outline"}
                           className={cn(
-                            "w-full justify-start text-right font-normal rounded-lg", 
+                            "w-full justify-start text-right font-normal rounded-full", 
                             !field.value && "text-muted-foreground"
                           )}
                         >
                           <CalendarIcon className="ml-2 h-4 w-4 opacity-50" />
-                          {field.value ? format(field.value, 'PPP EEE', { locale: fa }) : <span>تاریخ را انتخاب کنید</span>}
+                          {field.value ? format(field.value, 'PPP EEE') : <span>تاریخ را انتخاب کنید</span>}
                         </Button>
                       </FormControl>
                     </PopoverTrigger>
@@ -263,7 +263,7 @@ export default function HabitForm() {
                         selected={field.value}
                         onSelect={field.onChange}
                         initialFocus
-                        locale={fa}
+                        // locale prop removed
                       />
                     </PopoverContent>
                   </Popover>
@@ -401,3 +401,6 @@ export default function HabitForm() {
     </Form>
   );
 }
+    
+
+    
