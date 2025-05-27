@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from 'react';
-import { useForm, type SubmitHandler, Controller } from 'react-hook-form';
+import { useForm, type SubmitHandler, Controller, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { useHabits, type NewHabitData } from '@/providers/habit-provider';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
-import { Calendar as CalendarIcon, Loader2, Info } from 'lucide-react';
+import { Calendar as CalendarIcon, Loader2, Info, Plus, X } from 'lucide-react';
 import { format } from 'date-fns';
 // import { faIR } from 'date-fns/locale'; // Reverted due to incompatibility
 import { cn } from '@/lib/utils';
@@ -24,7 +24,6 @@ import {
   Form,
   FormControl,
   FormDescription,
-  FormField,
   FormLabel as ShadcnFormLabel,
   FormMessage,
   FormItem,
@@ -38,8 +37,12 @@ import {
   DialogClose,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
 
 const habitFormSchema = z.object({
+  // habitType: z.enum(['build', 'break'], { required_error: "نوع عادت (ساخت یا ترک) را انتخاب کنید." }),
   title: z.string().min(1, { message: "عنوان عادت نمی‌تواند خالی باشد." }),
   goalDescription: z.string().optional(),
   triggers: z.string().optional(),
@@ -49,7 +52,7 @@ const habitFormSchema = z.object({
   reminderTime: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, { message: "زمان معتبر نیست (HH:MM)" }).optional().or(z.literal("")),
 
   days2190: z.enum(['21', '90']).optional(),
-  twoMinuteSteps: z.string().optional(),
+  twoMinuteSteps: z.array(z.string()).optional().default(['']), // Changed to array of strings
   twoMinuteReminderFrequency: z.string().optional(),
   ifThenRules: z.string().optional(),
   
@@ -92,12 +95,19 @@ export default function HabitForm() {
   const form = useForm<HabitFormValues>({
     resolver: zodResolver(habitFormSchema),
     defaultValues: {
+      // habitType: 'build',
       title: "",
       strategy: 'none',
       reminderTime: "",
       programDuration: 30, 
       days2190: '21',
+      twoMinuteSteps: [''], // Default with one empty step
     },
+  });
+
+  const { fields: twoMinuteStepsFields, append: appendTwoMinuteStep, remove: removeTwoMinuteStep } = useFieldArray({
+    control: form.control,
+    name: "twoMinuteSteps"
   });
 
   const selectedStrategy = form.watch('strategy');
@@ -124,7 +134,9 @@ export default function HabitForm() {
     } else if (data.strategy === '40-day') {
       totalDaysForHabit = 40;
     } else if (data.strategy === '2-minute') {
-      strategyDetails.twoMinuteSteps = data.twoMinuteSteps;
+      if (data.twoMinuteSteps && data.twoMinuteSteps.length > 0) {
+        strategyDetails.twoMinuteSteps = data.twoMinuteSteps.filter(step => step.trim() !== "").join('\n');
+      }
       strategyDetails.twoMinuteReminderFrequency = data.twoMinuteReminderFrequency;
     } else if (data.strategy === 'if-then') {
       strategyDetails.ifThenRules = data.ifThenRules;
@@ -132,6 +144,7 @@ export default function HabitForm() {
     
     const habitDataToSave: NewHabitData = {
       title: data.title,
+      // habitType: data.habitType,
       goalDescription: data.goalDescription,
       triggers: data.triggers,
       strategy: data.strategy,
@@ -168,6 +181,31 @@ export default function HabitForm() {
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pb-28" lang="fa">
+          {/* 
+          <FormField
+            control={form.control}
+            name="habitType"
+            render={({ field }) => (
+              <FormItem className="space-y-3">
+                <ShadcnFormLabel className="text-sm pr-4">۱. نوع عادت</ShadcnFormLabel>
+                <FormControl>
+                  <Tabs
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    className="w-full"
+                    dir="rtl"
+                  >
+                    <TabsList className="grid w-full grid-cols-2">
+                      <TabsTrigger value="build">ساخت عادت جدید</TabsTrigger>
+                      <TabsTrigger value="break">ترک عادت بد</TabsTrigger>
+                    </TabsList>
+                  </Tabs>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          */}
           
           <FormField
             control={form.control}
@@ -176,7 +214,7 @@ export default function HabitForm() {
               <FormItem>
                 <ShadcnFormLabel className="text-sm">۱. نام عادت</ShadcnFormLabel>
                 <FormControl>
-                  <Input placeholder="مثلا: مطالعه روزانه یا ترک سیگار" {...field} />
+                  <Input placeholder="مثلا: مطالعه روزانه یا ترک سیگار" {...field} className="rounded-full h-12 text-base" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -218,7 +256,7 @@ export default function HabitForm() {
             render={({ field }) => (
               <FormItem className="space-y-3">
                 <ShadcnFormLabel className="text-sm pr-4">۴. روش ترک یا ساخت عادت</ShadcnFormLabel>
-                <FormControl>
+                 <FormControl>
                   <div className="grid grid-cols-1 gap-3">
                     {strategyOptions.map((option) => {
                       const isSelected = field.value === option.value;
@@ -227,16 +265,16 @@ export default function HabitForm() {
                           key={option.value}
                           onClick={() => field.onChange(option.value)}
                           className={cn(
-                            "flex items-center justify-between p-3 border rounded-full cursor-pointer transition-colors",
+                            "flex items-center justify-between p-3 border rounded-full cursor-pointer transition-colors h-12",
                             isSelected
                               ? "bg-primary/20 border-primary text-primary"
                               : "bg-[var(--input-background)] border-[var(--input-border-color)] hover:border-primary/70"
                           )}
                         >
                            <Label
-                            htmlFor={`strategy-option-${option.value}`}
+                            htmlFor={`strategy-option-${option.value}`} // Not strictly needed without radio item, but good for association
                             className={cn(
-                              "font-normal text-base flex-grow",
+                              "font-normal text-base flex-grow", // text-base for 16px
                               isSelected ? "text-primary" : "text-foreground"
                             )}
                           >
@@ -392,14 +430,45 @@ export default function HabitForm() {
               <FormField
                 control={form.control}
                 name="twoMinuteSteps"
-                render={({ field }) => (
+                render={() => ( // field is handled by useFieldArray
                   <FormItem>
                     <ShadcnFormLabel className="text-sm">قدم‌های کوچک (قانون ۲ دقیقه)</ShadcnFormLabel>
-                    <FormDescription>هر قدم را در یک خط جدید وارد کنید (مثال: پوشیدن کفش ورزشی - ۱ دقیقه).</FormDescription>
-                    <FormControl>
-                      <Textarea placeholder="قدم ۱: ... (۱ دقیقه)&#x0a;قدم ۲: ... (۲ دقیقه)" {...field} />
-                    </FormControl>
-                    <FormMessage />
+                    <FormDescription>هر قدم را در یک فیلد وارد کنید (مثال: پوشیدن کفش ورزشی - ۱ دقیقه).</FormDescription>
+                    <div className="space-y-2">
+                      {twoMinuteStepsFields.map((item, index) => (
+                        <div key={item.id} className="flex items-center space-x-2 space-x-reverse">
+                          <FormControl className="flex-grow">
+                            <Input
+                              {...form.register(`twoMinuteSteps.${index}` as const)}
+                              placeholder={`قدم ${index + 1}`}
+                              className="rounded-full h-12 text-base"
+                            />
+                          </FormControl>
+                          {twoMinuteStepsFields.length > 1 && (
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => removeTwoMinuteStep(index)}
+                              className="text-destructive hover:bg-destructive/10 rounded-full h-10 w-10"
+                              aria-label={`حذف قدم ${index + 1}`}
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => appendTwoMinuteStep("")}
+                      className="mt-2 rounded-full h-10 text-sm"
+                    >
+                      <Plus className="ml-2 h-4 w-4" />
+                      افزودن قدم
+                    </Button>
+                    <FormMessage>{form.formState.errors.twoMinuteSteps?.message}</FormMessage>
                   </FormItem>
                 )}
               />
@@ -446,7 +515,7 @@ export default function HabitForm() {
 
       {infoModalContent && (
         <Dialog open={!!infoModalContent} onOpenChange={(isOpen) => !isOpen && setInfoModalContent(null)}>
-          <DialogContent className="sm:max-w-md rounded-3xl bg-popover" dir="rtl"> {/* Added bg-popover */}
+          <DialogContent className="sm:max-w-md rounded-3xl bg-popover" dir="rtl">
             <DialogHeader className="text-right">
               <DialogTitle className="text-xl">{infoModalContent.title}</DialogTitle>
             </DialogHeader>
@@ -466,3 +535,4 @@ export default function HabitForm() {
     </>
   );
 }
+
