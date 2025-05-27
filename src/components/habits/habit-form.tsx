@@ -24,9 +24,10 @@ import {
   Form,
   FormControl,
   FormDescription,
-  FormLabel as ShadcnFormLabel,
+  ShadcnFormLabel, // Renamed to avoid conflict with HTML Label
   FormMessage,
   FormItem,
+  FormField, // Added missing import
 } from "@/components/ui/form";
 import {
   Dialog,
