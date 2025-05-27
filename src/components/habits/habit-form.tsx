@@ -16,6 +16,7 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { Calendar as CalendarIcon, Loader2 } from 'lucide-react';
 import { format } from 'date-fns-jalali'; // Using date-fns-jalali for Persian calendar
+import fa from 'date-fns-jalali/locale/fa'; // Import the Persian locale
 import { cn } from '@/lib/utils';
 import type { HabitStrategyDetails } from '@/lib/types';
 
@@ -74,7 +75,7 @@ export default function HabitForm() {
     setIsLoading(true);
     
     const strategyDetails: HabitStrategyDetails = {
-      startDate: data.startDate ? format(data.startDate, 'yyyy-MM-dd') : undefined,
+      startDate: data.startDate ? format(data.startDate, 'yyyy-MM-dd') : undefined, // format doesn't need locale for yyyy-MM-dd
       reminderTime: data.reminderTime || undefined,
     };
 
@@ -121,7 +122,7 @@ export default function HabitForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 pb-20" lang="fa">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pb-20" lang="fa">
         
         <FormField
           control={form.control}
@@ -247,12 +248,12 @@ export default function HabitForm() {
                         <Button
                           variant={"outline"}
                           className={cn(
-                            "w-full justify-start text-right font-normal",
+                            "w-full justify-start text-right font-normal rounded-lg", 
                             !field.value && "text-muted-foreground"
                           )}
                         >
                           <CalendarIcon className="ml-2 h-4 w-4 opacity-50" />
-                          {field.value ? format(field.value, 'PPP EEE', { locale: require('date-fns-jalali/locale/fa') }) : <span>تاریخ را انتخاب کنید</span>}
+                          {field.value ? format(field.value, 'PPP EEE', { locale: fa }) : <span>تاریخ را انتخاب کنید</span>}
                         </Button>
                       </FormControl>
                     </PopoverTrigger>
@@ -262,7 +263,7 @@ export default function HabitForm() {
                         selected={field.value}
                         onSelect={field.onChange}
                         initialFocus
-                        locale={require('date-fns-jalali/locale/fa')}
+                        locale={fa}
                       />
                     </PopoverContent>
                   </Popover>
@@ -324,7 +325,17 @@ export default function HabitForm() {
               <FormItem>
                 <FormLabel className="text-sm">مدت کل برنامه (روز)</FormLabel>
                 <FormControl>
-                  <Input type="number" inputMode="numeric" placeholder="مثلا: ۳۰" {...field} />
+                  <Input type="number" inputMode="numeric" placeholder="مثلا: ۳۰" {...field} 
+                    onChange={(e) => {
+                      const value = parseInt(e.target.value);
+                      if (isNaN(value)) {
+                        field.onChange(''); // or some other appropriate non-numeric placeholder for empty
+                      } else {
+                        field.onChange(value);
+                      }
+                    }}
+                    value={field.value === undefined || field.value === null || isNaN(Number(field.value)) ? '' : Number(field.value)} 
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
