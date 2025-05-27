@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm, type SubmitHandler, Controller, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -14,10 +14,10 @@ import { useHabits, type NewHabitData } from '@/providers/habit-provider';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { Calendar as CalendarIcon, Loader2, Info, Plus, X } from 'lucide-react';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 // import { faIR } from 'date-fns/locale'; // Temporarily removed due to import/versioning issues
-import { cn } from '@/lib/utils';
-import type { HabitStrategyDetails } from '@/lib/types';
+import { cn, toPersianNumerals } from '@/lib/utils';
+import type { Habit, HabitStrategyDetails } from '@/lib/types';
 import { Label } from "@/components/ui/label";
 
 import {
@@ -38,13 +38,12 @@ import {
   DialogClose,
   DialogFooter,
 } from "@/components/ui/dialog";
-// RadioGroup and RadioGroupItem are no longer used directly for strategy selection
-// import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 
 const habitFormSchema = z.object({
   title: z.string().min(1, { message: "عنوان عادت نمی‌تواند خالی باشد." }),
+  // habitType: z.enum(['build', 'break'], { required_error: "نوع عادت را انتخاب کنید." }), No longer used
   goalDescription: z.string().optional(),
   triggers: z.string().optional(),
   strategy: z.enum(['21/90', '40-day', '2-minute', 'if-then', 'none'], { required_error: "روش ساخت یا ترک عادت را انتخاب کنید." }),
@@ -90,26 +89,82 @@ const strategyExplanations: Record<string, { title: string; description: string 
   }
 };
 
-export default function HabitForm() {
-  const { addHabit } = useHabits();
+interface HabitFormProps {
+  initialData?: Habit;
+}
+
+export default function HabitForm({ initialData }: HabitFormProps) {
+  const { addHabit, updateHabit } = useHabits();
   const router = useRouter();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [infoModalContent, setInfoModalContent] = useState<{ title: string; description: string } | null>(null);
 
+  const isEditMode = !!initialData;
 
-  const form = useForm<HabitFormValues>({
-    resolver: zodResolver(habitFormSchema),
-    defaultValues: {
+  const getDefaultValues = () => {
+    if (isEditMode && initialData) {
+      const strategyDetails = initialData.strategyDetails || {};
+      let twoMinuteStepsArray = [''];
+      if (strategyDetails.twoMinuteSteps && typeof strategyDetails.twoMinuteSteps === 'string') {
+        twoMinuteStepsArray = strategyDetails.twoMinuteSteps.split('\n').filter(step => step.trim() !== '');
+        if(twoMinuteStepsArray.length === 0) twoMinuteStepsArray = ['']; // ensure at least one empty string if all were empty
+      }
+
+      let ifThenRulesArray = [{ ifCondition: '', thenAction: '' }];
+      if (strategyDetails.ifThenRules && typeof strategyDetails.ifThenRules === 'string') {
+        const parsedRules = strategyDetails.ifThenRules.split('\n')
+          .map(ruleString => {
+            const match = ruleString.match(/اگر\s*\[(.*?)\]\s*،\s*آنگاه\s*\[(.*?)\]/);
+            if (match && match[1] && match[2]) {
+              return { ifCondition: match[1].trim(), thenAction: match[2].trim() };
+            }
+            return null;
+          }).filter(rule => rule !== null) as { ifCondition: string; thenAction: string; }[];
+        if(parsedRules.length > 0) ifThenRulesArray = parsedRules;
+      }
+
+
+      return {
+        title: initialData.title || "",
+        goalDescription: initialData.goalDescription || "",
+        triggers: initialData.triggers || "",
+        strategy: initialData.strategy || 'none',
+        startDate: strategyDetails.startDate ? parseISO(strategyDetails.startDate) : undefined,
+        reminderTime: strategyDetails.reminderTime || "",
+        days2190: strategyDetails.days2190 === 90 ? '90' : (strategyDetails.days2190 === 21 ? '21' : undefined),
+        twoMinuteSteps: twoMinuteStepsArray,
+        twoMinuteReminderFrequency: strategyDetails.twoMinuteReminderFrequency || "",
+        ifThenRules: ifThenRulesArray,
+        programDuration: initialData.totalDays,
+      };
+    }
+    return {
       title: "",
+      // habitType: 'build', // No longer used
+      goalDescription: "",
+      triggers: "",
       strategy: 'none',
       reminderTime: "",
       programDuration: 30, 
       days2190: '21',
       twoMinuteSteps: [''], 
       ifThenRules: [{ ifCondition: '', thenAction: '' }],
-    },
+    };
+  };
+
+
+  const form = useForm<HabitFormValues>({
+    resolver: zodResolver(habitFormSchema),
+    defaultValues: getDefaultValues(),
   });
+  
+  // Reset form if initialData changes (e.g., navigating between edit pages or from create to edit)
+  useEffect(() => {
+    form.reset(getDefaultValues());
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialData, form.reset]);
+
 
   const { fields: twoMinuteStepsFields, append: appendTwoMinuteStep, remove: removeTwoMinuteStep } = useFieldArray({
     control: form.control,
@@ -149,23 +204,28 @@ export default function HabitForm() {
         const validSteps = data.twoMinuteSteps.filter(step => step && step.trim() !== "");
         if (validSteps.length > 0) {
           strategyDetails.twoMinuteSteps = validSteps.join('\n');
+        } else {
+          strategyDetails.twoMinuteSteps = undefined; // Ensure empty is stored as undefined
         }
       }
       strategyDetails.twoMinuteReminderFrequency = data.twoMinuteReminderFrequency;
     } else if (data.strategy === 'if-then') {
        if (data.ifThenRules && data.ifThenRules.length > 0) {
         const validRules = data.ifThenRules
-          .filter(rule => rule.ifCondition.trim() !== "" || rule.thenAction.trim() !== ""); // Changed to OR to keep rules if at least one part is filled
+          .filter(rule => rule.ifCondition.trim() !== "" || rule.thenAction.trim() !== "");
         if (validRules.length > 0) {
           strategyDetails.ifThenRules = validRules
             .map(rule => `اگر [${rule.ifCondition.trim()}]، آنگاه [${rule.thenAction.trim()}]`)
             .join('\n');
+        } else {
+          strategyDetails.ifThenRules = undefined; // Ensure empty is stored as undefined
         }
       }
     }
     
     const habitDataToSave: NewHabitData = {
       title: data.title,
+      // habitType: data.habitType, // No longer used
       goalDescription: data.goalDescription,
       triggers: data.triggers,
       strategy: data.strategy,
@@ -174,21 +234,31 @@ export default function HabitForm() {
     };
 
     try {
-      const newHabit = addHabit(habitDataToSave);
-      toast({
-        title: "عادت جدید ایجاد شد!",
-        description: `عادت "${newHabit.title}" با موفقیت اضافه شد.`,
-      });
-      router.push('/my-habits');
+      if (isEditMode && initialData) {
+        const updated = updateHabit(initialData.id, habitDataToSave);
+        toast({
+          title: "عادت به‌روزرسانی شد!",
+          description: `عادت "${updated?.title}" با موفقیت تغییر کرد.`,
+        });
+        router.push(`/habits/${initialData.id}`);
+      } else {
+        const newHabit = addHabit(habitDataToSave);
+        toast({
+          title: "عادت جدید ایجاد شد!",
+          description: `عادت "${newHabit.title}" با موفقیت اضافه شد.`,
+        });
+        router.push('/my-habits');
+      }
     } catch (error) {
-      console.error("Error creating habit:", error); // Log the actual error
-      toast({
-        title: "خطا",
-        // description: "مشکلی در ایجاد عادت پیش آمد.",
-        description: error instanceof Error ? error.message : "مشکلی در ایجاد عادت پیش آمد.",
-        variant: "destructive",
-      });
-      setIsLoading(false);
+       const errorMessage = error instanceof Error ? error.message : "مشکلی در ذخیره عادت پیش آمد.";
+       console.error("Error saving habit:", error, data, habitDataToSave);
+       toast({
+         title: "خطا در ذخیره‌سازی",
+         description: errorMessage,
+         variant: "destructive",
+       });
+    } finally {
+       setIsLoading(false);
     }
   };
 
@@ -204,6 +274,30 @@ export default function HabitForm() {
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pb-28" lang="fa">
+          {/* Habit Type Tabs - Removed
+          <FormField
+            control={form.control}
+            name="habitType"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-sm pr-4">۱. نوع عادت</FormLabel>
+                <FormControl>
+                  <Tabs
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    className="w-full"
+                  >
+                    <TabsList className="grid w-full grid-cols-2">
+                      <TabsTrigger value="build" className="rounded-full h-10">ساخت عادت جدید</TabsTrigger>
+                      <TabsTrigger value="break" className="rounded-full h-10">ترک عادت بد</TabsTrigger>
+                    </TabsList>
+                  </Tabs>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          */}
           
           <FormField
             control={form.control}
@@ -271,7 +365,7 @@ export default function HabitForm() {
                         >
                            <Label
                             className={cn(
-                              "font-normal text-base flex-grow",
+                              "font-normal text-base flex-grow text-right", // Ensure text is right aligned
                               isSelected ? "text-primary" : "text-foreground"
                             )}
                           >
@@ -408,7 +502,7 @@ export default function HabitForm() {
                       onChange={(e) => {
                         const value = parseInt(e.target.value);
                         if (isNaN(value)) {
-                          field.onChange(undefined); // Or handle as needed, e.g., field.onChange(null) or keep previous if invalid
+                          field.onChange(undefined);
                         } else {
                           field.onChange(value);
                         }
@@ -436,7 +530,7 @@ export default function HabitForm() {
                         <FormControl className="flex-grow">
                            <Input
                             {...form.register(`twoMinuteSteps.${index}` as const)}
-                            placeholder={`قدم ${index + 1}`}
+                            placeholder={`قدم ${toPersianNumerals(index + 1)}`}
                             className="rounded-full h-12 text-base"
                           />
                         </FormControl>
@@ -447,7 +541,7 @@ export default function HabitForm() {
                             size="icon"
                             onClick={() => removeTwoMinuteStep(index)}
                             className="text-destructive hover:bg-destructive/10 rounded-full h-10 w-10"
-                            aria-label={`حذف قدم ${index + 1}`}
+                            aria-label={`حذف قدم ${toPersianNumerals(index + 1)}`}
                           >
                             <X className="h-4 w-4" />
                           </Button>
@@ -457,7 +551,6 @@ export default function HabitForm() {
                      {form.formState.errors.twoMinuteSteps && typeof form.formState.errors.twoMinuteSteps === 'object' && 'message' in form.formState.errors.twoMinuteSteps && (
                         <FormMessage>{form.formState.errors.twoMinuteSteps.message}</FormMessage>
                      )}
-                     {/* Display errors for individual steps if any */}
                      {Array.isArray(form.formState.errors.twoMinuteSteps) && form.formState.errors.twoMinuteSteps.map((error, index) => 
                         error && error.message && <FormMessage key={`step_err_${index}`}>{error.message}</FormMessage>
                      )}
@@ -503,15 +596,15 @@ export default function HabitForm() {
                     {ifThenRulesFields.map((item, index) => (
                       <div key={item.id} className="space-y-2 p-3 border rounded-lg bg-[var(--input-background)] border-[var(--input-border-color)]">
                         <div className="flex items-center justify-between">
-                           <p className="text-sm font-medium text-muted-foreground">قاعده {index + 1}</p>
-                           {ifThenRulesFields.length > 1 && (
+                           <p className="text-sm font-medium text-muted-foreground">قاعده {toPersianNumerals(index + 1)}</p>
+                           {ifThenRulesFields.length > 0 && ( // Show remove button even for the first item to allow removing all
                             <Button
                                 type="button"
                                 variant="ghost"
                                 size="icon"
                                 onClick={() => removeIfThenRule(index)}
                                 className="text-destructive hover:bg-destructive/10 rounded-full h-8 w-8"
-                                aria-label={`حذف قاعده ${index + 1}`}
+                                aria-label={`حذف قاعده ${toPersianNumerals(index + 1)}`}
                             >
                                 <X className="h-4 w-4" />
                             </Button>
@@ -556,7 +649,6 @@ export default function HabitForm() {
                     {form.formState.errors.ifThenRules && typeof form.formState.errors.ifThenRules === 'object' && 'message' in form.formState.errors.ifThenRules && (
                         <FormMessage>{form.formState.errors.ifThenRules.message}</FormMessage>
                      )}
-                     {/* Display errors for individual rules if any */}
                      {Array.isArray(form.formState.errors.ifThenRules) && form.formState.errors.ifThenRules.map((error, index) => 
                         error && (error.ifCondition?.message || error.thenAction?.message) && 
                         <FormMessage key={`rule_err_${index}`}>{error.ifCondition?.message || error.thenAction?.message}</FormMessage>
@@ -576,9 +668,9 @@ export default function HabitForm() {
             />
           )}
           
-          <div className="pt-4">
+          <div className="pt-4"> {/* Removed fixed positioning div */}
             <Button type="submit" className="w-full text-lg p-6 rounded-full" disabled={isLoading}>
-              {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : "ایجاد عادت"}
+              {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : (isEditMode ? "ثبت تغییرات" : "ایجاد عادت")}
             </Button>
           </div>
         </form>
@@ -606,7 +698,3 @@ export default function HabitForm() {
     </>
   );
 }
-    
-
-    
-

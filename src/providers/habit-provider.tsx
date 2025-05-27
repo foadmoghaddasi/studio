@@ -8,20 +8,19 @@ import { useRouter } from 'next/navigation'; // For redirecting after unarchivin
 // Define more specific type for habit creation data
 export interface NewHabitData {
   title: string;
-  habitType?: 'build' | 'break';
+  // habitType?: 'build' | 'break'; // No longer used
   goalDescription?: string;
   triggers?: string;
   strategy?: '21/90' | '40-day' | '2-minute' | 'if-then' | 'none';
   strategyDetails?: HabitStrategyDetails;
-  // totalDays will be derived or explicitly set
-  totalDaysInput?: number; // Used if strategy doesn't define days
+  totalDaysInput?: number; 
 }
 
 
 interface HabitContextType {
   habits: Habit[];
   addHabit: (habitData: NewHabitData) => Habit;
-  updateHabit: (habit: Habit) => void;
+  updateHabit: (habitId: string, habitData: NewHabitData) => Habit | undefined;
   completeDay: (habitId: string) => Habit | undefined;
   toggleHabitActive: (habitId: string) => void;
   getHabitById: (habitId: string) => Habit | undefined;
@@ -49,13 +48,12 @@ export function HabitProvider({ children }: { children: ReactNode }) {
           ...h, 
           isArchived: h.isArchived ?? false,
           lastMotivationalMessage: h.lastMotivationalMessage ?? undefined,
-          // Ensure new fields have defaults if loading old data
-          habitType: h.habitType ?? 'build',
+          // habitType: h.habitType ?? 'build', // No longer used
           goalDescription: h.goalDescription ?? '',
           triggers: h.triggers ?? '',
           strategy: h.strategy ?? 'none',
           strategyDetails: h.strategyDetails ?? {},
-          totalDays: h.totalDays // Keep existing totalDays
+          totalDays: h.totalDays 
         }));
         setHabits(migratedHabits);
       }
@@ -75,48 +73,66 @@ export function HabitProvider({ children }: { children: ReactNode }) {
     }
   }, [habits, isLoaded]);
 
-  const addHabit = (newHabitData: NewHabitData) => {
+  const processHabitData = (habitData: NewHabitData, existingHabit?: Habit) => {
     let calculatedTotalDays = 0;
-    if (newHabitData.strategy === '21/90') {
-      calculatedTotalDays = newHabitData.strategyDetails?.days2190 || 21;
-    } else if (newHabitData.strategy === '40-day') {
+    if (habitData.strategy === '21/90') {
+      calculatedTotalDays = habitData.strategyDetails?.days2190 || 21;
+    } else if (habitData.strategy === '40-day') {
       calculatedTotalDays = 40;
-    } else if (newHabitData.totalDaysInput) {
-      calculatedTotalDays = newHabitData.totalDaysInput;
+    } else if (habitData.totalDaysInput) {
+      calculatedTotalDays = habitData.totalDaysInput;
     } else {
-      calculatedTotalDays = 30; // Default if no other duration specified
+      calculatedTotalDays = existingHabit?.totalDays || 30; // Use existing or default
     }
+    return {
+      title: habitData.title,
+      totalDays: calculatedTotalDays,
+      goalDescription: habitData.goalDescription || '',
+      triggers: habitData.triggers || '',
+      strategy: habitData.strategy || 'none',
+      strategyDetails: habitData.strategyDetails || {},
+    };
+  };
 
+  const addHabit = (newHabitData: NewHabitData) => {
+    const processedData = processHabitData(newHabitData);
     const newHabit: Habit = {
       id: Date.now().toString(),
-      title: newHabitData.title,
-      totalDays: calculatedTotalDays,
+      ...processedData,
       daysCompleted: 0,
       isActive: true,
       isArchived: false,
       createdAt: new Date().toISOString(),
       lastMotivationalMessage: undefined,
-      habitType: newHabitData.habitType || 'build',
-      goalDescription: newHabitData.goalDescription || '',
-      triggers: newHabitData.triggers || '',
-      strategy: newHabitData.strategy || 'none',
-      strategyDetails: newHabitData.strategyDetails || {},
     };
     setHabits((prevHabits) => [...prevHabits, newHabit].sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
     return newHabit;
   };
 
-  const updateHabit = (updatedHabit: Habit) => {
+  const updateHabit = (habitId: string, habitData: NewHabitData): Habit | undefined => {
+    let updatedHabitInstance: Habit | undefined;
     setHabits((prevHabits) =>
-      prevHabits.map((habit) => (habit.id === updatedHabit.id ? updatedHabit : habit))
+      prevHabits.map((habit) => {
+        if (habit.id === habitId) {
+          const processedData = processHabitData(habitData, habit);
+          updatedHabitInstance = {
+            ...habit, // Retain id, createdAt, daysCompleted, isActive, isArchived, lastCheckedIn, lastMotivationalMessage
+            ...processedData, // Apply new title, totalDays, goal, triggers, strategy, strategyDetails
+          };
+          return updatedHabitInstance;
+        }
+        return habit;
+      })
     );
+    return updatedHabitInstance;
   };
+
 
   const completeDay = (habitId: string): Habit | undefined => {
     let updatedHabitInstance: Habit | undefined;
     setHabits((prevHabits) =>
       prevHabits.map((habit) => {
-        if (habit.id === habitId && habit.daysCompleted < habit.totalDays && !habit.isArchived) {
+        if (habit.id === habitId && habit.daysCompleted < habit.totalDays && !habit.isArchived && habit.isActive) {
           const today = new Date().toISOString().split('T')[0];
           if (habit.lastCheckedIn?.startsWith(today)) {
              updatedHabitInstance = habit;
@@ -129,7 +145,7 @@ export function HabitProvider({ children }: { children: ReactNode }) {
           };
           return updatedHabitInstance;
         }
-        if (habit.id === habitId) updatedHabitInstance = habit;
+        if (habit.id === habitId) updatedHabitInstance = habit; // Ensure instance is set for return
         return habit;
       })
     );
