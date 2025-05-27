@@ -15,7 +15,7 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { Calendar as CalendarIcon, Loader2, Info, Plus, X } from 'lucide-react';
 import { format } from 'date-fns';
-// import { faIR } from 'date-fns/locale'; // Reverted due to incompatibility
+// import { faIR } from 'date-fns/locale'; // Temporarily removed due to import/versioning issues
 import { cn } from '@/lib/utils';
 import type { HabitStrategyDetails } from '@/lib/types';
 import { Label } from "@/components/ui/label";
@@ -52,9 +52,14 @@ const habitFormSchema = z.object({
   reminderTime: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, { message: "زمان معتبر نیست (HH:MM)" }).optional().or(z.literal("")),
 
   days2190: z.enum(['21', '90']).optional(),
-  twoMinuteSteps: z.array(z.string()).optional().default(['']), 
+  twoMinuteSteps: z.array(z.string().min(1, {message: "قدم نمی‌تواند خالی باشد."})).optional().default(['']), 
   twoMinuteReminderFrequency: z.string().optional(),
-  ifThenRules: z.array(z.string()).optional().default(['']),
+  ifThenRules: z.array(
+    z.object({
+      ifCondition: z.string().min(1, { message: "شرط (اگر) نمی‌تواند خالی باشد." }),
+      thenAction: z.string().min(1, { message: "عمل (آنگاه) نمی‌تواند خالی باشد." }),
+    })
+  ).optional().default([{ ifCondition: '', thenAction: '' }]),
   
   programDuration: z.coerce.number().min(1, "حداقل ۱ روز").max(365, "حداکثر ۳۶۵ روز").optional(),
 });
@@ -101,7 +106,7 @@ export default function HabitForm() {
       programDuration: 30, 
       days2190: '21',
       twoMinuteSteps: [''], 
-      ifThenRules: [''],
+      ifThenRules: [{ ifCondition: '', thenAction: '' }],
     },
   });
 
@@ -145,7 +150,10 @@ export default function HabitForm() {
       strategyDetails.twoMinuteReminderFrequency = data.twoMinuteReminderFrequency;
     } else if (data.strategy === 'if-then') {
        if (data.ifThenRules && data.ifThenRules.length > 0) {
-        strategyDetails.ifThenRules = data.ifThenRules.filter(rule => rule && rule.trim() !== "").join('\n');
+        strategyDetails.ifThenRules = data.ifThenRules
+          .filter(rule => rule.ifCondition.trim() !== "" && rule.thenAction.trim() !== "")
+          .map(rule => `اگر [${rule.ifCondition}]، آنگاه [${rule.thenAction}]`)
+          .join('\n');
       }
     }
     
@@ -316,7 +324,7 @@ export default function HabitForm() {
                           selected={field.value}
                           onSelect={field.onChange}
                           initialFocus
-                          // locale={faIR} // Temporarily removed due to import issues
+                          // locale={faIR} // Temporarily removed due to import/versioning issues
                         />
                       </PopoverContent>
                     </Popover>
@@ -468,49 +476,86 @@ export default function HabitForm() {
             />
           )}
 
-          {selectedStrategy === 'if-then' && (
+        {selectedStrategy === 'if-then' && (
             <FormField
               control={form.control}
               name="ifThenRules"
-              render={() => ( 
+              render={() => (
                 <FormItem>
                   <FormLabel className="text-sm">قواعد اگر-آنگاه</FormLabel>
-                  <FormDescription>هر قاعده را در یک فیلد وارد کنید (مثال: اگر [هوس قهوه بعد از شام کردم]، آنگاه [چای گیاهی می‌نوشم]).</FormDescription>
-                  <div className="space-y-2">
+                  <FormDescription>هر قاعده را به صورت جداگانه برای شرط (اگر) و عمل (آنگاه) وارد کنید.</FormDescription>
+                  <div className="space-y-4">
                     {ifThenRulesFields.map((item, index) => (
-                      <div key={item.id} className="flex items-center space-x-2 space-x-reverse">
-                        <FormControl className="flex-grow">
-                           <Input
-                            {...form.register(`ifThenRules.${index}` as const)}
-                            placeholder={`قاعده ${index + 1} (اگر... آنگاه...)`}
-                            className="rounded-full h-12 text-base"
-                          />
-                        </FormControl>
-                        {ifThenRulesFields.length > 1 && (
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => removeIfThenRule(index)}
-                            className="text-destructive hover:bg-destructive/10 rounded-full h-10 w-10"
-                            aria-label={`حذف قاعده ${index + 1}`}
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        )}
+                      <div key={item.id} className="space-y-2 p-3 border rounded-lg bg-[var(--input-background)] border-[var(--input-border-color)]">
+                        <div className="flex items-center justify-between">
+                           <p className="text-sm font-medium text-muted-foreground">قاعده {index + 1}</p>
+                           {ifThenRulesFields.length > 1 && (
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => removeIfThenRule(index)}
+                                className="text-destructive hover:bg-destructive/10 rounded-full h-8 w-8"
+                                aria-label={`حذف قاعده ${index + 1}`}
+                            >
+                                <X className="h-4 w-4" />
+                            </Button>
+                            )}
+                        </div>
+                        <FormField
+                          control={form.control}
+                          name={`ifThenRules.${index}.ifCondition`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-xs text-muted-foreground">شرط (اگر)</FormLabel>
+                              <FormControl>
+                                <Input
+                                  {...field}
+                                  placeholder="مثلا: هوس قهوه بعد از شام کردم"
+                                  className="rounded-full h-12 text-base"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`ifThenRules.${index}.thenAction`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-xs text-muted-foreground">عمل (آنگاه)</FormLabel>
+                              <FormControl>
+                                <Input
+                                  {...field}
+                                  placeholder="مثلا: چای گیاهی می‌نوشم"
+                                  className="rounded-full h-12 text-base"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                       </div>
                     ))}
                   </div>
-                   <Button
+                  <Button
                     type="button"
                     variant="outline"
-                    onClick={() => appendIfThenRule("")}
+                    onClick={() => appendIfThenRule({ ifCondition: "", thenAction: "" })}
                     className="mt-2 rounded-full h-10 text-sm"
                   >
                     <Plus className="ml-2 h-4 w-4" />
                     افزودن قاعده اگر-آنگاه
                   </Button>
                   <FormMessage>{form.formState.errors.ifThenRules?.message}</FormMessage>
+                  {/* Display root errors for the array if any */}
+                  {form.formState.errors.ifThenRules && !form.formState.errors.ifThenRules.root && (
+                    <FormMessage>
+                      {form.formState.errors.ifThenRules.map?.[0]?.ifCondition?.message || 
+                       form.formState.errors.ifThenRules.map?.[0]?.thenAction?.message}
+                    </FormMessage>
+                  )}
                 </FormItem>
               )}
             />
