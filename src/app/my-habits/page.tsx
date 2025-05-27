@@ -23,17 +23,17 @@ export default function MyHabitsPage() {
 
       {/* New Stats Section */}
       <div className="grid grid-cols-3 gap-3 mb-6">
-        <div className="bg-green-200 p-4 rounded-2xl text-center">
-          <p className="text-xs text-green-700 font-medium">مجموع عادت‌ها</p>
-          <p className="text-xl font-bold text-green-900">{toPersianNumerals(totalHabits)}</p>
+        <div className="bg-emerald-100 dark:bg-emerald-900 p-4 rounded-3xl text-center">
+          <p className="text-xs text-emerald-600 dark:text-emerald-300 font-medium">مجموع عادت‌ها</p>
+          <p className="text-xl font-bold text-emerald-800 dark:text-emerald-100">{toPersianNumerals(totalHabits)}</p>
         </div>
-        <div className="bg-blue-200 p-4 rounded-2xl text-center">
-          <p className="text-xs text-blue-700 font-medium">روزهای موفق</p>
-          <p className="text-xl font-bold text-blue-900">{toPersianNumerals(successfulDays)}</p>
+        <div className="bg-sky-100 dark:bg-sky-900 p-4 rounded-3xl text-center">
+          <p className="text-xs text-sky-600 dark:text-sky-300 font-medium">روزهای موفق</p>
+          <p className="text-xl font-bold text-sky-800 dark:text-sky-100">{toPersianNumerals(successfulDays)}</p>
         </div>
-        <div className="bg-orange-200 p-4 rounded-2xl text-center">
-          <p className="text-xs text-orange-700 font-medium">عادت فعال</p>
-          <p className="text-xl font-bold text-orange-900">{toPersianNumerals(activeHabitsCount)}</p>
+        <div className="bg-amber-100 dark:bg-amber-900 p-4 rounded-3xl text-center">
+          <p className="text-xs text-amber-600 dark:text-amber-300 font-medium">عادت فعال</p>
+          <p className="text-xl font-bold text-amber-800 dark:text-amber-100">{toPersianNumerals(activeHabitsCount)}</p>
         </div>
       </div>
       
@@ -50,4 +50,3 @@ export default function MyHabitsPage() {
     </div>
   );
 }
-
