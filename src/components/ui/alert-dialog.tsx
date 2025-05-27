@@ -119,7 +119,7 @@ const AlertDialogCancel = React.forwardRef<
     ref={ref}
     className={cn(
       buttonVariants({ variant: "ghost" }), // Use ghost for base styling
-      "bg-background text-foreground hover:bg-muted/90 border border-border", // Soft white/light gray bg, primary border
+      "bg-background text-foreground hover:bg-muted/90", // Soft white/light gray bg, primary border removed
       className
     )}
     {...props}
