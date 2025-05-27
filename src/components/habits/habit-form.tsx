@@ -8,7 +8,6 @@ import { z } from 'zod';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-// RadioGroup and RadioGroupItem removed
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useHabits, type NewHabitData } from '@/providers/habit-provider';
@@ -19,16 +18,16 @@ import { format } from 'date-fns';
 // import { faIR } from 'date-fns/locale'; // Reverted due to incompatibility
 import { cn } from '@/lib/utils';
 import type { HabitStrategyDetails } from '@/lib/types';
-import { Label } from "@/components/ui/label"; 
+import { Label } from "@/components/ui/label";
 
 import {
   Form,
   FormControl,
   FormDescription,
   FormField,
-  FormLabel as ShadcnFormLabel, 
+  FormLabel as ShadcnFormLabel,
   FormMessage,
-  FormItem, // Added FormItem back
+  FormItem,
 } from "@/components/ui/form";
 import {
   Dialog,
@@ -39,10 +38,8 @@ import {
   DialogClose,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const habitFormSchema = z.object({
-  habitType: z.enum(['build', 'break'], { required_error: "نوع عادت را مشخص کنید." }),
   title: z.string().min(1, { message: "عنوان عادت نمی‌تواند خالی باشد." }),
   goalDescription: z.string().optional(),
   triggers: z.string().optional(),
@@ -95,7 +92,6 @@ export default function HabitForm() {
   const form = useForm<HabitFormValues>({
     resolver: zodResolver(habitFormSchema),
     defaultValues: {
-      habitType: 'build',
       title: "",
       strategy: 'none',
       reminderTime: "",
@@ -136,7 +132,6 @@ export default function HabitForm() {
     
     const habitDataToSave: NewHabitData = {
       title: data.title,
-      habitType: data.habitType,
       goalDescription: data.goalDescription,
       triggers: data.triggers,
       strategy: data.strategy,
@@ -176,33 +171,10 @@ export default function HabitForm() {
           
           <FormField
             control={form.control}
-            name="habitType"
-            render={({ field }) => (
-              <FormItem className="space-y-3">
-                <ShadcnFormLabel className="text-sm pr-4">۱. نوع عادت</ShadcnFormLabel>
-                <FormControl>
-                  <Tabs
-                    value={field.value}
-                    onValueChange={field.onChange}
-                    className="w-full"
-                  >
-                    <TabsList className="grid w-full grid-cols-2 rounded-full">
-                      <TabsTrigger value="build" className="rounded-full">ساخت عادت جدید</TabsTrigger>
-                      <TabsTrigger value="break" className="rounded-full">ترک عادت بد</TabsTrigger>
-                    </TabsList>
-                  </Tabs>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          
-          <FormField
-            control={form.control}
             name="title"
             render={({ field }) => (
               <FormItem>
-                <ShadcnFormLabel className="text-sm">۲. نام عادت</ShadcnFormLabel>
+                <ShadcnFormLabel className="text-sm">۱. نام عادت</ShadcnFormLabel>
                 <FormControl>
                   <Input placeholder="مثلا: مطالعه روزانه یا ترک سیگار" {...field} />
                 </FormControl>
@@ -216,7 +188,7 @@ export default function HabitForm() {
             name="goalDescription"
             render={({ field }) => (
               <FormItem>
-                <ShadcnFormLabel className="text-sm">هدف از این عادت (اختیاری)</ShadcnFormLabel>
+                <ShadcnFormLabel className="text-sm">۲. هدف از این عادت (اختیاری)</ShadcnFormLabel>
                 <FormControl>
                   <Textarea placeholder="مثلا: ورزش حداقل ۳۰ دقیقه در روز یا ترک کامل سیگار..." {...field} />
                 </FormControl>
@@ -261,9 +233,10 @@ export default function HabitForm() {
                               : "bg-[var(--input-background)] border-[var(--input-border-color)] hover:border-primary/70"
                           )}
                         >
-                          <Label
+                           <Label
+                            htmlFor={`strategy-option-${option.value}`}
                             className={cn(
-                              "font-normal text-base",
+                              "font-normal text-base flex-grow",
                               isSelected ? "text-primary" : "text-foreground"
                             )}
                           >
@@ -274,11 +247,11 @@ export default function HabitForm() {
                             variant="ghost"
                             size="icon"
                             onClick={(e) => {
-                              e.stopPropagation(); // Prevent strategy selection when clicking info
+                              e.stopPropagation(); 
                               handleStrategyInfoClick(option.value);
                             }}
                             className={cn(
-                              "h-8 w-8 rounded-full hover:bg-primary/10",
+                              "h-8 w-8 rounded-full hover:bg-primary/10 shrink-0",
                               isSelected ? "text-primary" : "text-muted-foreground hover:text-primary"
                             )}
                             aria-label={`اطلاعات بیشتر درباره ${option.label}`}
@@ -357,17 +330,30 @@ export default function HabitForm() {
                 <FormItem className="space-y-3">
                   <ShadcnFormLabel className="text-sm pr-4">مدت زمان هدف (قانون ۲۱/۹۰)</ShadcnFormLabel>
                   <FormDescription>۲۱ روز برای شروع تغییر، ۹۰ روز برای تثبیت.</FormDescription>
-                  {/* RadioGroup for 21/90 days needs to be converted or use a different selection component */}
-                  <Tabs
-                    value={field.value || '21'}
-                    onValueChange={(value) => field.onChange(value as '21' | '90')}
-                    className="w-full"
-                  >
-                    <TabsList className="grid w-full grid-cols-2 rounded-full">
-                      <TabsTrigger value="21" className="rounded-full">۲۱ روز</TabsTrigger>
-                      <TabsTrigger value="90" className="rounded-full">۹۰ روز</TabsTrigger>
-                    </TabsList>
-                  </Tabs>
+                  <Controller
+                    control={form.control}
+                    name="days2190"
+                    render={({ field: days2190Field }) => ( 
+                        <div className="grid grid-cols-2 gap-2">
+                            <Button
+                                type="button"
+                                variant={days2190Field.value === '21' ? 'default' : 'outline'}
+                                onClick={() => days2190Field.onChange('21')}
+                                className="rounded-full h-12 text-base"
+                            >
+                                ۲۱ روز
+                            </Button>
+                            <Button
+                                type="button"
+                                variant={days2190Field.value === '90' ? 'default' : 'outline'}
+                                onClick={() => days2190Field.onChange('90')}
+                                className="rounded-full h-12 text-base"
+                            >
+                                ۹۰ روز
+                            </Button>
+                        </div>
+                    )}
+                  />
                   <FormMessage />
                 </FormItem>
               )}
@@ -382,7 +368,7 @@ export default function HabitForm() {
                 <FormItem>
                   <ShadcnFormLabel className="text-sm">مدت کل برنامه (روز)</ShadcnFormLabel>
                   <FormControl>
-                    <Input type="number" inputMode="numeric" placeholder="مثلا: ۳۰" {...field} 
+                    <Input type="number" inputMode="numeric" placeholder="مثلا: ۴۰ روز" {...field} 
                       className="rounded-full h-12 text-base"
                       onChange={(e) => {
                         const value = parseInt(e.target.value);
@@ -460,7 +446,7 @@ export default function HabitForm() {
 
       {infoModalContent && (
         <Dialog open={!!infoModalContent} onOpenChange={(isOpen) => !isOpen && setInfoModalContent(null)}>
-          <DialogContent className="sm:max-w-md rounded-3xl" dir="rtl">
+          <DialogContent className="sm:max-w-md rounded-3xl bg-popover" dir="rtl"> {/* Added bg-popover */}
             <DialogHeader className="text-right">
               <DialogTitle className="text-xl">{infoModalContent.title}</DialogTitle>
             </DialogHeader>
@@ -480,16 +466,3 @@ export default function HabitForm() {
     </>
   );
 }
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-    
