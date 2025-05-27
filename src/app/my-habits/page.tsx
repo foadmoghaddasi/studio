@@ -12,8 +12,20 @@ export default function MyHabitsPage() {
   const { habits } = useHabits();
 
   const totalHabits = habits.length;
-  const successfulDays = habits.reduce((sum, habit) => sum + habit.daysCompleted, 0);
-  const activeHabitsCount = habits.filter(h => h.isActive && !h.isArchived).length; // Ensure active habits are not archived
+  
+  const nonArchivedHabits = habits.filter(habit => !habit.isArchived);
+  
+  const successfulDays = nonArchivedHabits.reduce(
+    (sum, habit) => sum + habit.daysCompleted,
+    0
+  );
+  
+  const totalTargetDaysForNonArchived = nonArchivedHabits.reduce(
+    (sum, habit) => sum + habit.totalDays,
+    0
+  );
+  
+  const uncompletedDays = totalTargetDaysForNonArchived - successfulDays;
 
   return (
     <div className="space-y-8" lang="fa">
@@ -32,8 +44,8 @@ export default function MyHabitsPage() {
           <p className="text-xl font-bold text-sky-800 dark:text-sky-100 mt-1">{toPersianNumerals(successfulDays)}</p>
         </div>
         <div className="bg-violet-100 dark:bg-violet-900 p-4 rounded-3xl text-center">
-          <p className="text-xs text-violet-600 dark:text-violet-300 font-medium">عادت فعال</p>
-          <p className="text-xl font-bold text-violet-800 dark:text-violet-100 mt-1">{toPersianNumerals(activeHabitsCount)}</p>
+          <p className="text-xs text-violet-600 dark:text-violet-300 font-medium">روزهای انجام نشده</p>
+          <p className="text-xl font-bold text-violet-800 dark:text-violet-100 mt-1">{toPersianNumerals(uncompletedDays)}</p>
         </div>
       </div>
       
@@ -50,4 +62,3 @@ export default function MyHabitsPage() {
     </div>
   );
 }
-
