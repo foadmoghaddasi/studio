@@ -261,23 +261,23 @@ export default function HabitForm() {
                         >
                           <div className="flex items-center space-x-2 space-x-reverse">
                             <RadioGroupItem value={option.value} id={radioId} />
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleStrategyInfoClick(option.value)}
-                              className="h-8 w-8 rounded-full hover:bg-primary/10"
-                              aria-label={`اطلاعات بیشتر درباره ${option.label}`}
+                            <Label
+                              htmlFor={radioId}
+                              className="font-normal text-base cursor-pointer"
                             >
-                              <Info className="h-5 w-5 text-primary" />
-                            </Button>
+                              {option.label}
+                            </Label>
                           </div>
-                          <Label
-                            htmlFor={radioId}
-                            className="font-normal text-base cursor-pointer"
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleStrategyInfoClick(option.value)}
+                            className="h-8 w-8 rounded-full hover:bg-primary/10"
+                            aria-label={`اطلاعات بیشتر درباره ${option.label}`}
                           >
-                            {option.label}
-                          </Label>
+                            <Info className="h-5 w-5 text-primary" />
+                          </Button>
                         </div>
                       );
                     })}
@@ -486,3 +486,4 @@ export default function HabitForm() {
     
 
     
+
