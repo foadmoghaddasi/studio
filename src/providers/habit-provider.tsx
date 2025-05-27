@@ -1,13 +1,26 @@
 
 "use client";
 
-import type { Habit } from '@/lib/types';
+import type { Habit, HabitStrategyDetails } from '@/lib/types';
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation'; // For redirecting after unarchiving
 
+// Define more specific type for habit creation data
+export interface NewHabitData {
+  title: string;
+  habitType?: 'build' | 'break';
+  goalDescription?: string;
+  triggers?: string;
+  strategy?: '21/90' | '40-day' | '2-minute' | 'if-then' | 'none';
+  strategyDetails?: HabitStrategyDetails;
+  // totalDays will be derived or explicitly set
+  totalDaysInput?: number; // Used if strategy doesn't define days
+}
+
+
 interface HabitContextType {
   habits: Habit[];
-  addHabit: (habit: Omit<Habit, 'id' | 'daysCompleted' | 'isActive' | 'createdAt' | 'isArchived' | 'lastMotivationalMessage'>) => Habit;
+  addHabit: (habitData: NewHabitData) => Habit;
   updateHabit: (habit: Habit) => void;
   completeDay: (habitId: string) => Habit | undefined;
   toggleHabitActive: (habitId: string) => void;
@@ -15,7 +28,7 @@ interface HabitContextType {
   archiveHabit: (habitId: string) => void;
   unarchiveHabit: (habitId: string) => void;
   deleteHabit: (habitId: string) => void;
-  setHabitMotivationalMessage: (habitId: string, message: string) => void; // Added for storing motivational message
+  setHabitMotivationalMessage: (habitId: string, message: string) => void;
 }
 
 const HabitContext = createContext<HabitContextType | undefined>(undefined);
@@ -32,11 +45,17 @@ export function HabitProvider({ children }: { children: ReactNode }) {
       const storedHabits = localStorage.getItem(HABITS_STORAGE_KEY);
       if (storedHabits) {
         const parsedHabits: Habit[] = JSON.parse(storedHabits);
-        // Ensure new fields have default values or are handled
         const migratedHabits = parsedHabits.map(h => ({ 
           ...h, 
           isArchived: h.isArchived ?? false,
-          lastMotivationalMessage: h.lastMotivationalMessage ?? undefined 
+          lastMotivationalMessage: h.lastMotivationalMessage ?? undefined,
+          // Ensure new fields have defaults if loading old data
+          habitType: h.habitType ?? 'build',
+          goalDescription: h.goalDescription ?? '',
+          triggers: h.triggers ?? '',
+          strategy: h.strategy ?? 'none',
+          strategyDetails: h.strategyDetails ?? {},
+          totalDays: h.totalDays // Keep existing totalDays
         }));
         setHabits(migratedHabits);
       }
@@ -56,15 +75,32 @@ export function HabitProvider({ children }: { children: ReactNode }) {
     }
   }, [habits, isLoaded]);
 
-  const addHabit = (newHabitData: Omit<Habit, 'id' | 'daysCompleted' | 'isActive' | 'createdAt' | 'isArchived' | 'lastMotivationalMessage'>) => {
+  const addHabit = (newHabitData: NewHabitData) => {
+    let calculatedTotalDays = 0;
+    if (newHabitData.strategy === '21/90') {
+      calculatedTotalDays = newHabitData.strategyDetails?.days2190 || 21;
+    } else if (newHabitData.strategy === '40-day') {
+      calculatedTotalDays = 40;
+    } else if (newHabitData.totalDaysInput) {
+      calculatedTotalDays = newHabitData.totalDaysInput;
+    } else {
+      calculatedTotalDays = 30; // Default if no other duration specified
+    }
+
     const newHabit: Habit = {
-      ...newHabitData,
       id: Date.now().toString(),
+      title: newHabitData.title,
+      totalDays: calculatedTotalDays,
       daysCompleted: 0,
       isActive: true,
       isArchived: false,
       createdAt: new Date().toISOString(),
       lastMotivationalMessage: undefined,
+      habitType: newHabitData.habitType || 'build',
+      goalDescription: newHabitData.goalDescription || '',
+      triggers: newHabitData.triggers || '',
+      strategy: newHabitData.strategy || 'none',
+      strategyDetails: newHabitData.strategyDetails || {},
     };
     setHabits((prevHabits) => [...prevHabits, newHabit].sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
     return newHabit;
@@ -93,7 +129,7 @@ export function HabitProvider({ children }: { children: ReactNode }) {
           };
           return updatedHabitInstance;
         }
-        if (habit.id === habitId) updatedHabitInstance = habit; // Ensure instance is set even if no update occurs
+        if (habit.id === habitId) updatedHabitInstance = habit;
         return habit;
       })
     );
