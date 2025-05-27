@@ -12,8 +12,8 @@ import { useEffect, useState } from 'react';
 export default function AppBar() {
   const { isAuthenticated, isLoading } = useAuth();
   const pathname = usePathname();
-  const userDisplayName = "کاربر روزبه‌روز"; 
-  const userFirstName = userDisplayName.split(' ')[0]; 
+  const userDisplayName = "کاربر روزبه‌روز";
+  const userFirstName = userDisplayName.split(' ')[0];
   const [currentDate, setCurrentDate] = useState('');
 
   useEffect(() => {
@@ -27,9 +27,10 @@ export default function AppBar() {
   }
 
   return (
-    <header className="bg-card sticky top-0 z-50 md:max-w-md md:mx-auto md:left-1/2 md:-translate-x-1/2 w-full"> 
-      <div className="container mx-auto max-w-md h-16 flex items-center justify-between px-4">
-        <div className="flex items-center gap-3">
+    <header className="bg-card sticky top-0 z-50 md:max-w-md md:mx-auto md:left-1/2 md:-translate-x-1/2 w-full">
+      <div className="container mx-auto max-w-md h-16 flex items-center px-4">
+        {/* Left: Avatar */}
+        <div className="flex-shrink-0">
           <Link href="/profile" passHref legacyBehavior>
             <a aria-label="پروفایل کاربر">
               <Avatar className="h-10 w-10 cursor-pointer">
@@ -40,15 +41,21 @@ export default function AppBar() {
               </Avatar>
             </a>
           </Link>
-          <div>
-            <p className="text-lg font-semibold text-foreground">سلام {userFirstName}!</p>
-            {currentDate && <p className="text-sm text-muted-foreground">{currentDate}</p>}
-          </div>
         </div>
-        <Button variant="ghost" size="icon" className="rounded-full h-10 w-10">
-          <Search className="h-5 w-5 text-foreground" />
-          <span className="sr-only">جستجو</span>
-        </Button>
+
+        {/* Center: Greeting & Date */}
+        <div className="flex-grow text-center px-2">
+          <p className="text-lg font-semibold text-foreground">سلام {userFirstName}!</p>
+          {currentDate && <p className="text-sm text-muted-foreground">{currentDate}</p>}
+        </div>
+
+        {/* Right: Search Icon Button */}
+        <div className="flex-shrink-0">
+          <Button variant="ghost" size="icon" className="rounded-full h-10 w-10">
+            <Search className="h-5 w-5 text-foreground" />
+            <span className="sr-only">جستجو</span>
+          </Button>
+        </div>
       </div>
     </header>
   );

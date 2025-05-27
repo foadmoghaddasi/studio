@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
@@ -18,10 +19,12 @@ const AUTH_PAGES = ['/', '/otp'];
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [mounted, setMounted] = useState(false); // New state to track client mount
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
+    setMounted(true); // Indicate client has mounted
     try {
       const storedAuth = localStorage.getItem(AUTH_STORAGE_KEY);
       const authStatus = storedAuth === 'true';
@@ -30,17 +33,17 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       console.error("Failed to load auth status from localStorage", error);
     }
     setIsLoading(false);
-  }, []);
+  }, []); // Empty dependency array ensures this runs once on mount (client-side)
 
   useEffect(() => {
-    if (!isLoading) {
+    if (!isLoading && mounted) { // Only run redirects if not loading AND mounted
       if (isAuthenticated && AUTH_PAGES.includes(pathname)) {
         router.replace('/my-habits');
       } else if (!isAuthenticated && !AUTH_PAGES.includes(pathname)) {
         router.replace('/');
       }
     }
-  }, [isAuthenticated, isLoading, pathname, router]);
+  }, [isAuthenticated, isLoading, pathname, router, mounted]);
 
   const login = () => {
     try {
@@ -49,7 +52,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       console.error("Failed to save auth status to localStorage", error);
     }
     setIsAuthenticated(true);
-    router.push('/my-habits');
+    // router.push('/my-habits'); // Redirect will be handled by useEffect
   };
 
   const logout = () => {
@@ -59,31 +62,23 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       console.error("Failed to remove auth status from localStorage", error);
     }
     setIsAuthenticated(false);
-    router.push('/');
+    // router.push('/'); // Redirect will be handled by useEffect
   };
 
-  if (isLoading) {
-     // Prevents flicker during auth check, content will be shown once auth status is determined
-    return <div className="flex items-center justify-center min-h-svh bg-background"><svg className="animate-spin h-8 w-8 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+  if (isLoading || !mounted) { // Show loading indicator until mounted and auth status is checked
+     return <div className="flex items-center justify-center min-h-svh bg-background"><svg className="animate-spin h-8 w-8 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
   </svg></div>;
   }
 
-  // Ensure correct page is shown based on auth state post-loading
-  if (isAuthenticated && AUTH_PAGES.includes(pathname)) {
-    return <div className="flex items-center justify-center min-h-svh bg-background"><svg className="animate-spin h-8 w-8 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-  </svg></div>; // Still redirecting
-  }
-  if (!isAuthenticated && !AUTH_PAGES.includes(pathname)) {
-    return <div className="flex items-center justify-center min-h-svh bg-background"><svg className="animate-spin h-8 w-8 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-  </svg></div>; // Still redirecting
-  }
-
+  // This logic is now effectively handled by the useEffect above after loading and mounting
+  // if (isAuthenticated && AUTH_PAGES.includes(pathname)) {
+  //   return <div className="flex items-center justify-center min-h-svh bg-background"><svg className="animate-spin h-8 w-8 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">...</svg></div>;
+  // }
+  // if (!isAuthenticated && !AUTH_PAGES.includes(pathname)) {
+  //   return <div className="flex items-center justify-center min-h-svh bg-background"><svg className="animate-spin h-8 w-8 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">...</svg></div>;
+  // }
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, login, logout, isLoading }}>
