@@ -37,6 +37,18 @@ interface HabitCardProps {
   isArchiveView?: boolean;
 }
 
+const getStrategyPersianName = (strategyKey?: '21/90' | '40-day' | '2-minute' | 'if-then' | 'none'): string => {
+  switch (strategyKey) {
+    case '21/90': return 'قانون ۲۱/۹۰';
+    case '40-day': return 'قانون ۴۰ روز';
+    case '2-minute': return 'قانون ۲ دقیقه';
+    case 'if-then': return 'قانون اگر-آنگاه';
+    case 'none':
+    default:
+      return ''; // Do not display for 'none' or undefined
+  }
+};
+
 export default function HabitCard({ habit, isArchiveView = false }: HabitCardProps) {
   const { completeDay, toggleHabitActive, archiveHabit, unarchiveHabit, deleteHabit, setHabitMotivationalMessage } = useHabits();
   const { toast } = useToast();
@@ -45,7 +57,6 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [habitToDelete, setHabitToDelete] = useState<Habit | null>(null);
 
-  // Derived state: isCompletedToday
   const isCompletedToday = habit.lastCheckedIn?.startsWith(new Date().toISOString().split('T')[0]) ?? false;
 
   useEffect(() => {
@@ -67,7 +78,7 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
 
   const handleCompleteDay = async () => {
     if (habit.isArchived) return;
-    const updatedHabit = completeDay(habit.id); // This updates habit.lastCheckedIn in provider
+    const updatedHabit = completeDay(habit.id); 
 
     if (updatedHabit && updatedHabit.lastCheckedIn?.startsWith(new Date().toISOString().split('T')[0])) {
       toast({
@@ -136,6 +147,7 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
   };
 
   const percentage = habit.totalDays > 0 ? (habit.daysCompleted / habit.totalDays) * 100 : 0;
+  const strategyName = getStrategyPersianName(habit.strategy);
 
   if (isArchiveView) {
     return (
@@ -147,6 +159,11 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
           <p className="text-sm text-muted-foreground">
             آرشیو شده در: {new Date(habit.createdAt).toLocaleDateString('fa-IR')}
           </p>
+           {strategyName && (
+            <p className="text-xs text-muted-foreground mt-1">
+              روش پیگیری: {strategyName}
+            </p>
+          )}
         </CardContent>
         <CardFooter>
           <Button
@@ -227,7 +244,11 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
             <p className="text-sm text-muted-foreground">
               پیشرفت: {toPersianNumerals(habit.daysCompleted)} از {toPersianNumerals(habit.totalDays)} روز
             </p>
-            
+             {strategyName && (
+              <p className="text-xs text-muted-foreground mt-1">
+                روش پیگیری: {strategyName}
+              </p>
+            )}
           </div>
           <ProgressRing
             percentage={percentage}
@@ -297,3 +318,5 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
   );
 }
 
+
+    

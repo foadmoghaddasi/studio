@@ -19,7 +19,7 @@ import { format } from 'date-fns';
 // import faIR from 'date-fns/locale/fa-IR'; // Reverted due to incompatibility
 import { cn } from '@/lib/utils';
 import type { HabitStrategyDetails } from '@/lib/types';
-import { Label } from "@/components/ui/label"; // Added standard Label import
+import { Label } from "@/components/ui/label"; 
 
 import {
   Form,
@@ -27,7 +27,7 @@ import {
   FormDescription,
   FormField,
   FormItem,
-  FormLabel as ShadcnFormLabel, // Renamed to avoid conflict with standard Label
+  FormLabel as ShadcnFormLabel, 
   FormMessage,
 } from "@/components/ui/form";
 import {
@@ -39,6 +39,7 @@ import {
   DialogClose,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"; // Added Tabs import
 
 const habitFormSchema = z.object({
   habitType: z.enum(['build', 'break'], { required_error: "نوع عادت را مشخص کنید." }),
@@ -115,7 +116,7 @@ export default function HabitForm() {
     setIsLoading(true);
     
     const strategyDetails: HabitStrategyDetails = {
-      startDate: data.startDate ? format(data.startDate, 'yyyy-MM-dd') : undefined, // Using standard date-fns format
+      startDate: data.startDate ? format(data.startDate, 'yyyy-MM-dd') : undefined,
       reminderTime: data.reminderTime || undefined,
     };
 
@@ -178,22 +179,18 @@ export default function HabitForm() {
             name="habitType"
             render={({ field }) => (
               <FormItem className="space-y-3">
-                <ShadcnFormLabel className="text-sm">۱. نوع عادت</ShadcnFormLabel>
+                <ShadcnFormLabel className="text-sm pr-4">۱. نوع عادت</ShadcnFormLabel>
                 <FormControl>
-                  <RadioGroup
+                  <Tabs
+                    value={field.value}
                     onValueChange={field.onChange}
-                    defaultValue={field.value}
-                    className="flex space-x-2 space-x-reverse"
+                    className="w-full"
                   >
-                    <FormItem className="flex items-center space-x-2 space-x-reverse">
-                      <FormControl><RadioGroupItem value="build" /></FormControl>
-                      <ShadcnFormLabel className="font-normal">ساخت عادت جدید</ShadcnFormLabel>
-                    </FormItem>
-                    <FormItem className="flex items-center space-x-2 space-x-reverse">
-                      <FormControl><RadioGroupItem value="break" /></FormControl>
-                      <ShadcnFormLabel className="font-normal">ترک عادت بد</ShadcnFormLabel>
-                    </FormItem>
-                  </RadioGroup>
+                    <TabsList className="grid w-full grid-cols-2">
+                      <TabsTrigger value="build">ساخت عادت جدید</TabsTrigger>
+                      <TabsTrigger value="break">ترک عادت بد</TabsTrigger>
+                    </TabsList>
+                  </Tabs>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -248,7 +245,7 @@ export default function HabitForm() {
             name="strategy"
             render={({ field }) => (
               <FormItem className="space-y-3">
-                <ShadcnFormLabel className="text-sm">۴. روش ترک یا ساخت عادت</ShadcnFormLabel>
+                <ShadcnFormLabel className="text-sm pr-4">۴. روش ترک یا ساخت عادت</ShadcnFormLabel>
                 <FormControl>
                   <RadioGroup
                     onValueChange={field.onChange}
@@ -258,11 +255,10 @@ export default function HabitForm() {
                     {strategyOptions.map((option) => {
                       const radioId = `strategy-option-${option.value}`;
                       return (
-                        <div // This div is the "card" for each radio option
+                        <div
                           key={option.value}
                           className="flex items-center justify-between p-3 border rounded-full bg-[var(--input-background)] border-[var(--input-border-color)]"
                         >
-                          {/* Group for Radio and Text */}
                           <div className="flex items-center space-x-2 space-x-reverse">
                             <RadioGroupItem value={option.value} id={radioId} />
                             <Label
@@ -272,7 +268,6 @@ export default function HabitForm() {
                               {option.label}
                             </Label>
                           </div>
-                          {/* Info Button */}
                           <Button
                             type="button"
                             variant="ghost"
@@ -353,7 +348,7 @@ export default function HabitForm() {
               name="days2190"
               render={({ field }) => (
                 <FormItem className="space-y-3">
-                  <ShadcnFormLabel className="text-sm">مدت زمان هدف (قانون ۲۱/۹۰)</ShadcnFormLabel>
+                  <ShadcnFormLabel className="text-sm pr-4">مدت زمان هدف (قانون ۲۱/۹۰)</ShadcnFormLabel>
                   <FormDescription>۲۱ روز برای شروع تغییر، ۹۰ روز برای تثبیت.</FormDescription>
                   <FormControl>
                     <RadioGroup
@@ -480,6 +475,8 @@ export default function HabitForm() {
     </>
   );
 }
+    
+
     
 
     
