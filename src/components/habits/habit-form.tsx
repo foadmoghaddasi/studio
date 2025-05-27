@@ -16,7 +16,7 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { Calendar as CalendarIcon, Loader2, Info } from 'lucide-react';
 import { format } from 'date-fns';
-// import faIR from 'date-fns/locale/fa-IR'; // Reverted due to incompatibility
+// import { faIR } from 'date-fns/locale'; // Reverted due to incompatibility
 import { cn } from '@/lib/utils';
 import type { HabitStrategyDetails } from '@/lib/types';
 import { Label } from "@/components/ui/label"; 
@@ -26,7 +26,7 @@ import {
   FormControl,
   FormDescription,
   FormField,
-  FormItem, // Added FormItem here
+  FormItem,
   FormLabel as ShadcnFormLabel, 
   FormMessage,
 } from "@/components/ui/form";
@@ -271,13 +271,13 @@ export default function HabitForm() {
                             >
                               <Info className="h-5 w-5 text-primary" />
                             </Button>
-                             <Label
-                              htmlFor={radioId}
-                              className="font-normal text-base cursor-pointer"
-                            >
-                              {option.label}
-                            </Label>
                           </div>
+                          <Label
+                            htmlFor={radioId}
+                            className="font-normal text-base cursor-pointer"
+                          >
+                            {option.label}
+                          </Label>
                         </div>
                       );
                     })}
@@ -447,7 +447,7 @@ export default function HabitForm() {
             />
           )}
           
-          <div className="pt-4"> {/* Added padding-top to push button down slightly */}
+          <div className="pt-4">
             <Button type="submit" className="w-full text-lg p-6 rounded-full" disabled={isLoading}>
               {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : "ایجاد عادت"}
             </Button>
