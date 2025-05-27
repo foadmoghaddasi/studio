@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { User, Bell } from 'lucide-react'; // Changed Search to Bell
+import { User, Bell } from 'lucide-react';
 import { useAuth } from '@/providers/auth-provider';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -45,15 +45,15 @@ export default function AppBar() {
 
         {/* Center: Greeting & Date */}
         <div className="flex-grow text-center px-2">
-          <p className="text-lg font-semibold text-foreground">سلام {userFirstName}!</p>
-          {currentDate && <p className="text-sm text-muted-foreground">{currentDate}</p>}
+          <p className="text-base font-semibold text-foreground">سلام {userFirstName}!</p>
+          {currentDate && <p className="text-xs text-muted-foreground">{currentDate}</p>}
         </div>
 
         {/* Right: Notification Icon Button */}
         <div className="flex-shrink-0">
           <Button variant="ghost" size="icon" className="bg-primary/5">
-            <Bell className="h-5 w-5 text-primary" /> {/* Changed Search to Bell */}
-            <span className="sr-only">اعلان‌ها</span> {/* Changed sr-only text */}
+            <Bell className="h-5 w-5 text-primary" />
+            <span className="sr-only">اعلان‌ها</span>
           </Button>
         </div>
       </div>
