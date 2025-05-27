@@ -8,7 +8,7 @@ import { z } from 'zod';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+// RadioGroup and RadioGroupItem removed
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useHabits, type NewHabitData } from '@/providers/habit-provider';
@@ -26,9 +26,9 @@ import {
   FormControl,
   FormDescription,
   FormField,
-  FormItem,
   FormLabel as ShadcnFormLabel, 
   FormMessage,
+  FormItem, // Added FormItem back
 } from "@/components/ui/form";
 import {
   Dialog,
@@ -247,41 +247,48 @@ export default function HabitForm() {
               <FormItem className="space-y-3">
                 <ShadcnFormLabel className="text-sm pr-4">۴. روش ترک یا ساخت عادت</ShadcnFormLabel>
                 <FormControl>
-                  <RadioGroup
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                    className="grid grid-cols-1 gap-3"
-                  >
+                  <div className="grid grid-cols-1 gap-3">
                     {strategyOptions.map((option) => {
-                      const radioId = `strategy-option-${option.value}`;
+                      const isSelected = field.value === option.value;
                       return (
                         <div
                           key={option.value}
-                          className="flex items-center justify-between p-3 border rounded-full bg-[var(--input-background)] border-[var(--input-border-color)]"
+                          onClick={() => field.onChange(option.value)}
+                          className={cn(
+                            "flex items-center justify-between p-3 border rounded-full cursor-pointer transition-colors",
+                            isSelected
+                              ? "bg-primary/20 border-primary text-primary"
+                              : "bg-[var(--input-background)] border-[var(--input-border-color)] hover:border-primary/70"
+                          )}
                         >
-                          <div className="flex items-center space-x-2 space-x-reverse">
-                            <RadioGroupItem value={option.value} id={radioId} />
-                            <Label
-                              htmlFor={radioId}
-                              className="font-normal text-base cursor-pointer"
-                            >
-                              {option.label}
-                            </Label>
-                          </div>
+                          <Label
+                            className={cn(
+                              "font-normal text-base",
+                              isSelected ? "text-primary" : "text-foreground"
+                            )}
+                          >
+                            {option.label}
+                          </Label>
                           <Button
                             type="button"
                             variant="ghost"
                             size="icon"
-                            onClick={() => handleStrategyInfoClick(option.value)}
-                            className="h-8 w-8 rounded-full hover:bg-primary/10"
+                            onClick={(e) => {
+                              e.stopPropagation(); // Prevent strategy selection when clicking info
+                              handleStrategyInfoClick(option.value);
+                            }}
+                            className={cn(
+                              "h-8 w-8 rounded-full hover:bg-primary/10",
+                              isSelected ? "text-primary" : "text-muted-foreground hover:text-primary"
+                            )}
                             aria-label={`اطلاعات بیشتر درباره ${option.label}`}
                           >
-                            <Info className="h-5 w-5 text-primary" />
+                            <Info className="h-5 w-5" />
                           </Button>
                         </div>
                       );
                     })}
-                  </RadioGroup>
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -333,7 +340,7 @@ export default function HabitForm() {
                   <FormItem>
                     <ShadcnFormLabel className="text-sm">زمان یادآوری (اختیاری)</ShadcnFormLabel>
                     <FormControl>
-                      <Input type="time" placeholder="مثلا: 10:30" {...field} />
+                      <Input type="time" placeholder="مثلا: 10:30" {...field} className="rounded-full h-12 text-base"/>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -350,22 +357,17 @@ export default function HabitForm() {
                 <FormItem className="space-y-3">
                   <ShadcnFormLabel className="text-sm pr-4">مدت زمان هدف (قانون ۲۱/۹۰)</ShadcnFormLabel>
                   <FormDescription>۲۱ روز برای شروع تغییر، ۹۰ روز برای تثبیت.</FormDescription>
-                  <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className="flex space-x-2 space-x-reverse"
-                    >
-                      <FormItem className="flex items-center space-x-2 space-x-reverse">
-                        <FormControl><RadioGroupItem value="21" /></FormControl>
-                        <ShadcnFormLabel className="font-normal text-base">۲۱ روز</ShadcnFormLabel>
-                      </FormItem>
-                      <FormItem className="flex items-center space-x-2 space-x-reverse">
-                        <FormControl><RadioGroupItem value="90" /></FormControl>
-                        <ShadcnFormLabel className="font-normal text-base">۹۰ روز</ShadcnFormLabel>
-                      </FormItem>
-                    </RadioGroup>
-                  </FormControl>
+                  {/* RadioGroup for 21/90 days needs to be converted or use a different selection component */}
+                  <Tabs
+                    value={field.value || '21'}
+                    onValueChange={(value) => field.onChange(value as '21' | '90')}
+                    className="w-full"
+                  >
+                    <TabsList className="grid w-full grid-cols-2 rounded-full">
+                      <TabsTrigger value="21" className="rounded-full">۲۱ روز</TabsTrigger>
+                      <TabsTrigger value="90" className="rounded-full">۹۰ روز</TabsTrigger>
+                    </TabsList>
+                  </Tabs>
                   <FormMessage />
                 </FormItem>
               )}
@@ -381,6 +383,7 @@ export default function HabitForm() {
                   <ShadcnFormLabel className="text-sm">مدت کل برنامه (روز)</ShadcnFormLabel>
                   <FormControl>
                     <Input type="number" inputMode="numeric" placeholder="مثلا: ۳۰" {...field} 
+                      className="rounded-full h-12 text-base"
                       onChange={(e) => {
                         const value = parseInt(e.target.value);
                         if (isNaN(value)) {
@@ -421,7 +424,7 @@ export default function HabitForm() {
                   <FormItem>
                     <ShadcnFormLabel className="text-sm">فرکانس یادآوری (اختیاری)</ShadcnFormLabel>
                     <FormControl>
-                      <Input placeholder="مثلا: هر ۲ ساعت" {...field} />
+                      <Input placeholder="مثلا: هر ۲ ساعت" {...field} className="rounded-full h-12 text-base"/>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -487,3 +490,6 @@ export default function HabitForm() {
 
     
 
+
+
+    
