@@ -49,7 +49,7 @@ export default function MyHabitsPage() {
       </div>
 
       {/* New Stats Section */}
-      <div className="grid grid-cols-3 gap-3 mb-6">
+      <div className="grid grid-cols-3 gap-3 mb-4"> {/* Changed mb-6 to mb-4 */}
         <div className="bg-emerald-100 dark:bg-emerald-900 p-4 rounded-3xl text-center">
           <p className="text-xs text-emerald-600 dark:text-emerald-300 font-medium">مجموع عادت‌ها</p>
           <p className="text-xl font-bold text-emerald-800 dark:text-emerald-100 mt-1">{toPersianNumerals(totalHabits)}</p>
@@ -77,4 +77,5 @@ export default function MyHabitsPage() {
     </div>
   );
 }
+
 
