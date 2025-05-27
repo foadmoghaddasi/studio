@@ -98,7 +98,7 @@ export default function OtpForm() {
               onChange={(e) => handleChange(e.target as HTMLInputElement, index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
               ref={(el) => (inputRefs.current[index] = el)}
-              className="w-14 h-14 text-2xl text-center transition-all rounded-full" 
+              className="w-12 h-12 text-xl text-center transition-all rounded-full" 
               aria-label={`OTP digit ${index + 1}`}
               disabled={isLoading}
             />
