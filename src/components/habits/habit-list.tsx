@@ -15,7 +15,7 @@ export default function HabitList() {
 
   if (activeHabits.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center text-center space-y-6 py-10 min-h-[calc(100svh-30rem)]"> {/* Adjusted min-h and py */}
+      <div className="flex flex-col items-center justify-center text-center space-y-6 py-10 min-h-[calc(100svh-32rem)]"> {/* Adjusted min-h and py */}
         <ListX className="w-20 h-20 text-primary opacity-50" />
         <h2 className="text-2xl font-semibold text-foreground">هنوز عادتی اضافه نکردی یا همه آرشیو شدن</h2>
         <p className="text-muted-foreground max-w-xs">
@@ -51,4 +51,5 @@ export default function HabitList() {
     </div>
   );
 }
+
 
