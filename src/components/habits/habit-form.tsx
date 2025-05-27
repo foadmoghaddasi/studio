@@ -24,10 +24,10 @@ import {
   Form,
   FormControl,
   FormDescription,
-  ShadcnFormLabel, // Renamed to avoid conflict with HTML Label
+  FormLabel, 
   FormMessage,
   FormItem,
-  FormField, // Added missing import
+  FormField, 
 } from "@/components/ui/form";
 import {
   Dialog,
@@ -43,7 +43,6 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 
 const habitFormSchema = z.object({
-  // habitType: z.enum(['build', 'break'], { required_error: "نوع عادت (ساخت یا ترک) را انتخاب کنید." }),
   title: z.string().min(1, { message: "عنوان عادت نمی‌تواند خالی باشد." }),
   goalDescription: z.string().optional(),
   triggers: z.string().optional(),
@@ -53,7 +52,7 @@ const habitFormSchema = z.object({
   reminderTime: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, { message: "زمان معتبر نیست (HH:MM)" }).optional().or(z.literal("")),
 
   days2190: z.enum(['21', '90']).optional(),
-  twoMinuteSteps: z.array(z.string()).optional().default(['']), // Changed to array of strings
+  twoMinuteSteps: z.array(z.string()).optional().default(['']), 
   twoMinuteReminderFrequency: z.string().optional(),
   ifThenRules: z.string().optional(),
   
@@ -96,13 +95,12 @@ export default function HabitForm() {
   const form = useForm<HabitFormValues>({
     resolver: zodResolver(habitFormSchema),
     defaultValues: {
-      // habitType: 'build',
       title: "",
       strategy: 'none',
       reminderTime: "",
       programDuration: 30, 
       days2190: '21',
-      twoMinuteSteps: [''], // Default with one empty step
+      twoMinuteSteps: [''], 
     },
   });
 
@@ -136,7 +134,7 @@ export default function HabitForm() {
       totalDaysForHabit = 40;
     } else if (data.strategy === '2-minute') {
       if (data.twoMinuteSteps && data.twoMinuteSteps.length > 0) {
-        strategyDetails.twoMinuteSteps = data.twoMinuteSteps.filter(step => step.trim() !== "").join('\n');
+        strategyDetails.twoMinuteSteps = data.twoMinuteSteps.filter(step => step && step.trim() !== "").join('\n');
       }
       strategyDetails.twoMinuteReminderFrequency = data.twoMinuteReminderFrequency;
     } else if (data.strategy === 'if-then') {
@@ -145,7 +143,6 @@ export default function HabitForm() {
     
     const habitDataToSave: NewHabitData = {
       title: data.title,
-      // habitType: data.habitType,
       goalDescription: data.goalDescription,
       triggers: data.triggers,
       strategy: data.strategy,
@@ -182,38 +179,13 @@ export default function HabitForm() {
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pb-28" lang="fa">
-          {/* 
-          <FormField
-            control={form.control}
-            name="habitType"
-            render={({ field }) => (
-              <FormItem className="space-y-3">
-                <ShadcnFormLabel className="text-sm pr-4">۱. نوع عادت</ShadcnFormLabel>
-                <FormControl>
-                  <Tabs
-                    value={field.value}
-                    onValueChange={field.onChange}
-                    className="w-full"
-                    dir="rtl"
-                  >
-                    <TabsList className="grid w-full grid-cols-2">
-                      <TabsTrigger value="build">ساخت عادت جدید</TabsTrigger>
-                      <TabsTrigger value="break">ترک عادت بد</TabsTrigger>
-                    </TabsList>
-                  </Tabs>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          */}
           
           <FormField
             control={form.control}
             name="title"
             render={({ field }) => (
               <FormItem>
-                <ShadcnFormLabel className="text-sm">۱. نام عادت</ShadcnFormLabel>
+                <FormLabel className="text-sm">۱. نام عادت</FormLabel>
                 <FormControl>
                   <Input placeholder="مثلا: مطالعه روزانه یا ترک سیگار" {...field} className="rounded-full h-12 text-base" />
                 </FormControl>
@@ -227,7 +199,7 @@ export default function HabitForm() {
             name="goalDescription"
             render={({ field }) => (
               <FormItem>
-                <ShadcnFormLabel className="text-sm">۲. هدف از این عادت (اختیاری)</ShadcnFormLabel>
+                <FormLabel className="text-sm">۲. هدف از این عادت (اختیاری)</FormLabel>
                 <FormControl>
                   <Textarea placeholder="مثلا: ورزش حداقل ۳۰ دقیقه در روز یا ترک کامل سیگار..." {...field} />
                 </FormControl>
@@ -241,7 +213,7 @@ export default function HabitForm() {
             name="triggers"
             render={({ field }) => (
               <FormItem>
-                <ShadcnFormLabel className="text-sm">۳. محرک‌ها (اختیاری)</ShadcnFormLabel>
+                <FormLabel className="text-sm">۳. محرک‌ها (اختیاری)</FormLabel>
                 <FormDescription>موقعیت‌ها، زمان‌ها یا احساساتی که این عادت را تحریک می‌کنند (هر کدام در یک خط یا با کاما جدا کنید).</FormDescription>
                 <FormControl>
                   <Textarea placeholder="مثلا: بعد از بیدار شدن، وقتی استرس دارم، ساعت ۱۰ شب" {...field} />
@@ -256,7 +228,7 @@ export default function HabitForm() {
             name="strategy"
             render={({ field }) => (
               <FormItem className="space-y-3">
-                <ShadcnFormLabel className="text-sm pr-4">۴. روش ترک یا ساخت عادت</ShadcnFormLabel>
+                <FormLabel className="text-sm pr-4">۴. روش ترک یا ساخت عادت</FormLabel>
                  <FormControl>
                   <div className="grid grid-cols-1 gap-3">
                     {strategyOptions.map((option) => {
@@ -273,9 +245,9 @@ export default function HabitForm() {
                           )}
                         >
                            <Label
-                            htmlFor={`strategy-option-${option.value}`} // Not strictly needed without radio item, but good for association
+                            htmlFor={`strategy-option-${option.value}`}
                             className={cn(
-                              "font-normal text-base flex-grow", // text-base for 16px
+                              "font-normal text-base flex-grow",
                               isSelected ? "text-primary" : "text-foreground"
                             )}
                           >
@@ -314,7 +286,7 @@ export default function HabitForm() {
                 name="startDate"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <ShadcnFormLabel className="text-sm">تاریخ شروع</ShadcnFormLabel>
+                    <FormLabel className="text-sm">تاریخ شروع</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>
@@ -350,7 +322,7 @@ export default function HabitForm() {
                 name="reminderTime"
                 render={({ field }) => (
                   <FormItem>
-                    <ShadcnFormLabel className="text-sm">زمان یادآوری (اختیاری)</ShadcnFormLabel>
+                    <FormLabel className="text-sm">زمان یادآوری (اختیاری)</FormLabel>
                     <FormControl>
                       <Input type="time" placeholder="مثلا: 10:30" {...field} className="rounded-full h-12 text-base"/>
                     </FormControl>
@@ -367,7 +339,7 @@ export default function HabitForm() {
               name="days2190"
               render={({ field }) => (
                 <FormItem className="space-y-3">
-                  <ShadcnFormLabel className="text-sm pr-4">مدت زمان هدف (قانون ۲۱/۹۰)</ShadcnFormLabel>
+                  <FormLabel className="text-sm pr-4">مدت زمان هدف (قانون ۲۱/۹۰)</FormLabel>
                   <FormDescription>۲۱ روز برای شروع تغییر، ۹۰ روز برای تثبیت.</FormDescription>
                   <Controller
                     control={form.control}
@@ -405,7 +377,7 @@ export default function HabitForm() {
               name="programDuration"
               render={({ field }) => (
                 <FormItem>
-                  <ShadcnFormLabel className="text-sm">مدت کل برنامه (روز)</ShadcnFormLabel>
+                  <FormLabel className="text-sm">مدت کل برنامه (روز)</FormLabel>
                   <FormControl>
                     <Input type="number" inputMode="numeric" placeholder="مثلا: ۴۰ روز" {...field} 
                       className="rounded-full h-12 text-base"
@@ -427,66 +399,66 @@ export default function HabitForm() {
           )}
 
           {selectedStrategy === '2-minute' && (
-            <>
-              <FormField
-                control={form.control}
-                name="twoMinuteSteps"
-                render={() => ( // field is handled by useFieldArray
-                  <FormItem>
-                    <ShadcnFormLabel className="text-sm">قدم‌های کوچک (قانون ۲ دقیقه)</ShadcnFormLabel>
-                    <FormDescription>هر قدم را در یک فیلد وارد کنید (مثال: پوشیدن کفش ورزشی - ۱ دقیقه).</FormDescription>
-                    <div className="space-y-2">
-                      {twoMinuteStepsFields.map((item, index) => (
-                        <div key={item.id} className="flex items-center space-x-2 space-x-reverse">
-                          <FormControl className="flex-grow">
-                            <Input
-                              {...form.register(`twoMinuteSteps.${index}` as const)}
-                              placeholder={`قدم ${index + 1}`}
-                              className="rounded-full h-12 text-base"
-                            />
-                          </FormControl>
-                          {twoMinuteStepsFields.length > 1 && (
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => removeTwoMinuteStep(index)}
-                              className="text-destructive hover:bg-destructive/10 rounded-full h-10 w-10"
-                              aria-label={`حذف قدم ${index + 1}`}
-                            >
-                              <X className="h-4 w-4" />
-                            </Button>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => appendTwoMinuteStep("")}
-                      className="mt-2 rounded-full h-10 text-sm"
-                    >
-                      <Plus className="ml-2 h-4 w-4" />
-                      افزودن قدم
-                    </Button>
-                    <FormMessage>{form.formState.errors.twoMinuteSteps?.message}</FormMessage>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="twoMinuteReminderFrequency"
-                render={({ field }) => (
-                  <FormItem>
-                    <ShadcnFormLabel className="text-sm">فرکانس یادآوری (اختیاری)</ShadcnFormLabel>
-                    <FormControl>
-                      <Input placeholder="مثلا: هر ۲ ساعت" {...field} className="rounded-full h-12 text-base"/>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </>
+            <FormField
+              control={form.control}
+              name="twoMinuteSteps"
+              render={() => ( 
+                <FormItem>
+                  <FormLabel className="text-sm">قدم‌های کوچک (قانون ۲ دقیقه)</FormLabel>
+                  <FormDescription>هر قدم را در یک فیلد وارد کنید (مثال: پوشیدن کفش ورزشی - ۱ دقیقه).</FormDescription>
+                  <div className="space-y-2">
+                    {twoMinuteStepsFields.map((item, index) => (
+                      <div key={item.id} className="flex items-center space-x-2 space-x-reverse">
+                        <FormControl className="flex-grow">
+                           <Input
+                            {...form.register(`twoMinuteSteps.${index}` as const)}
+                            placeholder={`قدم ${index + 1}`}
+                            className="rounded-full h-12 text-base"
+                          />
+                        </FormControl>
+                        {twoMinuteStepsFields.length > 1 && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => removeTwoMinuteStep(index)}
+                            className="text-destructive hover:bg-destructive/10 rounded-full h-10 w-10"
+                            aria-label={`حذف قدم ${index + 1}`}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => appendTwoMinuteStep("")}
+                    className="mt-2 rounded-full h-10 text-sm"
+                  >
+                    <Plus className="ml-2 h-4 w-4" />
+                    افزودن قدم
+                  </Button>
+                  <FormMessage>{form.formState.errors.twoMinuteSteps?.message}</FormMessage>
+                </FormItem>
+              )}
+            />
+          )}
+          {selectedStrategy === '2-minute' && (
+            <FormField
+              control={form.control}
+              name="twoMinuteReminderFrequency"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm">فرکانس یادآوری (اختیاری)</FormLabel>
+                  <FormControl>
+                    <Input placeholder="مثلا: هر ۲ ساعت" {...field} className="rounded-full h-12 text-base"/>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           )}
 
           {selectedStrategy === 'if-then' && (
@@ -495,7 +467,7 @@ export default function HabitForm() {
               name="ifThenRules"
               render={({ field }) => (
                 <FormItem>
-                  <ShadcnFormLabel className="text-sm">قواعد اگر-آنگاه</ShadcnFormLabel>
+                  <FormLabel className="text-sm">قواعد اگر-آنگاه</FormLabel>
                   <FormDescription>هر قاعده را در یک خط جدید وارد کنید (مثال: اگر [هوس قهوه بعد از شام کردم]، آنگاه [چای گیاهی می‌نوشم]).</FormDescription>
                   <FormControl>
                     <Textarea placeholder="اگر [محرک]، آنگاه [رفتار جایگزین]" {...field} />
@@ -537,3 +509,4 @@ export default function HabitForm() {
   );
 }
 
+    
