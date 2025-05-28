@@ -1,4 +1,3 @@
-
 "use client";
 
 import HabitForm from "@/components/habits/habit-form";
@@ -12,7 +11,9 @@ export default function EditHabitPage() {
   const params = useParams();
   const router = useRouter();
   const { getHabitById } = useHabits();
-  const [habitToEdit, setHabitToEdit] = useState<Habit | undefined | null>(undefined); // undefined for loading, null for not found
+  const [habitToEdit, setHabitToEdit] = useState<Habit | undefined | null>(
+    undefined
+  ); // undefined for loading, null for not found
 
   useEffect(() => {
     if (params.id) {
@@ -23,28 +24,35 @@ export default function EditHabitPage() {
       } else {
         setHabitToEdit(null); // Habit not found
         // Optionally redirect or show a not found message
-        // router.replace('/my-habits'); 
+        // router.replace('/my-habits');
       }
     }
   }, [params.id, getHabitById, router]);
 
   if (habitToEdit === undefined) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[calc(100svh-10rem)] text-center p-4" lang="fa">
+      <div
+        className="flex flex-col items-center justify-center min-h-[calc(100svh-10rem)] text-center p-4"
+        lang="fa"
+      >
         <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
-        <p className="text-muted-foreground">در حال بارگذاری اطلاعات عادت برای ویرایش...</p>
+        <p className="text-muted-foreground">
+          در حال بارگذاری اطلاعات عادت برای ویرایش...
+        </p>
       </div>
     );
   }
 
   if (habitToEdit === null) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[calc(100svh-10rem)] text-center p-4" lang="fa">
-        <h1 className="text-2xl font-bold text-destructive mb-4">عادت یافت نشد</h1>
+      <div
+        className="flex flex-col items-center justify-center min-h-[calc(100svh-10rem)] text-center p-4"
+        lang="fa"
+      >
+        <h1 className="text-2xl font-bold text-destructive mb-4">
+          عادت یافت نشد
+        </h1>
         <p className="text-muted-foreground">ممکن است این عادت حذف شده باشد.</p>
-        <Button onClick={() => router.push('/my-habits')} className="mt-6 rounded-full">
-          بازگشت به لیست عادت‌ها
-        </Button>
       </div>
     );
   }
@@ -52,7 +60,9 @@ export default function EditHabitPage() {
   return (
     <div className="space-y-8" lang="fa">
       <div className="text-right">
-        <h1 className="text-2xl font-bold text-foreground">ویرایش عادت: {habitToEdit.title}</h1>
+        <h1 className="text-2xl font-bold text-foreground">
+          ویرایش عادت: {habitToEdit.title}
+        </h1>
         <p className="text-base text-muted-foreground mt-2">
           تغییرات مورد نظر خود را در اطلاعات این عادت اعمال کنید.
         </p>
