@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export default function SettingsPage() {
   return (
-    <div className="space-y-8 pb-20" lang="fa">
+    <div className="space-y-8 pb-24" lang="fa"> {/* Increased pb */}
       <h1 className="text-2xl font-bold text-foreground text-center">تنظیمات</h1>
 
       <div>
