@@ -8,7 +8,6 @@ import Link from "next/link";
 import { Plus, ListChecks, TrendingUp, TrendingDown, Info } from "lucide-react";
 import { useHabits } from "@/providers/habit-provider";
 import { toPersianNumerals } from "@/lib/utils";
-import { cn } from "@/lib/utils";
 
 export default function MyHabitsPage() {
   const { habits } = useHabits();

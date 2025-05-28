@@ -1,19 +1,15 @@
+import type { NextConfig } from "next";
 
-import type {NextConfig} from 'next';
-import nextPWA from 'next-pwa';
+const isProd = process.env.NODE_ENV === "production";
 
 const pwaConfig = {
-  dest: 'public',
+  dest: "public",
   register: true,
   skipWaiting: true,
-  disable: process.env.NODE_ENV === 'development',
-  // experimental: { // Not needed directly here for next-pwa with App Router
-  //  appDir: true, 
-  // },
+  disable: !isProd, // فقط در production فعال است
 };
 
 const nextConfig: NextConfig = {
-  /* config options here */
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -23,15 +19,17 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'placehold.co',
-        port: '',
-        pathname: '/**',
+        protocol: "https",
+        hostname: "placehold.co",
+        port: "",
+        pathname: "/**",
       },
     ],
   },
 };
 
-const withPWA = nextPWA(pwaConfig);
+const withPWA = isProd
+  ? require("next-pwa")(pwaConfig)
+  : (config: NextConfig) => config;
 
 export default withPWA(nextConfig);
