@@ -148,6 +148,7 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
 
   const percentage = habit.totalDays > 0 ? (habit.daysCompleted / habit.totalDays) * 100 : 0;
   const strategyName = getStrategyPersianName(habit.strategy);
+  const isActiveAndNotArchived = habit.isActive && !habit.isArchived;
 
   if (isArchiveView) {
     return (
@@ -182,7 +183,9 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
     <>
       <Card className={cn(
         "w-full transition-all duration-300 ease-in-out",
-        (!habit.isActive || habit.isArchived) && "opacity-70 bg-muted/50 scale-[0.985] transform" 
+        isActiveAndNotArchived
+          ? "bg-[var(--card-effective-background)] dark:bg-muted/50" // Active card: Light mode uses very light base, Dark mode uses lighter muted/50
+          : "opacity-70 scale-[0.985] transform bg-muted/50 dark:bg-[var(--card-effective-background)]" // Inactive card: Light mode uses more opaque muted/50, Dark mode uses darker base
       )}>
         <CardHeader className="flex flex-row items-center justify-between pb-2">
           <div className="flex-grow">
@@ -317,6 +320,3 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
     </>
   );
 }
-
-
-    
