@@ -7,10 +7,14 @@ import { useRouter, usePathname } from 'next/navigation';
 interface AuthContextType {
   isAuthenticated: boolean;
   firstName: string | null;
+  lastName: string | null; // Added for potential future use in profile display
+  age: string | null; // Added for potential future use in profile display
+  profilePictureUrl: string | null;
   isProfileSetupComplete: boolean;
   login: () => void;
   logout: () => void;
   saveProfile: (profileData: { firstName: string; lastName: string; age: string }) => void;
+  updateProfileImage: (imageUrl: string) => void;
   isLoading: boolean;
 }
 
@@ -20,7 +24,8 @@ const AUTH_STORAGE_KEY = 'roozberooz_isAuthenticated';
 const PROFILE_SETUP_COMPLETE_KEY = 'roozberooz_profileSetupComplete';
 const USER_FIRST_NAME_KEY = 'roozberooz_userFirstName';
 const USER_LAST_NAME_KEY = 'roozberooz_userLastName';
-// const USER_AGE_KEY = 'roozberooz_userAge'; // Age can be stored if needed for profile page
+const USER_AGE_KEY = 'roozberooz_userAge';
+const USER_PROFILE_PICTURE_KEY = 'roozberooz_userProfilePictureUrl';
 
 const AUTH_PAGES = ['/', '/otp'];
 const PROFILE_SETUP_PAGE = '/profile-setup';
@@ -28,6 +33,9 @@ const PROFILE_SETUP_PAGE = '/profile-setup';
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [firstName, setFirstName] = useState<string | null>(null);
+  const [lastName, setLastName] = useState<string | null>(null);
+  const [age, setAge] = useState<string | null>(null);
+  const [profilePictureUrl, setProfilePictureUrl] = useState<string | null>(null);
   const [isProfileSetupComplete, setIsProfileSetupComplete] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
@@ -45,8 +53,10 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       const profileSetupStatus = storedProfileSetup === 'true';
       setIsProfileSetupComplete(profileSetupStatus);
 
-      const storedFirstName = localStorage.getItem(USER_FIRST_NAME_KEY);
-      setFirstName(storedFirstName);
+      setFirstName(localStorage.getItem(USER_FIRST_NAME_KEY));
+      setLastName(localStorage.getItem(USER_LAST_NAME_KEY));
+      setAge(localStorage.getItem(USER_AGE_KEY));
+      setProfilePictureUrl(localStorage.getItem(USER_PROFILE_PICTURE_KEY));
 
     } catch (error) {
       console.error("Failed to load auth status from localStorage", error);
@@ -62,7 +72,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         } else if (isProfileSetupComplete && (AUTH_PAGES.includes(pathname) || pathname === PROFILE_SETUP_PAGE)) {
           router.replace('/my-habits');
         }
-      } else if (!AUTH_PAGES.includes(pathname) && pathname !== PROFILE_SETUP_PAGE) { // Allow access to profile-setup if not authenticated yet (should not happen ideally)
+      } else if (!AUTH_PAGES.includes(pathname) && pathname !== PROFILE_SETUP_PAGE) {
         router.replace('/');
       }
     }
@@ -75,7 +85,6 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       console.error("Failed to save auth status to localStorage", error);
     }
     setIsAuthenticated(true);
-    // Redirection logic is now handled by the useEffect above
   };
 
   const logout = () => {
@@ -84,28 +93,42 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.removeItem(PROFILE_SETUP_COMPLETE_KEY);
       localStorage.removeItem(USER_FIRST_NAME_KEY);
       localStorage.removeItem(USER_LAST_NAME_KEY);
-      // localStorage.removeItem(USER_AGE_KEY);
+      localStorage.removeItem(USER_AGE_KEY);
+      localStorage.removeItem(USER_PROFILE_PICTURE_KEY);
     } catch (error) {
       console.error("Failed to remove auth status from localStorage", error);
     }
     setIsAuthenticated(false);
     setIsProfileSetupComplete(false);
     setFirstName(null);
-    // Redirection logic is now handled by the useEffect above
+    setLastName(null);
+    setAge(null);
+    setProfilePictureUrl(null);
   };
 
   const saveProfile = (profileData: { firstName: string; lastName: string; age: string }) => {
     try {
       localStorage.setItem(USER_FIRST_NAME_KEY, profileData.firstName);
       localStorage.setItem(USER_LAST_NAME_KEY, profileData.lastName);
-      // localStorage.setItem(USER_AGE_KEY, profileData.age);
+      localStorage.setItem(USER_AGE_KEY, profileData.age);
       localStorage.setItem(PROFILE_SETUP_COMPLETE_KEY, 'true');
     } catch (error) {
       console.error("Failed to save profile data to localStorage", error);
     }
     setFirstName(profileData.firstName);
+    setLastName(profileData.lastName);
+    setAge(profileData.age);
     setIsProfileSetupComplete(true);
     router.push('/my-habits');
+  };
+
+  const updateProfileImage = (imageUrl: string) => {
+    try {
+      localStorage.setItem(USER_PROFILE_PICTURE_KEY, imageUrl);
+      setProfilePictureUrl(imageUrl);
+    } catch (error) {
+      console.error("Failed to save profile image to localStorage", error);
+    }
   };
 
   if (isLoading || !mounted) {
@@ -116,7 +139,19 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, firstName, isProfileSetupComplete, login, logout, saveProfile, isLoading }}>
+    <AuthContext.Provider value={{ 
+        isAuthenticated, 
+        firstName, 
+        lastName,
+        age,
+        profilePictureUrl,
+        isProfileSetupComplete, 
+        login, 
+        logout, 
+        saveProfile, 
+        updateProfileImage,
+        isLoading 
+      }}>
       {children}
     </AuthContext.Provider>
   );

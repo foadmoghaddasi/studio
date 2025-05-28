@@ -4,7 +4,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/providers/auth-provider";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -17,6 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation"; // For potential redirect after edit
 
 const profileSetupSchema = z.object({
   firstName: z.string().min(1, { message: "نام نمی‌تواند خالی باشد." }),
@@ -27,33 +28,53 @@ const profileSetupSchema = z.object({
 type ProfileSetupFormValues = z.infer<typeof profileSetupSchema>;
 
 export default function ProfileSetupForm() {
-  const { saveProfile } = useAuth();
+  const { saveProfile, firstName: currentFirstName, lastName: currentLastName, age: currentAge, isProfileSetupComplete } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  
+  const isEditMode = isProfileSetupComplete; // If profile is already setup, this form acts as edit
 
   const form = useForm<ProfileSetupFormValues>({
     resolver: zodResolver(profileSetupSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
-      age: undefined, // or an appropriate default number
+      firstName: currentFirstName || "",
+      lastName: currentLastName || "",
+      age: currentAge ? parseInt(currentAge) : undefined,
     },
   });
 
+  // Pre-fill form if in edit mode and data changes (e.g. on refresh)
+  useEffect(() => {
+    if (isEditMode) {
+      form.reset({
+        firstName: currentFirstName || "",
+        lastName: currentLastName || "",
+        age: currentAge ? parseInt(currentAge) : undefined,
+      });
+    }
+  }, [isEditMode, currentFirstName, currentLastName, currentAge, form]);
+
+
   const onSubmit: SubmitHandler<ProfileSetupFormValues> = (data) => {
     setIsLoading(true);
-    // Simulate API call or direct save
     setTimeout(() => {
       saveProfile({ firstName: data.firstName, lastName: data.lastName, age: String(data.age) });
-      // setIsLoading(false); // Not strictly necessary as it will redirect
+      setIsLoading(false);
+      if(isEditMode) {
+        router.push('/profile'); // Redirect to profile page after editing
+      }
+      // Default redirect to /my-habits (handled by AuthProvider if !isEditMode)
     }, 1000);
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[calc(100svh-10rem)] p-4" lang="fa">
       <div className="w-full max-w-sm text-right mb-8">
-        <h1 className="text-2xl font-semibold text-foreground mb-2">تکمیل پروفایل</h1>
+        <h1 className="text-2xl font-semibold text-foreground mb-2">
+          {isEditMode ? "ویرایش پروفایل" : "تکمیل پروفایل"}
+        </h1>
         <p className="text-muted-foreground">
-          فقط چند قدم دیگه مونده تا بتونیم تجربه بهتری برات بسازیم.
+          {isEditMode ? "اطلاعات پروفایل خود را به‌روزرسانی کنید." : "فقط چند قدم دیگه مونده تا بتونیم تجربه بهتری برات بسازیم."}
         </p>
       </div>
 
@@ -97,7 +118,7 @@ export default function ProfileSetupForm() {
                     onChange={(e) => {
                       const value = parseInt(e.target.value);
                       if (isNaN(value)) {
-                        field.onChange(undefined); // Or handle as per Zod schema (e.g., for empty string)
+                        field.onChange(undefined);
                       } else {
                         field.onChange(value);
                       }
@@ -111,7 +132,8 @@ export default function ProfileSetupForm() {
           />
           <div className="pt-4">
             <Button type="submit" className="w-full text-lg p-6 rounded-full" disabled={isLoading}>
-              {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : "ذخیره و ادامه"}
+              {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : 
+                (isEditMode ? "ثبت تغییرات" : "ذخیره و ادامه")}
             </Button>
           </div>
         </form>
