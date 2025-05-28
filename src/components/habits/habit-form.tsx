@@ -38,12 +38,10 @@ import {
   DialogClose,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 
 const habitFormSchema = z.object({
   title: z.string().min(1, { message: "عنوان عادت نمی‌تواند خالی باشد." }),
-  // habitType: z.enum(['build', 'break'], { required_error: "نوع عادت را انتخاب کنید." }), No longer used
   goalDescription: z.string().optional(),
   triggers: z.string().optional(),
   strategy: z.enum(['21/90', '40-day', '2-minute', 'if-then', 'none'], { required_error: "روش ساخت یا ترک عادت را انتخاب کنید." }),
@@ -108,7 +106,7 @@ export default function HabitForm({ initialData }: HabitFormProps) {
       let twoMinuteStepsArray = [''];
       if (strategyDetails.twoMinuteSteps && typeof strategyDetails.twoMinuteSteps === 'string') {
         twoMinuteStepsArray = strategyDetails.twoMinuteSteps.split('\n').filter(step => step.trim() !== '');
-        if(twoMinuteStepsArray.length === 0) twoMinuteStepsArray = ['']; // ensure at least one empty string if all were empty
+        if(twoMinuteStepsArray.length === 0) twoMinuteStepsArray = ['']; 
       }
 
       let ifThenRulesArray = [{ ifCondition: '', thenAction: '' }];
@@ -141,7 +139,6 @@ export default function HabitForm({ initialData }: HabitFormProps) {
     }
     return {
       title: "",
-      // habitType: 'build', // No longer used
       goalDescription: "",
       triggers: "",
       strategy: 'none',
@@ -159,7 +156,6 @@ export default function HabitForm({ initialData }: HabitFormProps) {
     defaultValues: getDefaultValues(),
   });
   
-  // Reset form if initialData changes (e.g., navigating between edit pages or from create to edit)
   useEffect(() => {
     form.reset(getDefaultValues());
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -205,7 +201,7 @@ export default function HabitForm({ initialData }: HabitFormProps) {
         if (validSteps.length > 0) {
           strategyDetails.twoMinuteSteps = validSteps.join('\n');
         } else {
-          strategyDetails.twoMinuteSteps = undefined; // Ensure empty is stored as undefined
+          strategyDetails.twoMinuteSteps = undefined; 
         }
       }
       strategyDetails.twoMinuteReminderFrequency = data.twoMinuteReminderFrequency;
@@ -218,14 +214,13 @@ export default function HabitForm({ initialData }: HabitFormProps) {
             .map(rule => `اگر [${rule.ifCondition.trim()}]، آنگاه [${rule.thenAction.trim()}]`)
             .join('\n');
         } else {
-          strategyDetails.ifThenRules = undefined; // Ensure empty is stored as undefined
+          strategyDetails.ifThenRules = undefined; 
         }
       }
     }
     
     const habitDataToSave: NewHabitData = {
       title: data.title,
-      // habitType: data.habitType, // No longer used
       goalDescription: data.goalDescription,
       triggers: data.triggers,
       strategy: data.strategy,
@@ -251,7 +246,7 @@ export default function HabitForm({ initialData }: HabitFormProps) {
       }
     } catch (error) {
        const errorMessage = error instanceof Error ? error.message : "مشکلی در ذخیره عادت پیش آمد.";
-       console.error("Error saving habit:", error, data, habitDataToSave);
+       console.error("Error saving habit:", error, "Data sent:", data, "Processed data:", habitDataToSave);
        toast({
          title: "خطا در ذخیره‌سازی",
          description: errorMessage,
@@ -274,30 +269,6 @@ export default function HabitForm({ initialData }: HabitFormProps) {
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pb-28" lang="fa">
-          {/* Habit Type Tabs - Removed
-          <FormField
-            control={form.control}
-            name="habitType"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-sm pr-4">۱. نوع عادت</FormLabel>
-                <FormControl>
-                  <Tabs
-                    value={field.value}
-                    onValueChange={field.onChange}
-                    className="w-full"
-                  >
-                    <TabsList className="grid w-full grid-cols-2">
-                      <TabsTrigger value="build" className="rounded-full h-10">ساخت عادت جدید</TabsTrigger>
-                      <TabsTrigger value="break" className="rounded-full h-10">ترک عادت بد</TabsTrigger>
-                    </TabsList>
-                  </Tabs>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          */}
           
           <FormField
             control={form.control}
@@ -306,7 +277,7 @@ export default function HabitForm({ initialData }: HabitFormProps) {
               <FormItem>
                 <FormLabel className="text-sm">۱. نام عادت</FormLabel>
                 <FormControl>
-                  <Input placeholder="مثلا: مطالعه روزانه یا ترک سیگار" {...field} className="rounded-full h-12 text-base" />
+                  <Input placeholder="مثلا: مطالعه روزانه یا ترک سیگار" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -365,7 +336,7 @@ export default function HabitForm({ initialData }: HabitFormProps) {
                         >
                            <Label
                             className={cn(
-                              "font-normal text-base flex-grow text-right", // Ensure text is right aligned
+                              "font-normal text-base flex-grow text-right", 
                               isSelected ? "text-primary" : "text-foreground"
                             )}
                           >
@@ -411,7 +382,7 @@ export default function HabitForm({ initialData }: HabitFormProps) {
                           <Button
                             variant={"outline"}
                             className={cn(
-                              "w-full justify-start text-right font-normal rounded-full h-12 text-base", 
+                              "w-full justify-start text-right font-normal h-12 text-base", 
                               !field.value && "text-muted-foreground",
                               "bg-[var(--input-background)] border-[var(--input-border-color)] hover:bg-[var(--input-background)]"
                             )}
@@ -442,7 +413,7 @@ export default function HabitForm({ initialData }: HabitFormProps) {
                   <FormItem>
                     <FormLabel className="text-sm">زمان یادآوری (اختیاری)</FormLabel>
                     <FormControl>
-                      <Input type="time" placeholder="مثلا: 10:30" {...field} className="rounded-full h-12 text-base"/>
+                      <Input type="time" placeholder="مثلا: 10:30" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -468,7 +439,7 @@ export default function HabitForm({ initialData }: HabitFormProps) {
                                 type="button"
                                 variant={days2190Field.value === '21' ? 'default' : 'outline'}
                                 onClick={() => days2190Field.onChange('21')}
-                                className="rounded-full h-12 text-base"
+                                className="h-12 text-base"
                             >
                                 ۲۱ روز
                             </Button>
@@ -476,7 +447,7 @@ export default function HabitForm({ initialData }: HabitFormProps) {
                                 type="button"
                                 variant={days2190Field.value === '90' ? 'default' : 'outline'}
                                 onClick={() => days2190Field.onChange('90')}
-                                className="rounded-full h-12 text-base"
+                                className="h-12 text-base"
                             >
                                 ۹۰ روز
                             </Button>
@@ -498,7 +469,6 @@ export default function HabitForm({ initialData }: HabitFormProps) {
                   <FormLabel className="text-sm">مدت کل برنامه (روز)</FormLabel>
                   <FormControl>
                     <Input type="number" inputMode="numeric" placeholder="مثلا: ۴۰ روز" {...field} 
-                      className="rounded-full h-12 text-base"
                       onChange={(e) => {
                         const value = parseInt(e.target.value);
                         if (isNaN(value)) {
@@ -531,7 +501,6 @@ export default function HabitForm({ initialData }: HabitFormProps) {
                            <Input
                             {...form.register(`twoMinuteSteps.${index}` as const)}
                             placeholder={`قدم ${toPersianNumerals(index + 1)}`}
-                            className="rounded-full h-12 text-base"
                           />
                         </FormControl>
                         {twoMinuteStepsFields.length > 1 && (
@@ -559,7 +528,7 @@ export default function HabitForm({ initialData }: HabitFormProps) {
                     type="button"
                     variant="outline"
                     onClick={() => appendTwoMinuteStep("")}
-                    className="mt-2 rounded-full h-10 text-sm"
+                    className="mt-2 h-10 text-sm"
                   >
                     <Plus className="ml-2 h-4 w-4" />
                     افزودن قدم
@@ -576,7 +545,7 @@ export default function HabitForm({ initialData }: HabitFormProps) {
                 <FormItem>
                   <FormLabel className="text-sm">فرکانس یادآوری (اختیاری)</FormLabel>
                   <FormControl>
-                    <Input placeholder="مثلا: هر ۲ ساعت" {...field} className="rounded-full h-12 text-base"/>
+                    <Input placeholder="مثلا: هر ۲ ساعت" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -597,7 +566,7 @@ export default function HabitForm({ initialData }: HabitFormProps) {
                       <div key={item.id} className="space-y-2 p-3 border rounded-lg bg-[var(--input-background)] border-[var(--input-border-color)]">
                         <div className="flex items-center justify-between">
                            <p className="text-sm font-medium text-muted-foreground">قاعده {toPersianNumerals(index + 1)}</p>
-                           {ifThenRulesFields.length > 0 && ( // Show remove button even for the first item to allow removing all
+                           {ifThenRulesFields.length > 0 && (
                             <Button
                                 type="button"
                                 variant="ghost"
@@ -620,7 +589,6 @@ export default function HabitForm({ initialData }: HabitFormProps) {
                                 <Input
                                   {...field}
                                   placeholder="مثلا: هوس قهوه بعد از شام کردم"
-                                  className="rounded-full h-12 text-base"
                                 />
                               </FormControl>
                               <FormMessage />
@@ -637,7 +605,6 @@ export default function HabitForm({ initialData }: HabitFormProps) {
                                 <Input
                                   {...field}
                                   placeholder="مثلا: چای گیاهی می‌نوشم"
-                                  className="rounded-full h-12 text-base"
                                 />
                               </FormControl>
                               <FormMessage />
@@ -658,7 +625,7 @@ export default function HabitForm({ initialData }: HabitFormProps) {
                     type="button"
                     variant="outline"
                     onClick={() => appendIfThenRule({ ifCondition: "", thenAction: "" })}
-                    className="mt-2 rounded-full h-10 text-sm"
+                    className="mt-2 h-10 text-sm"
                   >
                     <Plus className="ml-2 h-4 w-4" />
                     افزودن قاعده اگر-آنگاه
@@ -668,8 +635,8 @@ export default function HabitForm({ initialData }: HabitFormProps) {
             />
           )}
           
-          <div className="pt-4"> {/* Removed fixed positioning div */}
-            <Button type="submit" className="w-full text-lg p-6 rounded-full" disabled={isLoading}>
+          <div className="fixed inset-x-0 bottom-24 bg-background p-4 md:max-w-md md:mx-auto md:relative md:bottom-auto md:p-0 md:pt-4">
+            <Button type="submit" className="w-full text-lg p-6" disabled={isLoading}>
               {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : (isEditMode ? "ثبت تغییرات" : "ایجاد عادت")}
             </Button>
           </div>

@@ -76,11 +76,11 @@ export default function MyHabitsPage() {
   ];
 
   return (
-    <div className="space-y-6 pb-28" lang="fa">
+    <div className="space-y-6" lang="fa">
       {/* Main H1 title removed as requested */}
 
       {nonArchivedHabits.length > 0 && (
-        <div className="grid grid-cols-3 gap-3 mb-4 mt-0"> {/* mt-0 to remove top margin */}
+        <div className="grid grid-cols-3 gap-3 mt-0"> {/* mt-0 to remove top margin */}
           {statCardData.map((stat, index) => (
             <div
               key={index}
@@ -137,7 +137,7 @@ export default function MyHabitsPage() {
       <Link href="/create-habit" passHref legacyBehavior>
         <a
           aria-label="ایجاد عادت جدید"
-          className="fixed bottom-28 right-6 z-30 h-14 w-14 bg-primary text-primary-foreground rounded-full flex items-center justify-center shadow-lg hover:bg-primary/90 transition-colors"
+          className="fixed bottom-24 right-6 z-30 h-14 w-14 bg-primary text-primary-foreground rounded-full flex items-center justify-center shadow-lg hover:bg-primary/90 transition-colors"
         >
           <Plus className="h-7 w-7" />
         </a>
