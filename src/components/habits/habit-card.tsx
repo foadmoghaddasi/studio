@@ -177,12 +177,9 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
     <>
       <Card className={cn(
         "w-full p-4 rounded-2xl transition-opacity duration-300 ease-in-out relative",
-        isActiveAndNotArchived ? "bg-[var(--card-effective-background)]" : "bg-muted/50 opacity-70 scale-[0.985] transform",
-        "dark:opacity-100",
-        isActiveAndNotArchived && "dark:bg-muted/50",
-        !isActiveAndNotArchived && "dark:bg-[var(--card-effective-background)]"
+        isActiveAndNotArchived ? "bg-[var(--card-effective-background)] dark:bg-muted/50" : "bg-muted/50 opacity-70 scale-[0.985] transform dark:bg-[var(--card-effective-background)]"
       )}>
-        <div className="absolute top-3 right-3 z-10">
+        <div className="absolute top-3 left-3 z-10"> {/* Changed right-3 to left-3 */}
             <DropdownMenu dir="rtl">
             <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full data-[state=open]:bg-muted">
