@@ -24,13 +24,13 @@ export const metadata: Metadata = {
   title: "روز به روز",
   description: "اپلیکیشن مدیریت عادت‌ها",
   manifest: "/manifest.json",
-  themeColor: "#95D4E5", // Light mode primary
+  themeColor: "#7AC9DE", // Light mode primary from new palette
 };
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#95D4E5" },
-    { media: "(prefers-color-scheme: dark)", color: "#254047" }, // Dark mode secondary or a suitable dark theme color
+    { media: "(prefers-color-scheme: light)", color: "#7AC9DE" }, // Light mode primary
+    { media: "(prefers-color-scheme: dark)", color: "#254047" }, // Dark mode primary from new palette
   ],
 };
 
@@ -62,7 +62,7 @@ export default function RootLayout({
             <HabitProvider>
               <div className="flex flex-col min-h-svh">
                 <AppBar />
-                <main className="flex-grow container mx-auto max-w-md px-4 sm:px-6"> {/* REMOVED pt-20 */}
+                <main className="flex-grow container mx-auto max-w-md px-4 sm:px-6 pt-2">
                   {" "}
                   {children}
                 </main>
