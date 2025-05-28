@@ -1,3 +1,4 @@
+
 import type { Metadata, Viewport } from "next";
 import { Vazirmatn } from "next/font/google";
 import { Geist_Mono } from "next/font/google";
@@ -58,7 +59,7 @@ export default function RootLayout({
             <HabitProvider>
               <div className="flex flex-col min-h-svh">
                 <AppBar />
-                <main className="flex-grow container mx-auto max-w-md p-4 sm:p-6 pt-[5.5rem]"> {/* Changed pt-24 to pt-[5.5rem] */}
+                <main className="flex-grow container mx-auto max-w-md p-4 sm:p-6 pt-[5.5rem]"> {/* Adjusted top padding */}
                   {" "}
                   {children}
                 </main>
