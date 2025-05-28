@@ -1,3 +1,4 @@
+
 // prettier-ignore
 "use client";
 
@@ -76,14 +77,14 @@ export default function MyHabitsPage() {
 
   return (
     <div className="space-y-6 pb-28" lang="fa">
-      {/* Main H1 title removed */}
+      {/* Main H1 title removed as requested */}
 
-      <div className="grid grid-cols-3 gap-3 mb-4 mt-0">
+      <div className="grid grid-cols-3 gap-3 mb-4 mt-0"> {/* mt-0 to remove top margin */}
         {statCardData.map((stat, index) => (
           <div
             key={index}
             className={cn(
-              "flex flex-col items-center text-center p-3 rounded-3xl space-y-1.5", 
+              "flex flex-col items-center text-center p-3 rounded-3xl space-y-1.5",
               stat.color === "green" && "bg-emerald-100 dark:bg-emerald-900",
               stat.color === "blue" && "bg-sky-100 dark:bg-sky-900",
               stat.color === "purple" && "bg-violet-100 dark:bg-violet-900"
@@ -100,7 +101,7 @@ export default function MyHabitsPage() {
             >
               <stat.icon
                 className={cn(
-                  "w-5 h-5", 
+                  "w-5 h-5",
                   stat.color === "green" &&
                     "text-emerald-700 dark:text-emerald-300",
                   stat.color === "blue" && "text-sky-700 dark:text-sky-300",
@@ -114,7 +115,7 @@ export default function MyHabitsPage() {
             </p>
             <p
               className={cn(
-                "text-lg font-semibold mt-0.5", 
+                "text-lg font-semibold mt-0.5",
                 stat.color === "green" &&
                   "text-emerald-800 dark:text-emerald-200",
                 stat.color === "blue" && "text-sky-800 dark:text-sky-200",
@@ -128,14 +129,10 @@ export default function MyHabitsPage() {
           </div>
         ))}
       </div>
-      
+
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold text-foreground">عادت‌های من</h2>
-        <Link href="/create-habit" passHref legacyBehavior>
-          <Button variant="ghost" size="sm" className="text-primary">
-            مشاهده همه
-          </Button>
-        </Link>
+        {/* "View All" button removed */}
       </div>
       <HabitList />
 

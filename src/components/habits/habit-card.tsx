@@ -11,7 +11,7 @@ import { useHabits } from '@/providers/habit-provider';
 import React, { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { getMotivationalMessage } from '@/ai/flows/personalized-motivation';
-import { CheckCircle, Loader2, MoreVertical, Archive as ArchiveIconLucide, Trash2, AlertTriangle, ChevronRight } from 'lucide-react';
+import { CheckCircle, Loader2, MoreVertical, Archive as ArchiveIconLucide, Trash2, AlertTriangle } from 'lucide-react'; // ChevronRight removed
 import { cn, toPersianNumerals } from '@/lib/utils';
 import {
   DropdownMenu,
@@ -44,7 +44,7 @@ const getStrategyPersianName = (strategyKey?: '21/90' | '40-day' | '2-minute' | 
     case '2-minute': return '۲ دقیقه';
     case 'if-then': return 'اگر-آنگاه';
     default:
-      return ''; 
+      return '';
   }
 };
 
@@ -77,7 +77,7 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
 
   const handleCompleteDay = async () => {
     if (habit.isArchived || !habit.isActive) return;
-    const updatedHabit = completeDay(habit.id); 
+    const updatedHabit = completeDay(habit.id);
 
     if (updatedHabit && updatedHabit.lastCheckedIn?.startsWith(new Date().toISOString().split('T')[0])) {
       toast({
@@ -96,13 +96,13 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
             habitName: updatedHabit.title,
             daysCompleted: updatedHabit.daysCompleted,
             totalDays: updatedHabit.totalDays,
-            successful: true, 
+            successful: true,
           });
-          setHabitMotivationalMessage(updatedHabit.id, motivation.message); 
-          setMotivationalMessage(motivation.message); 
+          setHabitMotivationalMessage(updatedHabit.id, motivation.message);
+          setMotivationalMessage(motivation.message);
         } catch (error) {
           console.error("Failed to fetch motivational message", error);
-          setMotivationalMessage("ادامه بده، تو می‌تونی!"); 
+          setMotivationalMessage("ادامه بده، تو می‌تونی!");
         } finally {
           setIsLoadingMotivation(false);
         }
@@ -151,7 +151,7 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
 
   if (isArchiveView) {
     return (
-      <Card className="w-full bg-content-card p-4 rounded-2xl"> 
+      <Card className="w-full bg-content-card p-4 rounded-2xl">
         <div className="flex justify-between items-center">
           <div>
             <CardTitle className="text-lg font-semibold text-content-card-foreground">{habit.title}</CardTitle>
@@ -178,11 +178,11 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
       <Card className={cn(
         "w-full p-4 rounded-2xl transition-opacity duration-300 ease-in-out relative",
         isActiveAndNotArchived ? "bg-[var(--card-effective-background)]" : "bg-muted/50 opacity-70 scale-[0.985] transform",
-        "dark:opacity-100", // Ensure dark mode opacity is managed if different logic is needed
-        isActiveAndNotArchived && "dark:bg-muted/50", // Active card in dark mode
-        !isActiveAndNotArchived && "dark:bg-[var(--card-effective-background)]" // Inactive card in dark mode
+        "dark:opacity-100",
+        isActiveAndNotArchived && "dark:bg-muted/50",
+        !isActiveAndNotArchived && "dark:bg-[var(--card-effective-background)]"
       )}>
-        <div className="absolute top-3 left-3 z-10"> {/* Adjusted for RTL: top-3 right-3 */}
+        <div className="absolute top-3 right-3 z-10"> {/* Adjusted to top-3 right-3 for RTL consistency */}
             <DropdownMenu dir="rtl">
             <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full data-[state=open]:bg-muted">
@@ -196,7 +196,7 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
                 آرشیو عادت
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem 
+                <DropdownMenuItem
                 onSelect={() => {
                     setHabitToDelete(habit);
                     setShowDeleteConfirm(true);
@@ -212,18 +212,17 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
         <Link href={`/habits/${habit.id}`} passHref legacyBehavior>
           <a className={cn("block", (!habit.isActive || habit.isArchived) && "pointer-events-none")}>
             <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center space-x-2 space-x-reverse">
+              <div className="flex-grow"> {/* Added flex-grow to allow title to take space */}
                 <h3 className={cn(
                   "text-lg font-semibold",
                   isActiveAndNotArchived ? "text-content-card-foreground" : "text-muted-foreground"
                 )}>{habit.title}</h3>
+                 <p className="text-xs text-muted-foreground mt-2"> {/* Moved date here */}
+                  تاریخ شروع: {new Date(habit.createdAt).toLocaleDateString('fa-IR')}
+                </p>
               </div>
-              <ChevronRight className="w-5 h-5 text-muted-foreground" />
+              {/* ChevronRight icon removed */}
             </div>
-            
-            <p className="text-xs text-muted-foreground mt-2 mb-1">
-              تاریخ شروع: {new Date(habit.createdAt).toLocaleDateString('fa-IR')}
-            </p>
 
             <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
               <span>
@@ -232,7 +231,7 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
               </span>
               <span>{toPersianNumerals(Math.round(percentage))}%</span>
             </div>
-            
+
             <Progress value={percentage} className="h-2 rounded-full bg-muted" indicatorClassName="bg-primary" />
           </a>
         </Link>
@@ -250,7 +249,7 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
               {habit.isActive ? 'فعال' : 'غیرفعال'}
             </Label>
           </div>
-          
+
           <Button
             onClick={handleCompleteDay}
             size="sm"
@@ -267,7 +266,7 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
             )}
           </Button>
         </div>
-        
+
         {isLoadingMotivation && (
           <div className="flex items-center justify-center text-sm text-muted-foreground p-2 mt-2">
             <Loader2 className="ml-2 h-4 w-4 animate-spin" />
@@ -283,8 +282,8 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
 
       {habitToDelete && (
         <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
-          <AlertDialogContent 
-            dir="rtl" 
+          <AlertDialogContent
+            dir="rtl"
             className="rounded-3xl bg-secondary"
             onPointerDownOutside={(e) => {
               setShowDeleteConfirm(false);
@@ -297,10 +296,10 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
                 آیا از حذف عادت "{habitToDelete.title}" مطمئن هستید؟ این عمل قابل بازگشت نیست.
               </AlertDialogDescription>
             </AlertDialogHeader>
-            <AlertDialogFooter className="mt-4">
+            <AlertDialogFooter className="mt-4 flex flex-row gap-2"> {/* Ensured flex-row */}
               <AlertDialogCancel className="flex-1 rounded-full h-12 bg-background text-foreground hover:bg-muted/90">انصراف</AlertDialogCancel>
-              <AlertDialogAction 
-                onClick={confirmDeleteHabit} 
+              <AlertDialogAction
+                onClick={confirmDeleteHabit}
                 className={cn(buttonVariants({ variant: "destructive" }), "flex-1 rounded-full h-12")}
               >
                 حذف
