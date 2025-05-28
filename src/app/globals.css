@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -15,7 +14,6 @@
     /* Effective card background for Content Cards (Habit Cards, Stat Cards etc.) */
     --card-effective-background: 0 0% 100%; /* White #FFFFFF */
     --card-effective-foreground: 215 25% 27%; /* Dark Slate Gray */
-    
 
     --popover: 0 0% 100%; /* White */
     --popover-foreground: 215 25% 27%; /* Dark Slate Gray */
@@ -39,11 +37,11 @@
 
     --radius: 1rem; /* Default radius for many components, leading to rounded-2xl */
 
-    --chart-1: 190 65% 55%;   /* Primary Teal */
-    --chart-2: 190 60% 70%;   /* Lighter Teal */
-    --chart-3: 30 100% 65%;   /* Orange Accent (like Glucose) */
-    --chart-4: 130 50% 60%;   /* Green Accent (like success) */
-    --chart-5: 210 30% 25%;   /* Dark Slate Gray */
+    --chart-1: 190 65% 55%; /* Primary Teal */
+    --chart-2: 190 60% 70%; /* Lighter Teal */
+    --chart-3: 30 100% 65%; /* Orange Accent (like Glucose) */
+    --chart-4: 130 50% 60%; /* Green Accent (like success) */
+    --chart-5: 210 30% 25%; /* Dark Slate Gray */
 
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 215 25% 27%;
@@ -60,8 +58,8 @@
     --input-placeholder-color-hsl: 215 20% 65%; /* Lighter Medium Slate Gray for placeholder #98A4B3 */
 
     --input-border-color: hsl(var(--input-border-color-hsl));
-    --input-background: hsl(var(--input-bg-color-hsl)); 
-    --input-placeholder: hsl(var(--input-placeholder-color-hsl)); 
+    --input-background: hsl(var(--input-bg-color-hsl));
+    --input-placeholder: hsl(var(--input-placeholder-color-hsl));
   }
 
   .dark {
@@ -75,7 +73,6 @@
     /* Effective card background for Content Cards */
     --card-effective-background: 220 15% 15%; /* Dark Cool Gray for cards #1F242B */
     --card-effective-foreground: 210 20% 90%; /* Light Gray */
-    
 
     --muted: 220 15% 25%; /* Dark Gray #363D49 */
     --muted-foreground: 210 20% 65%; /* Lighter Mid-gray #90A0B3 */
@@ -92,17 +89,17 @@
     --secondary: 220 15% 20%; /* Darker Secondary #2B303B */
     --secondary-foreground: 190 55% 80%; /* Light Teal #99E5DC */
 
-    --destructive: 0 63% 31%; 
-    --destructive-foreground: 0 0% 100%; 
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 0 0% 100%;
 
-    --ring: 190 60% 65%; 
-    
-    --chart-1: 190 60% 65%;   
-    --chart-2: 190 55% 50%;   
-    --chart-3: 30 80% 60%;   
-    --chart-4: 130 45% 55%;   
-    --chart-5: 210 20% 90%;   
-    
+    --ring: 190 60% 65%;
+
+    --chart-1: 190 60% 65%;
+    --chart-2: 190 55% 50%;
+    --chart-3: 30 80% 60%;
+    --chart-4: 130 45% 55%;
+    --chart-5: 210 20% 90%;
+
     --sidebar-background: 220 15% 8%;
     --sidebar-foreground: 210 20% 90%;
     --sidebar-primary: 190 60% 65%;
@@ -116,11 +113,59 @@
     --input-border-color-hsl: 220 15% 30%; /* Dark Gray Border #404854 */
     --input-bg-color-hsl: 220 15% 15%; /* Dark Cool Gray for inputs #1F242B */
     --input-placeholder-color-hsl: 210 20% 55%; /* Medium Gray for placeholder #7C8A9A */
-    
+
     --input-border-color: hsl(var(--input-border-color-hsl));
     --input-background: hsl(var(--input-bg-color-hsl));
     --input-placeholder: hsl(var(--input-placeholder-color-hsl));
   }
+}
+
+@font-face {
+  font-family: "KookFaNum";
+  src: url("/fonts/KookFaNum-ExtraLight.ttf") format("truetype");
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "KookFaNum";
+  src: url("/fonts/KookFaNum-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "KookFaNum";
+  src: url("/fonts/KookFaNum-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "KookFaNum";
+  src: url("/fonts/KookFaNum-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "KookFaNum";
+  src: url("/fonts/KookFaNum-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "KookFaNum";
+  src: url("/fonts/KookFaNum-ExtraBold.ttf") format("truetype");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
 }
 
 @layer base {
@@ -129,11 +174,12 @@
   }
 
   html {
-     /* Removed font-sans from html */
+    /* Removed font-sans from html */
   }
 
   body {
-    @apply bg-background text-foreground font-sans; 
+    @apply bg-background text-foreground;
+    font-family: "KookFaNum", sans-serif;
     /* font-feature-settings: "rlig" 1, "calt" 1; Uncomment if ligatures are desired */
   }
 
@@ -149,5 +195,3 @@
     -ms-overflow-style: none; /* IE and old Edge */
   }
 }
-
-    
