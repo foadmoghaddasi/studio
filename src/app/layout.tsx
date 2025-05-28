@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   title: "روز به روز",
   description: "اپلیکیشن مدیریت عادت‌ها",
   manifest: "/manifest.json",
-  // themeColor: "#4FD1C5", // From original, updated for new design. Handled by Viewport
+  themeColor: "#4FD1C5", // From original, updated for new design
 };
 
 export const viewport: Viewport = {
@@ -43,7 +43,6 @@ export default function RootLayout({
       className={`${vazir.variable} ${geistMono.variable}`}
       suppressHydrationWarning={true}
     >
-      {/* <head> tag removed as Next.js handles metadata and viewport */}
       <body
         className="antialiased font-sans bg-background"
         suppressHydrationWarning={true}
@@ -59,9 +58,9 @@ export default function RootLayout({
             <HabitProvider>
               <div className="flex flex-col min-h-svh">
                 <AppBar />
-                <main className="flex-grow container mx-auto max-w-md p-4 sm:p-6 pt-24">
+                <main className="flex-grow container mx-auto max-w-md p-4 sm:p-6 pt-20">
                   {" "}
-                  {/* pt-24 ensures content starts below h-20 AppBar + some spacing */}
+                  {/* Changed pt-24 to pt-20 to align content immediately below AppBar */}
                   {children}
                 </main>
                 <BottomNavigation />
