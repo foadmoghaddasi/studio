@@ -24,11 +24,11 @@ export const metadata: Metadata = {
   title: "روز به روز",
   description: "اپلیکیشن مدیریت عادت‌ها",
   manifest: "/manifest.json",
-  themeColor: "#7AC9DE", // Primary color from the new palette
+  themeColor: "#7AC9DE", 
 };
 
 export const viewport: Viewport = {
-  themeColor: "#7AC9DE", // Primary color from the new palette
+  themeColor: "#7AC9DE", 
 };
 
 
@@ -59,7 +59,7 @@ export default function RootLayout({
             <HabitProvider>
               <div className="flex flex-col min-h-svh">
                 <AppBar />
-                <main className="flex-grow container mx-auto max-w-md px-4 sm:px-6 pt-[5.5rem]"> {/* Adjusted padding */}
+                <main className="flex-grow container mx-auto max-w-md px-4 sm:px-6 pt-20"> {/* Changed pt-[5.5rem] to pt-20 */}
                   {" "}
                   {children}
                 </main>
