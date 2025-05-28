@@ -11,7 +11,7 @@ import { useHabits } from '@/providers/habit-provider';
 import React, { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { getMotivationalMessage } from '@/ai/flows/personalized-motivation';
-import { CheckCircle, Loader2, MoreVertical, Archive as ArchiveIconLucide, Trash2, AlertTriangle } from 'lucide-react'; // ChevronRight removed
+import { CheckCircle, Loader2, MoreVertical, Archive as ArchiveIconLucide, Trash2, AlertTriangle } from 'lucide-react';
 import { cn, toPersianNumerals } from '@/lib/utils';
 import {
   DropdownMenu,
@@ -182,7 +182,7 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
         isActiveAndNotArchived && "dark:bg-muted/50",
         !isActiveAndNotArchived && "dark:bg-[var(--card-effective-background)]"
       )}>
-        <div className="absolute top-3 right-3 z-10"> {/* Adjusted to top-3 right-3 for RTL consistency */}
+        <div className="absolute top-3 right-3 z-10">
             <DropdownMenu dir="rtl">
             <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full data-[state=open]:bg-muted">
@@ -211,32 +211,32 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
         </div>
         <Link href={`/habits/${habit.id}`} passHref legacyBehavior>
           <a className={cn("block", (!habit.isActive || habit.isArchived) && "pointer-events-none")}>
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex-grow"> {/* Added flex-grow to allow title to take space */}
-                <h3 className={cn(
+            <CardHeader className="flex flex-row justify-between items-center p-0 mb-2">
+              <div className="flex-grow">
+                <CardTitle className={cn(
                   "text-lg font-semibold",
                   isActiveAndNotArchived ? "text-content-card-foreground" : "text-muted-foreground"
-                )}>{habit.title}</h3>
-                 <p className="text-xs text-muted-foreground mt-2"> {/* Moved date here */}
+                )}>{habit.title}</CardTitle>
+                 <p className="text-xs text-muted-foreground mt-2">
                   تاریخ شروع: {new Date(habit.createdAt).toLocaleDateString('fa-IR')}
                 </p>
               </div>
-              {/* ChevronRight icon removed */}
-            </div>
+            </CardHeader>
 
-            <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
-              <span>
-                {toPersianNumerals(habit.daysCompleted)} / {toPersianNumerals(habit.totalDays)} روز
-                {strategyName && <span className="mr-2 text-xs">({strategyName})</span>}
-              </span>
-              <span>{toPersianNumerals(Math.round(percentage))}%</span>
-            </div>
-
-            <Progress value={percentage} className="h-2 rounded-full bg-muted" indicatorClassName="bg-primary" />
+            <CardContent className="p-0">
+              <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
+                <span>
+                  {toPersianNumerals(habit.daysCompleted)} / {toPersianNumerals(habit.totalDays)} روز
+                  {strategyName && <span className="mr-2 text-xs">({strategyName})</span>}
+                </span>
+                <span>{toPersianNumerals(Math.round(percentage))}%</span>
+              </div>
+              <Progress value={percentage} className="h-2 rounded-full bg-muted" indicatorClassName="bg-primary" />
+            </CardContent>
           </a>
         </Link>
 
-        <div className="mt-4 flex items-center justify-between">
+        <CardFooter className="mt-4 flex items-center justify-between p-0">
           <div className="flex items-center space-x-2 space-x-reverse">
              <Switch
                 id={`active-switch-${habit.id}`}
@@ -265,7 +265,7 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
               "تکمیل امروز"
             )}
           </Button>
-        </div>
+        </CardFooter>
 
         {isLoadingMotivation && (
           <div className="flex items-center justify-center text-sm text-muted-foreground p-2 mt-2">
@@ -296,7 +296,7 @@ export default function HabitCard({ habit, isArchiveView = false }: HabitCardPro
                 آیا از حذف عادت "{habitToDelete.title}" مطمئن هستید؟ این عمل قابل بازگشت نیست.
               </AlertDialogDescription>
             </AlertDialogHeader>
-            <AlertDialogFooter className="mt-4 flex flex-row gap-2"> {/* Ensured flex-row */}
+            <AlertDialogFooter className="mt-4 flex flex-row gap-2">
               <AlertDialogCancel className="flex-1 rounded-full h-12 bg-background text-foreground hover:bg-muted/90">انصراف</AlertDialogCancel>
               <AlertDialogAction
                 onClick={confirmDeleteHabit}
@@ -317,3 +317,5 @@ declare module "@/components/ui/progress" {
     indicatorClassName?: string;
   }
 }
+
+    
