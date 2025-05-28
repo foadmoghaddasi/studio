@@ -31,12 +31,10 @@ export default function OtpForm() {
   }, []);
 
   const performSubmitLogic = useCallback(() => {
-    if (isLoading) return; // Prevent multiple submissions
+    if (isLoading) return; 
     setIsLoading(true);
-    // Simulate API call & login
     setTimeout(() => {
-      login(); // This will redirect to /my-habits
-      // setIsLoading(false); // Not strictly necessary as it will redirect and unmount
+      login(); 
     }, 1000);
   }, [isLoading, login]);
 
@@ -48,13 +46,12 @@ export default function OtpForm() {
   }, [otp, isLoading, performSubmitLogic]);
 
   const handleChange = (element: HTMLInputElement, index: number) => {
-    if (isNaN(Number(element.value))) return; // Only allow numbers
+    if (isNaN(Number(element.value))) return; 
 
     const newOtp = [...otp];
-    newOtp[index] = element.value.slice(-1); // Take only the last digit entered
+    newOtp[index] = element.value.slice(-1); 
     setOtp(newOtp);
 
-    // Focus next input
     if (element.value && index < OTP_LENGTH - 1) {
       inputRefs.current[index + 1]?.focus();
     }
@@ -78,16 +75,18 @@ export default function OtpForm() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[calc(100svh-10rem)] p-4" lang="fa">
+    // Updated layout to match new design
+    <div className="flex flex-col items-center justify-center min-h-[calc(100svh-8rem)] p-6 sm:p-8" lang="fa">
       <div className="w-full max-w-sm text-right mb-8">
-        <h1 className="text-2xl font-semibold text-foreground mb-4">تایید شماره تلفن</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-2xl font-semibold text-foreground mb-2">تایید شماره تلفن</h1> {/* Slightly smaller title */}
+        <p className="text-muted-foreground text-sm"> {/* Smaller description */}
           خوب حالا یه اس ام اس حاوی کد 6 رقمی برات ارسال شده، بی زحمت اونو وارد کن و تمام!
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-8">
-        <div className="flex justify-center space-x-2" dir="ltr">
+        {/* OTP Inputs: rounded-full, slightly larger */}
+        <div className="flex justify-center space-x-2 rtl:space-x-reverse" dir="ltr">
           {otp.map((data, index) => (
             <Input
               key={index}
@@ -98,28 +97,29 @@ export default function OtpForm() {
               onChange={(e) => handleChange(e.target as HTMLInputElement, index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
               ref={(el) => (inputRefs.current[index] = el)}
-              className="w-12 h-12 text-xl text-center transition-all rounded-full" 
+              className="w-12 h-12 text-xl text-center rounded-full border-border focus:border-primary" // Ensure rounded-full
               aria-label={`OTP digit ${index + 1}`}
               disabled={isLoading}
             />
           ))}
         </div>
 
-        <div className="text-muted-foreground text-center">
+        <div className="text-muted-foreground text-sm text-center"> {/* Smaller text */}
           {countdown > 0 ? (
             <span>ارسال مجدد کد تا {formattedCountdown()} دیگر</span>
           ) : (
-            <Button variant="link" onClick={() => setCountdown(59)} className="p-0 h-auto" disabled={isLoading}>
+            <Button variant="link" onClick={() => setCountdown(59)} className="p-0 h-auto text-sm" disabled={isLoading}>
               ارسال مجدد کد
             </Button>
           )}
         </div>
 
         <div className="space-y-4">
-          <Button type="submit" className="w-full text-lg p-6 rounded-full" disabled={isLoading || otp.join("").length !== OTP_LENGTH}>
+          {/* Buttons: rounded-full, new height */}
+          <Button type="submit" className="w-full text-lg p-0 h-14 rounded-full" disabled={isLoading || otp.join("").length !== OTP_LENGTH} size="lg">
             {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : "ادامه"}
           </Button>
-          <Button variant="outline" className="w-full text-lg p-6 rounded-full" onClick={() => router.back()} disabled={isLoading}>
+          <Button variant="outline" className="w-full text-lg p-0 h-14 rounded-full border-border hover:bg-muted" onClick={() => router.back()} disabled={isLoading} size="lg">
             بازگشت
           </Button>
         </div>
@@ -127,3 +127,5 @@ export default function OtpForm() {
     </div>
   );
 }
+
+    

@@ -1,6 +1,6 @@
 
 import type { Config } from "tailwindcss";
-import { fontFamily } from "tailwindcss/defaultTheme"; // Import defaultTheme
+import { fontFamily } from "tailwindcss/defaultTheme"; 
 
 export default {
     darkMode: ["class"],
@@ -12,16 +12,20 @@ export default {
   theme: {
   	extend: {
       fontFamily: {
-        sans: [...fontFamily.sans], // Reverted to default Tailwind sans-serif stack
+        sans: [...fontFamily.sans], 
         mono: [`var(--font-geist-mono)`, ...fontFamily.mono],
       },
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
-  			card: {
+  			card: { // Used for BottomNav / AppBar
   				DEFAULT: 'hsl(var(--card))',
   				foreground: 'hsl(var(--card-foreground))'
   			},
+        'content-card': { // Used for main content cards like habit cards
+          DEFAULT: 'hsl(var(--card-effective-background))',
+          foreground: 'hsl(var(--card-effective-foreground))'
+        },
   			popover: {
   				DEFAULT: 'hsl(var(--popover))',
   				foreground: 'hsl(var(--popover-foreground))'
@@ -38,16 +42,12 @@ export default {
   				DEFAULT: 'hsl(var(--muted))',
   				foreground: 'hsl(var(--muted-foreground))'
   			},
-  			// accent: { // Removed as per user request
-  			// 	DEFAULT: 'hsl(var(--accent))',
-  			// 	foreground: 'hsl(var(--accent-foreground))'
-  			// },
   			destructive: {
   				DEFAULT: 'hsl(var(--destructive))',
   				foreground: 'hsl(var(--destructive-foreground))'
   			},
   			border: 'hsl(var(--border))',
-  			input: 'hsl(var(--input))',
+  			input: 'hsl(var(--input))', // This refers to the input background color
   			ring: 'hsl(var(--ring))',
   			chart: {
   				'1': 'hsl(var(--chart-1))',
@@ -68,9 +68,16 @@ export default {
   			}
   		},
   		borderRadius: {
-  			lg: 'var(--radius)',
-  			md: 'calc(var(--radius) - 2px)',
-  			sm: 'calc(var(--radius) - 4px)'
+        // Keep existing responsive radii but make the base larger
+        'DEFAULT': 'var(--radius)', // For general elements if needed
+  			lg: 'calc(var(--radius) + 4px)', // e.g., 1.25rem + 4px
+  			md: 'var(--radius)', // e.g., 1.25rem
+  			sm: 'calc(var(--radius) - 4px)', // e.g., 1.25rem - 4px
+        // Add more explicit large radii based on the design
+        'xl': 'calc(var(--radius) * 1.5)', // e.g., 1.5rem
+        '2xl': 'calc(var(--radius) * 2)',  // e.g., 2rem
+        '3xl': 'calc(var(--radius) * 2.5)', // e.g., 2.5rem
+        'full': '9999px',
   		},
   		keyframes: {
   			'accordion-down': {
@@ -98,3 +105,5 @@ export default {
   },
   plugins: [require("tailwindcss-animate")],
 } satisfies Config;
+
+    

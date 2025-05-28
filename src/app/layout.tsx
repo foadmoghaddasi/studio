@@ -1,6 +1,5 @@
 
 import type { Metadata } from 'next';
-// Vazirmatn import removed
 import { Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/providers/theme-provider';
@@ -10,7 +9,6 @@ import BottomNavigation from '@/components/layout/bottom-navigation';
 import AuthProvider from '@/providers/auth-provider';
 import AppBar from '@/components/layout/app-bar';
 
-// const vazir = Vazirmatn(...); // Vazirmatn const declaration removed
 
 const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
@@ -20,7 +18,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: 'روز به روز',
   description: 'اپلیکیشن مدیریت عادت‌ها',
-  manifest: '/manifest.json', // Added manifest link for PWA
+  manifest: '/manifest.json', 
 };
 
 export default function RootLayout({
@@ -29,19 +27,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    // vazir.variable removed from className
-    // font-sans class added back to body for default Tailwind font
     <html lang="fa" dir="rtl" className={`${geistMono.variable}`} suppressHydrationWarning={true}>
       <head>
-        <meta name="theme-color" content="#00BFA6" />
+        <meta name="theme-color" content="#4FD1C5" /> {/* Updated theme color */}
       </head>
-      <body className="antialiased font-sans" suppressHydrationWarning={true}>
+      <body className="antialiased font-sans bg-background" suppressHydrationWarning={true}> {/* Ensure bg-background is on body */}
         <AuthProvider>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}> {/* Default to light, disable system for now to match design */}
             <HabitProvider>
               <div className="flex flex-col min-h-svh">
                 <AppBar />
-                <main className="flex-grow container mx-auto max-w-md p-4 pt-8"> {/* Changed pt-6 to pt-8 */}
+                {/* Increased pt for taller AppBar, more overall padding for the new design */}
+                <main className="flex-grow container mx-auto max-w-md p-4 sm:p-6 pt-24"> {/* pt-24 to account for h-20 AppBar + spacing */}
                   {children}
                 </main>
                 <BottomNavigation />
@@ -54,3 +51,5 @@ export default function RootLayout({
     </html>
   );
 }
+
+    

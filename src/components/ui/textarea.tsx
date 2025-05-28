@@ -8,12 +8,12 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, React.ComponentProps<'tex
     return (
       <textarea
         className={cn(
-          'flex min-h-[80px] w-full rounded-lg px-3 py-2 text-base ring-offset-background file:text-sm file:font-medium file:text-foreground', // Base styles, ensured text-base
-          'border border-[hsl(var(--input-border-color-hsl))]', // Default border
-          'bg-[var(--input-background)]', // Default background
-          'placeholder:text-[var(--input-placeholder)]', // Placeholder text color
-          'focus-visible:outline-none focus-visible:border-2 focus-visible:border-[hsl(var(--input-border-color-hsl))] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-background', // Focus styles
-          'disabled:cursor-not-allowed disabled:opacity-50', // Disabled styles
+          'flex min-h-[120px] w-full rounded-2xl px-4 py-3 text-base ring-offset-background file:text-sm file:font-medium file:text-foreground', // rounded-2xl, increased min-h, px-4
+          'border border-[hsl(var(--input-border-color-hsl))]', 
+          'bg-[var(--input-background)]', 
+          'placeholder:text-[var(--input-placeholder)]', 
+          'focus-visible:outline-none focus-visible:border-2 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-1', // Adjusted focus
+          'disabled:cursor-not-allowed disabled:opacity-50', 
           className
         )}
         ref={ref}
@@ -25,3 +25,5 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, React.ComponentProps<'tex
 Textarea.displayName = 'Textarea';
 
 export {Textarea};
+
+    
