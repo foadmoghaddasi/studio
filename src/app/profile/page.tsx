@@ -109,7 +109,7 @@ export default function ProfilePage() {
         <Button 
           variant="secondary" 
           className="w-full text-lg p-6 rounded-full" 
-          onClick={() => router.push('/profile-setup')} // Navigate to profile setup which will act as edit
+          onClick={() => router.push('/profile-setup')}
         >
           <Edit2 className="ml-2 h-5 w-5" />
           ویرایش اطلاعات

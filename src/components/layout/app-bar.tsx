@@ -4,16 +4,16 @@
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { User, Bell } from 'lucide-react'; // Changed Search to Bell
+import { User, Bell } from 'lucide-react';
 import { useAuth } from '@/providers/auth-provider';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export default function AppBar() {
-  const { isAuthenticated, isLoading, firstName } = useAuth(); // Added firstName
+  const { isAuthenticated, isLoading, firstName, profilePictureUrl } = useAuth(); // Added profilePictureUrl
   const pathname = usePathname();
   
-  const userDisplayName = firstName || "کاربر"; // Use firstName or fallback
+  const userDisplayName = firstName || "کاربر";
   const userGreetingName = firstName || "کاربر";
 
 
@@ -35,10 +35,10 @@ export default function AppBar() {
         <div className="flex-shrink-0">
           <Link href="/profile" passHref legacyBehavior>
             <a aria-label="پروفایل کاربر">
-              <Avatar className="h-10 w-10 cursor-pointer">
-                <AvatarImage src="https://placehold.co/100x100.png" alt={userDisplayName} data-ai-hint="profile avatar" />
+              <Avatar className="h-10 w-10 cursor-pointer"> {/* Increased size from h-8 w-8 */}
+                <AvatarImage src={profilePictureUrl || "https://placehold.co/100x100.png"} alt={userDisplayName} data-ai-hint="profile avatar" />
                 <AvatarFallback>
-                  <User className="w-5 h-5 text-muted-foreground" />
+                  <User className="w-5 h-5 text-muted-foreground" /> {/* Increased fallback icon size */}
                 </AvatarFallback>
               </Avatar>
             </a>
@@ -51,9 +51,9 @@ export default function AppBar() {
         </div>
 
         <div className="flex-shrink-0">
-          <Button variant="ghost" size="icon" className="bg-primary/5 text-primary"> {/* Added text-primary */}
-            <Bell className="h-5 w-5" /> {/* Changed Search to Bell */}
-            <span className="sr-only">اعلان‌ها</span> {/* Changed from "جستجو" */}
+          <Button variant="ghost" size="icon" className="bg-primary/5 text-primary">
+            <Bell className="h-5 w-5" />
+            <span className="sr-only">اعلان‌ها</span>
           </Button>
         </div>
       </div>
