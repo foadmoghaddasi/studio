@@ -1,4 +1,5 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import { Vazirmatn } from "next/font/google";
 import { Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/providers/theme-provider";
@@ -7,6 +8,11 @@ import { Toaster } from "@/components/ui/toaster";
 import BottomNavigation from "@/components/layout/bottom-navigation";
 import AuthProvider from "@/providers/auth-provider";
 import AppBar from "@/components/layout/app-bar";
+
+const vazir = Vazirmatn({
+  subsets: ["arabic", "latin"],
+  variable: "--font-vazir",
+});
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -17,7 +23,13 @@ export const metadata: Metadata = {
   title: "روز به روز",
   description: "اپلیکیشن مدیریت عادت‌ها",
   manifest: "/manifest.json",
+  // themeColor: "#4FD1C5", // From original, updated for new design. Handled by Viewport
 };
+
+export const viewport: Viewport = {
+  themeColor: "#4FD1C5", // Matches the new primary color for the new design
+};
+
 
 export default function RootLayout({
   children,
@@ -28,33 +40,28 @@ export default function RootLayout({
     <html
       lang="fa"
       dir="rtl"
-      className={`${geistMono.variable}`}
+      className={`${vazir.variable} ${geistMono.variable}`}
       suppressHydrationWarning={true}
     >
-      <head>
-        <meta name="theme-color" content="#4FD1C5" />
-      </head>
+      {/* <head> tag removed as Next.js handles metadata and viewport */}
       <body
         className="antialiased font-sans bg-background"
         suppressHydrationWarning={true}
       >
         {" "}
-        {/* Ensure bg-background is on body */}
         <AuthProvider>
           <ThemeProvider
             attribute="class"
-            defaultTheme="light"
-            enableSystem={false}
+            defaultTheme="light" // Set light as default to match new design
+            enableSystem={false} // Disable system preference for now
           >
             {" "}
-            {/* Default to light, disable system for now to match design */}
             <HabitProvider>
               <div className="flex flex-col min-h-svh">
                 <AppBar />
-                {/* Increased pt for taller AppBar, more overall padding for the new design */}
                 <main className="flex-grow container mx-auto max-w-md p-4 sm:p-6 pt-24">
                   {" "}
-                  {/* pt-24 to account for h-20 AppBar + spacing */}
+                  {/* pt-24 ensures content starts below h-20 AppBar + some spacing */}
                   {children}
                 </main>
                 <BottomNavigation />
