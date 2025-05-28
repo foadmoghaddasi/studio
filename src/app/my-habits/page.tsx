@@ -13,7 +13,7 @@ export default function MyHabitsPage() {
   const { habits } = useHabits();
 
   const nonArchivedHabits = habits.filter(habit => !habit.isArchived);
-  const totalActiveHabits = nonArchivedHabits.length;
+  const totalHabits = nonArchivedHabits.length;
 
   const successfulDays = nonArchivedHabits.reduce(
     (sum, habit) => sum + habit.daysCompleted,
@@ -38,7 +38,7 @@ export default function MyHabitsPage() {
 
 
   const statCardData = [
-    { title: "کل عادت‌ها", value: toPersianNumerals(totalActiveHabits), goal: "فعال و در حال پیگیری", icon: ListChecks, color: "green", hint: "total habits" },
+    { title: "کل عادت‌ها", value: toPersianNumerals(totalHabits), goal: "فعال و در حال پیگیری", icon: ListChecks, color: "green", hint: "total habits" },
     { title: "روزهای موفق", value: toPersianNumerals(successfulDays), goal: "مجموع روزهای انجام شده", icon: TrendingUp, color: "blue", hint: "successful days" },
     { title: "روز های ناموفق", value: toPersianNumerals(unsuccessfulDays), goal: "روزهای از دست رفته تا امروز", icon: TrendingDown, color: "purple", hint: "unsuccessful days" },
   ];
@@ -46,8 +46,11 @@ export default function MyHabitsPage() {
 
   return (
     <div className="space-y-6 pb-28" lang="fa"> 
+      <div className="text-center">
+        <h1 className="text-2xl font-bold text-foreground">عادت‌های من</h1>
+      </div>
       
-      <div className="grid grid-cols-3 gap-3 mb-4"> {/* Changed to grid-cols-3 and gap-3 */}
+      <div className="grid grid-cols-3 gap-3 mb-4 mt-0"> {/* Added mt-0 here */}
         {statCardData.map((stat, index) => (
           <div 
             key={index} 
@@ -73,7 +76,7 @@ export default function MyHabitsPage() {
             </div>
             <p className="text-xs font-medium text-muted-foreground">{stat.title}</p>
             <p className={cn(
-                "text-lg font-semibold",
+                "text-lg font-semibold mt-0.5", // Added small margin-top for number
                  stat.color === "green" && "text-emerald-700 dark:text-emerald-200",
                  stat.color === "blue" && "text-sky-700 dark:text-sky-200",
                  stat.color === "purple" && "text-violet-700 dark:text-violet-200"
