@@ -4,16 +4,19 @@
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { User, Bell } from 'lucide-react';
+import { User, Bell } from 'lucide-react'; // Changed Search to Bell
 import { useAuth } from '@/providers/auth-provider';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export default function AppBar() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, firstName } = useAuth(); // Added firstName
   const pathname = usePathname();
-  const userDisplayName = "کاربر روزبه‌روز";
-  const userFirstName = userDisplayName.split(' ')[0];
+  
+  const userDisplayName = firstName || "کاربر"; // Use firstName or fallback
+  const userGreetingName = firstName || "کاربر";
+
+
   const [currentDate, setCurrentDate] = useState('');
 
   useEffect(() => {
@@ -22,14 +25,13 @@ export default function AppBar() {
     setCurrentDate(`امروز ${today.toLocaleDateString('fa-IR', options)}`);
   }, []);
 
-  if (isLoading || !isAuthenticated || ['/', '/otp'].includes(pathname)) {
+  if (isLoading || !isAuthenticated || ['/', '/otp', '/profile-setup'].includes(pathname)) {
     return null;
   }
 
   return (
     <header className="bg-card sticky top-0 z-50 md:max-w-md md:mx-auto md:left-1/2 md:-translate-x-1/2 w-full border-b border-primary">
       <div className="container mx-auto max-w-md h-16 flex items-center px-4">
-        {/* Left: Avatar */}
         <div className="flex-shrink-0">
           <Link href="/profile" passHref legacyBehavior>
             <a aria-label="پروفایل کاربر">
@@ -43,17 +45,15 @@ export default function AppBar() {
           </Link>
         </div>
 
-        {/* Center: Greeting & Date */}
         <div className="flex-grow text-center px-2">
-          <p className="text-base font-semibold text-foreground">سلام {userFirstName}!</p>
+          <p className="text-base font-semibold text-foreground">سلام {userGreetingName}!</p>
           {currentDate && <p className="text-xs text-muted-foreground">{currentDate}</p>}
         </div>
 
-        {/* Right: Notification Icon Button */}
         <div className="flex-shrink-0">
-          <Button variant="ghost" size="icon" className="bg-primary/5">
-            <Bell className="h-5 w-5 text-primary" />
-            <span className="sr-only">اعلان‌ها</span>
+          <Button variant="ghost" size="icon" className="bg-primary/5 text-primary"> {/* Added text-primary */}
+            <Bell className="h-5 w-5" /> {/* Changed Search to Bell */}
+            <span className="sr-only">اعلان‌ها</span> {/* Changed from "جستجو" */}
           </Button>
         </div>
       </div>
