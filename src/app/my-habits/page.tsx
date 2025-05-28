@@ -7,6 +7,7 @@ import Link from "next/link";
 import { Plus, Droplet, Activity, Zap } from "lucide-react"; // Example icons for stats
 import { useHabits } from "@/providers/habit-provider"; 
 import { toPersianNumerals } from "@/lib/utils"; 
+import { cn } from "@/lib/utils"; // Added missing import
 
 export default function MyHabitsPage() {
   const { habits } = useHabits();
