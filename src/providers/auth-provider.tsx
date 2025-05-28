@@ -7,8 +7,8 @@ import { useRouter, usePathname } from 'next/navigation';
 interface AuthContextType {
   isAuthenticated: boolean;
   firstName: string | null;
-  lastName: string | null; // Added for potential future use in profile display
-  age: string | null; // Added for potential future use in profile display
+  lastName: string | null; 
+  age: string | null; 
   profilePictureUrl: string | null;
   isProfileSetupComplete: boolean;
   login: () => void;
@@ -44,22 +44,24 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     setMounted(true);
-    try {
-      const storedAuth = localStorage.getItem(AUTH_STORAGE_KEY);
-      const authStatus = storedAuth === 'true';
-      setIsAuthenticated(authStatus);
+    if (typeof window !== 'undefined') {
+      try {
+        const storedAuth = localStorage.getItem(AUTH_STORAGE_KEY);
+        const authStatus = storedAuth === 'true';
+        setIsAuthenticated(authStatus);
 
-      const storedProfileSetup = localStorage.getItem(PROFILE_SETUP_COMPLETE_KEY);
-      const profileSetupStatus = storedProfileSetup === 'true';
-      setIsProfileSetupComplete(profileSetupStatus);
+        const storedProfileSetup = localStorage.getItem(PROFILE_SETUP_COMPLETE_KEY);
+        const profileSetupStatus = storedProfileSetup === 'true';
+        setIsProfileSetupComplete(profileSetupStatus);
 
-      setFirstName(localStorage.getItem(USER_FIRST_NAME_KEY));
-      setLastName(localStorage.getItem(USER_LAST_NAME_KEY));
-      setAge(localStorage.getItem(USER_AGE_KEY));
-      setProfilePictureUrl(localStorage.getItem(USER_PROFILE_PICTURE_KEY));
+        setFirstName(localStorage.getItem(USER_FIRST_NAME_KEY));
+        setLastName(localStorage.getItem(USER_LAST_NAME_KEY));
+        setAge(localStorage.getItem(USER_AGE_KEY));
+        setProfilePictureUrl(localStorage.getItem(USER_PROFILE_PICTURE_KEY));
 
-    } catch (error) {
-      console.error("Failed to load auth status from localStorage", error);
+      } catch (error) {
+        console.error("Failed to load auth status from localStorage", error);
+      }
     }
     setIsLoading(false);
   }, []);
@@ -79,41 +81,51 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   }, [isAuthenticated, isProfileSetupComplete, isLoading, pathname, router, mounted]);
 
   const login = () => {
-    try {
-      localStorage.setItem(AUTH_STORAGE_KEY, 'true');
-    } catch (error) {
-      console.error("Failed to save auth status to localStorage", error);
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem(AUTH_STORAGE_KEY, 'true');
+      } catch (error) {
+        console.error("Failed to save auth status to localStorage", error);
+      }
     }
     setIsAuthenticated(true);
+    // Re-check profile completion status from localStorage after login, in case it was set in a previous session
+    if (typeof window !== 'undefined') {
+        const storedProfileSetup = localStorage.getItem(PROFILE_SETUP_COMPLETE_KEY);
+        setIsProfileSetupComplete(storedProfileSetup === 'true');
+        setFirstName(localStorage.getItem(USER_FIRST_NAME_KEY));
+        setLastName(localStorage.getItem(USER_LAST_NAME_KEY));
+        setAge(localStorage.getItem(USER_AGE_KEY));
+        setProfilePictureUrl(localStorage.getItem(USER_PROFILE_PICTURE_KEY));
+    }
   };
 
   const logout = () => {
-    try {
-      localStorage.removeItem(AUTH_STORAGE_KEY);
-      localStorage.removeItem(PROFILE_SETUP_COMPLETE_KEY);
-      localStorage.removeItem(USER_FIRST_NAME_KEY);
-      localStorage.removeItem(USER_LAST_NAME_KEY);
-      localStorage.removeItem(USER_AGE_KEY);
-      localStorage.removeItem(USER_PROFILE_PICTURE_KEY);
-    } catch (error) {
-      console.error("Failed to remove auth status from localStorage", error);
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.removeItem(AUTH_STORAGE_KEY);
+        // Do NOT remove PROFILE_SETUP_COMPLETE_KEY, USER_FIRST_NAME_KEY, etc.
+        // This allows the profile to persist across logout/login on the same browser.
+      } catch (error) {
+        console.error("Failed to remove auth status from localStorage", error);
+      }
     }
     setIsAuthenticated(false);
-    setIsProfileSetupComplete(false);
-    setFirstName(null);
-    setLastName(null);
-    setAge(null);
-    setProfilePictureUrl(null);
+    // We keep isProfileSetupComplete, firstName etc. as they are in localStorage,
+    // so the next login can pick them up if it's the "same user" on this browser.
+    // The local react states will be updated by the useEffect when isAuthenticated changes.
   };
 
   const saveProfile = (profileData: { firstName: string; lastName: string; age: string }) => {
-    try {
-      localStorage.setItem(USER_FIRST_NAME_KEY, profileData.firstName);
-      localStorage.setItem(USER_LAST_NAME_KEY, profileData.lastName);
-      localStorage.setItem(USER_AGE_KEY, profileData.age);
-      localStorage.setItem(PROFILE_SETUP_COMPLETE_KEY, 'true');
-    } catch (error) {
-      console.error("Failed to save profile data to localStorage", error);
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem(USER_FIRST_NAME_KEY, profileData.firstName);
+        localStorage.setItem(USER_LAST_NAME_KEY, profileData.lastName);
+        localStorage.setItem(USER_AGE_KEY, profileData.age);
+        localStorage.setItem(PROFILE_SETUP_COMPLETE_KEY, 'true');
+      } catch (error) {
+        console.error("Failed to save profile data to localStorage", error);
+      }
     }
     setFirstName(profileData.firstName);
     setLastName(profileData.lastName);
@@ -123,11 +135,13 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const updateProfileImage = (imageUrl: string) => {
-    try {
-      localStorage.setItem(USER_PROFILE_PICTURE_KEY, imageUrl);
-      setProfilePictureUrl(imageUrl);
-    } catch (error) {
-      console.error("Failed to save profile image to localStorage", error);
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem(USER_PROFILE_PICTURE_KEY, imageUrl);
+        setProfilePictureUrl(imageUrl);
+      } catch (error) {
+        console.error("Failed to save profile image to localStorage", error);
+      }
     }
   };
 
@@ -164,3 +178,5 @@ export function useAuth() {
   }
   return context;
 }
+
+    
