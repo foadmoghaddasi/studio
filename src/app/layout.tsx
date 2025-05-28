@@ -1,6 +1,6 @@
 
 import type { Metadata } from 'next';
-import { Vazirmatn } from 'next/font/google'; // Assuming Vazirmatn is preferred
+import { Vazirmatn } from 'next/font/google';
 import { Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/providers/theme-provider';
@@ -11,7 +11,7 @@ import AuthProvider from '@/providers/auth-provider';
 import AppBar from '@/components/layout/app-bar';
 
 const vazir = Vazirmatn({
-  subsets: ['arabic', 'latin'], // Include subsets for Vazirmatn
+  subsets: ['arabic', 'latin'],
   variable: '--font-vazir',
   display: 'swap',
 });
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   title: 'روز به روز',
   description: 'اپلیکیشن مدیریت عادت‌ها',
   manifest: '/manifest.json',
-  themeColor: '#4FD1C5', // Moved theme-color here
+  themeColor: '#7AC9DE', // Updated to new primary color
 };
 
 export default function RootLayout({
@@ -35,15 +35,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fa" dir="rtl" className={`${vazir.variable} ${geistMono.variable}`} suppressHydrationWarning={true}>
-      {/* <head> tag removed, Next.js will generate it */}
-      <body className="antialiased font-sans bg-background" suppressHydrationWarning={true}> {/* Ensure bg-background is on body */}
+      <body className="antialiased font-sans bg-background" suppressHydrationWarning={true}>
         <AuthProvider>
-          <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}> {/* Default to light, disable system for now to match design */}
+          <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
             <HabitProvider>
               <div className="flex flex-col min-h-svh">
                 <AppBar />
-                {/* Increased pt for taller AppBar, more overall padding for the new design */}
-                <main className="flex-grow container mx-auto max-w-md p-4 sm:p-6 pt-24"> {/* pt-24 to account for h-20 AppBar + spacing */}
+                <main className="flex-grow container mx-auto max-w-md p-4 sm:p-6 pt-20"> {/* Changed pt-24 to pt-20 */}
                   {children}
                 </main>
                 <BottomNavigation />
