@@ -23,11 +23,11 @@ export const metadata: Metadata = {
   title: "روز به روز",
   description: "اپلیکیشن مدیریت عادت‌ها",
   manifest: "/manifest.json",
-  themeColor: "#4FD1C5", // From original, updated for new design
+  themeColor: "#4FD1C5", 
 };
 
 export const viewport: Viewport = {
-  themeColor: "#4FD1C5", // Matches the new primary color for the new design
+  themeColor: "#4FD1C5", 
 };
 
 
@@ -51,16 +51,15 @@ export default function RootLayout({
         <AuthProvider>
           <ThemeProvider
             attribute="class"
-            defaultTheme="light" // Set light as default to match new design
-            enableSystem={false} // Disable system preference for now
+            defaultTheme="light" 
+            enableSystem={false} 
           >
             {" "}
             <HabitProvider>
               <div className="flex flex-col min-h-svh">
                 <AppBar />
-                <main className="flex-grow container mx-auto max-w-md p-4 sm:p-6 pt-20">
+                <main className="flex-grow container mx-auto max-w-md p-4 sm:p-6 pt-2">
                   {" "}
-                  {/* Changed pt-24 to pt-20 to align content immediately below AppBar */}
                   {children}
                 </main>
                 <BottomNavigation />
