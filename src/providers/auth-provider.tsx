@@ -3,6 +3,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
+import { TEMP_PHONE_NUMBER_KEY } from '@/components/auth/welcome-form'; // Import the key
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -10,6 +11,7 @@ interface AuthContextType {
   lastName: string | null; 
   age: string | null; 
   profilePictureUrl: string | null;
+  loginIdentifier: string | null; // For phone number or email
   isProfileSetupComplete: boolean;
   login: () => void;
   logout: () => void;
@@ -26,6 +28,7 @@ const USER_FIRST_NAME_KEY = 'roozberooz_userFirstName';
 const USER_LAST_NAME_KEY = 'roozberooz_userLastName';
 const USER_AGE_KEY = 'roozberooz_userAge';
 const USER_PROFILE_PICTURE_KEY = 'roozberooz_userProfilePictureUrl';
+const USER_LOGIN_IDENTIFIER_KEY = 'roozberooz_userLoginIdentifier'; // New key for login identifier
 
 const AUTH_PAGES = ['/', '/otp'];
 const PROFILE_SETUP_PAGE = '/profile-setup';
@@ -36,6 +39,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   const [lastName, setLastName] = useState<string | null>(null);
   const [age, setAge] = useState<string | null>(null);
   const [profilePictureUrl, setProfilePictureUrl] = useState<string | null>(null);
+  const [loginIdentifier, setLoginIdentifier] = useState<string | null>(null);
   const [isProfileSetupComplete, setIsProfileSetupComplete] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
@@ -58,6 +62,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         setLastName(localStorage.getItem(USER_LAST_NAME_KEY));
         setAge(localStorage.getItem(USER_AGE_KEY));
         setProfilePictureUrl(localStorage.getItem(USER_PROFILE_PICTURE_KEY));
+        setLoginIdentifier(localStorage.getItem(USER_LOGIN_IDENTIFIER_KEY));
 
       } catch (error) {
         console.error("Failed to load auth status from localStorage", error);
@@ -84,12 +89,28 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     if (typeof window !== 'undefined') {
       try {
         localStorage.setItem(AUTH_STORAGE_KEY, 'true');
+        
+        // Retrieve and store login identifier (phone number)
+        const tempPhoneNumber = localStorage.getItem(TEMP_PHONE_NUMBER_KEY);
+        if (tempPhoneNumber) {
+          localStorage.setItem(USER_LOGIN_IDENTIFIER_KEY, tempPhoneNumber);
+          setLoginIdentifier(tempPhoneNumber);
+          localStorage.removeItem(TEMP_PHONE_NUMBER_KEY); // Clean up temporary key
+        } else {
+          // If no temp phone number, check if a login identifier already exists (e.g. from a previous session)
+          const existingIdentifier = localStorage.getItem(USER_LOGIN_IDENTIFIER_KEY);
+          if (existingIdentifier) {
+            setLoginIdentifier(existingIdentifier);
+          }
+          // For Google login simulation, we would set an email here if it was real
+        }
+
       } catch (error) {
-        console.error("Failed to save auth status to localStorage", error);
+        console.error("Failed to save auth status or login identifier to localStorage", error);
       }
     }
     setIsAuthenticated(true);
-    // Re-check profile completion status from localStorage after login, in case it was set in a previous session
+    // Re-check profile completion status from localStorage after login
     if (typeof window !== 'undefined') {
         const storedProfileSetup = localStorage.getItem(PROFILE_SETUP_COMPLETE_KEY);
         setIsProfileSetupComplete(storedProfileSetup === 'true');
@@ -104,16 +125,18 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     if (typeof window !== 'undefined') {
       try {
         localStorage.removeItem(AUTH_STORAGE_KEY);
-        // Do NOT remove PROFILE_SETUP_COMPLETE_KEY, USER_FIRST_NAME_KEY, etc.
-        // This allows the profile to persist across logout/login on the same browser.
+        // Do NOT remove profile setup keys, user name, age, picture, or login identifier
+        // This allows the profile and identifier to persist across logout/login on the same browser.
       } catch (error) {
         console.error("Failed to remove auth status from localStorage", error);
       }
     }
     setIsAuthenticated(false);
-    // We keep isProfileSetupComplete, firstName etc. as they are in localStorage,
-    // so the next login can pick them up if it's the "same user" on this browser.
-    // The local react states will be updated by the useEffect when isAuthenticated changes.
+    // loginIdentifier is not cleared from state here, it will be re-read from localStorage on next mount if user logs back in.
+    // Or we can clear it from state:
+    // setLoginIdentifier(null); 
+    // But if we want it to persist in profile even after logout (like other profile data), we leave it.
+    // For this scenario, let's keep it, as other profile data is kept.
   };
 
   const saveProfile = (profileData: { firstName: string; lastName: string; age: string }) => {
@@ -123,6 +146,14 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         localStorage.setItem(USER_LAST_NAME_KEY, profileData.lastName);
         localStorage.setItem(USER_AGE_KEY, profileData.age);
         localStorage.setItem(PROFILE_SETUP_COMPLETE_KEY, 'true');
+
+        // If loginIdentifier wasn't set during login (e.g. very first time, or if logic was missed)
+        // ensure it's set or re-read here if needed, though login() should handle it.
+        const currentIdentifier = localStorage.getItem(USER_LOGIN_IDENTIFIER_KEY);
+        if (currentIdentifier) {
+            setLoginIdentifier(currentIdentifier);
+        }
+
       } catch (error) {
         console.error("Failed to save profile data to localStorage", error);
       }
@@ -159,6 +190,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         lastName,
         age,
         profilePictureUrl,
+        loginIdentifier,
         isProfileSetupComplete, 
         login, 
         logout, 
@@ -178,5 +210,3 @@ export function useAuth() {
   }
   return context;
 }
-
-    

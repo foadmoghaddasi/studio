@@ -9,19 +9,16 @@ import { User, LogOut, Edit2, Camera } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { toPersianNumerals } from "@/lib/utils";
 
 export default function ProfilePage() {
-  const { logout, firstName, lastName, profilePictureUrl, updateProfileImage } = useAuth();
+  const { logout, firstName, lastName, profilePictureUrl, updateProfileImage, loginIdentifier } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [displayUserName, setDisplayUserName] = useState("کاربر روزبه‌روز");
   const [userLastNameState, setUserLastNameState] = useState<string | null>(null);
-
-
-  // Placeholder for phone number, as it's not currently stored from welcome form
-  const userPhoneNumber = "۰۹۱۲۳۴۵۶۷۸۹"; 
 
   useEffect(() => {
     if (firstName) {
@@ -33,6 +30,9 @@ export default function ProfilePage() {
   }, [firstName, lastName]);
 
   const fullDisplayName = userLastNameState ? `${displayUserName} ${userLastNameState}` : displayUserName;
+  
+  const displayLoginIdentifier = loginIdentifier ? toPersianNumerals(loginIdentifier) : "اطلاعات ورود در دسترس نیست";
+
 
   const handleProfilePictureChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -101,7 +101,7 @@ export default function ProfilePage() {
             </Button>
           </div>
           <CardTitle className="text-2xl">{fullDisplayName}</CardTitle>
-          <p className="text-muted-foreground">{userPhoneNumber}</p>
+          <p className="text-muted-foreground">{displayLoginIdentifier}</p>
         </CardHeader>
       </Card>
 
