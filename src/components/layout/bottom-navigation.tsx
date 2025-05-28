@@ -2,17 +2,15 @@
 "use client";
 
 import Link from 'next/link';
-import { Home, Archive as ArchiveIcon, Settings, Users, BarChart2 } from 'lucide-react'; // Example icons
+import { Home, Archive as ArchiveIcon, Settings } from 'lucide-react'; // Removed Users, BarChart2
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/providers/auth-provider';
 import { useEffect, useState } from 'react';
 
-// Updated navItems to have 5 items as per the design image
+// Updated navItems to have 3 items
 const navItems = [
   { href: '/my-habits', label: 'عادت‌ها', icon: Home },
-  { href: '/stats', label: 'آمار', icon: BarChart2 }, // Placeholder for stats
-  { href: '/community', label: 'انجمن', icon: Users }, // Placeholder for community
   { href: '/archive', label: 'آرشیو', icon: ArchiveIcon },
   { href: '/settings', label: 'تنظیمات', icon: Settings },
 ];
@@ -37,7 +35,10 @@ export default function BottomNavigation() {
     <nav className="bg-card fixed bottom-0 left-0 right-0 md:max-w-md md:mx-auto md:left-1/2 md:-translate-x-1/2 w-full h-20 rounded-t-3xl z-50"> 
       <div className="flex items-center justify-around h-full px-2 pt-2"> {/* justify-around for even spacing */}
         {displayedNavItems.map((item) => {
-          const isActive = pathname === item.href || (item.href === '/my-habits' && pathname.startsWith('/habits/')); // Highlight 'عادت‌ها' for detail pages too
+          const isActive = pathname === item.href || 
+                         (item.href === '/my-habits' && pathname.startsWith('/habits/')) ||
+                         (item.href === '/my-habits' && pathname.startsWith('/create-habit')) ||
+                         (item.href === '/my-habits' && pathname.startsWith('/edit-habit'));
           return (
             <Link key={item.href} href={item.href} legacyBehavior>
               <a
@@ -57,7 +58,7 @@ export default function BottomNavigation() {
                   <item.icon className={cn(
                     "h-5 w-5", 
                     isActive 
-                      ? "text-primary dark:text-primary-foreground" // Active icon color
+                      ? "text-primary dark:text-primary" 
                       : "text-inherit" 
                   )} />
                 </div>
@@ -65,7 +66,7 @@ export default function BottomNavigation() {
                 <span className={cn(
                   "text-[10px]", // Smaller text
                   isActive 
-                    ? "text-primary dark:text-primary-foreground" 
+                    ? "text-primary dark:text-primary" 
                     : "text-inherit"
                 )}> 
                   {item.label}
@@ -79,4 +80,3 @@ export default function BottomNavigation() {
   );
 }
 
-    
