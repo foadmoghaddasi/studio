@@ -58,7 +58,7 @@ export default function RootLayout({
             <HabitProvider>
               <div className="flex flex-col min-h-svh">
                 <AppBar />
-                <main className="flex-grow container mx-auto max-w-md p-4 sm:p-6 pt-24"> {/* Changed pt-20 to pt-24 */}
+                <main className="flex-grow container mx-auto max-w-md p-4 sm:p-6 pt-[5.5rem]"> {/* Changed pt-24 to pt-[5.5rem] */}
                   {" "}
                   {children}
                 </main>
