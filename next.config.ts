@@ -6,7 +6,7 @@ const pwaConfig = {
   dest: "public",
   register: true,
   skipWaiting: true,
-  disable: !isProd, // فقط در production فعال است
+  disable: !isProd,
 };
 
 const nextConfig: NextConfig = {
@@ -26,6 +26,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  output: "standalone",
 };
 
 const withPWA = isProd
