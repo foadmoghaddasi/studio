@@ -310,35 +310,34 @@ export default function HabitCard({
         )}
       </Card>
 
-      {habitToDelete && (
-        <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
-          <AlertDialogContent
-            dir="rtl"
-            className="rounded-3xl bg-secondary"
-            onPointerDownOutside={(e) => {
-              setShowDeleteConfirm(false);
-            }}
-          >
-            <AlertDialogHeader className="items-center">
-              <AlertTriangle className="h-10 w-10 text-destructive mb-3" />
-              <AlertDialogTitle>تأیید حذف عادت</AlertDialogTitle>
-              <AlertDialogDescription className="text-center">
-                آیا از حذف عادت "{habitToDelete.title}" مطمئن هستید؟ این عمل
-                قابل بازگشت نیست.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter className="mt-4 flex flex-row gap-2">
-              <AlertDialogCancel className="flex-1 rounded-full h-12 bg-background text-foreground hover:bg-muted/90">انصراف</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={confirmDeleteHabit}
-                className={cn(buttonVariants({ variant: "destructive" }), "flex-1 rounded-full h-12")}
-              >
-                حذف
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      )}
+{habitToDelete && (
+  <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+    <AlertDialogContent
+      dir="rtl"
+      className="rounded-3xl bg-secondary"
+    >
+      <AlertDialogHeader className="items-center">
+        <AlertTriangle className="h-10 w-10 text-destructive mb-3" />
+        <AlertDialogTitle>تأیید حذف عادت</AlertDialogTitle>
+        <AlertDialogDescription className="text-center">
+          آیا از حذف عادت "{habitToDelete.title}" مطمئن هستید؟ این عمل
+          قابل بازگشت نیست.
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter className="mt-4 flex flex-row gap-2">
+        <AlertDialogCancel className="flex-1 rounded-full h-12 bg-background text-foreground hover:bg-muted/90">
+          انصراف
+        </AlertDialogCancel>
+        <AlertDialogAction
+          onClick={confirmDeleteHabit}
+          className={cn(buttonVariants({ variant: "destructive" }), "flex-1 rounded-full h-12")}
+        >
+          حذف
+        </AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
+)}
     </>
   );
 }
