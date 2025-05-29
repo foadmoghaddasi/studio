@@ -98,7 +98,7 @@ export default function OtpForm() {
       <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-8">
         {/* OTP Inputs: rounded-full, slightly larger */}
         <div
-          className="flex justify-center space-x-2 rtl:space-x-reverse"
+          className="flex justify-center gap-x-2 rtl:space-x-reverse"
           dir="ltr"
         >
           {otp.map((data, index) => (

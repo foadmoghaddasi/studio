@@ -80,7 +80,7 @@ export default function MyHabitsPage() {
       <h1 className="text-2xl font-bold text-foreground text-center">عادت های من</h1>
 
       {nonArchivedHabits.length > 0 && (
-        <div className="grid grid-cols-3 gap-3 mt-0">
+        <div className="grid grid-cols-3 gap-2 mt-0">
           {statCardData.map((stat, index) => (
             <div
               key={index}

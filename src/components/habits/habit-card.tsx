@@ -205,8 +205,8 @@ export default function HabitCard({
       <Card className={cn(
         "w-full p-4 rounded-2xl transition-opacity duration-300 ease-in-out relative",
         isActiveAndNotArchived 
-          ? "bg-[var(--card-effective-background)] dark:bg-muted/50" 
-          : "bg-muted opacity-70 scale-[0.985] transform dark:bg-[var(--card-effective-background)]"
+          ? "bg-[#e1eef5] dark:bg-muted/50" 
+          : "bg-bg-[var(--card-effective-background) opacity-50 scale-[0.985] transform dark:bg-[var(--card-effective-background)]"
       )}>
         <div className="absolute top-3 left-3 z-10">
             <DropdownMenu dir="rtl">
