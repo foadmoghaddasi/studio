@@ -1,7 +1,7 @@
 {
-  "name": "روز به روز",
-  "short_name": "روز به روز",
-  "description": "اپلیکیشن مدیریت عادت‌ها برای کمک به ایجاد و پیگیری عادت‌های مثبت.",
+  "name": "Rooz b Rooz",
+  "short_name": "RuzRuz",
+  "description": "روز به روز، هر روز یک قدم کوچک",
   "icons": [
     {
       "src": "https://placehold.co/192x192.png",
@@ -10,7 +10,7 @@
       "purpose": "any"
     },
     {
-      "src": "https://placehold.co/512x512.png",
+      "src": "/icons/pwa-logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
@@ -22,7 +22,7 @@
       "purpose": "maskable"
     },
     {
-      "src": "https://placehold.co/512x512.png",
+      "src": "/icons/pwa-logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
