@@ -77,7 +77,9 @@ export default function MyHabitsPage() {
 
   return (
     <div className="space-y-6" lang="fa">
-      {/* Main H1 title removed as requested */}
+      <div className="text-center">
+        <h1 className="text-2xl font-bold text-foreground">عادت های من</h1>
+      </div>
 
       {nonArchivedHabits.length > 0 && (
         <div className="grid grid-cols-3 gap-3 mt-0"> {/* mt-0 to remove top margin */}
