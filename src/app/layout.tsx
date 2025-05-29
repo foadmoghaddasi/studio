@@ -24,13 +24,13 @@ export const metadata: Metadata = {
   title: "روز به روز",
   description: "اپلیکیشن مدیریت عادت‌ها",
   manifest: "/manifest.json",
-  themeColor: "#7AC9DE", // Light mode primary from new palette
+  themeColor: "#4FD1C5", // Updated theme color
 };
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#7AC9DE" }, // Light mode primary
-    { media: "(prefers-color-scheme: dark)", color: "#254047" }, // Dark mode primary from new palette
+    { media: "(prefers-color-scheme: light)", color: "#4FD1C5" },
+    { media: "(prefers-color-scheme: dark)", color: "#254047" },
   ],
 };
 
@@ -76,3 +76,4 @@ export default function RootLayout({
     </html>
   );
 }
+

@@ -17,7 +17,7 @@ export default function ArchivePage() {
                                .sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
   return (
-    <div className="space-y-8 pb-24" lang="fa"> {/* Increased pb */}
+    <div className="space-y-4 pb-24" lang="fa">
       <div className="text-center">
         <h1 className="text-2xl font-bold text-foreground">عادت‌های آرشیو شده</h1>
       </div>

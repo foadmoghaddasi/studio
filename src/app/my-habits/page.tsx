@@ -76,13 +76,11 @@ export default function MyHabitsPage() {
   ];
 
   return (
-    <div className="space-y-6" lang="fa">
-      <div className="text-center">
-        <h1 className="text-2xl font-bold text-foreground">عادت های من</h1>
-      </div>
+    <div className="space-y-4" lang="fa">
+      <h1 className="text-2xl font-bold text-foreground text-center">عادت های من</h1>
 
       {nonArchivedHabits.length > 0 && (
-        <div className="grid grid-cols-3 gap-3 mt-0"> {/* mt-0 to remove top margin */}
+        <div className="grid grid-cols-3 gap-3 mt-0">
           {statCardData.map((stat, index) => (
             <div
               key={index}
