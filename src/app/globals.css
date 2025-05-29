@@ -12,7 +12,7 @@
     --card-foreground: 195 33% 15%; /* Darker Cool Gray for AppBar/BottomNav text */
 
     /* Effective card background for Content Cards (Habit Cards, Stat Cards etc.) */
-    --card-effective-background: 0 0% 100%; /* White - FOR ACTIVE HABIT CARDS IN LIGHT MODE */
+    --card-effective-background: 200 50% 93%; /* Light Grayish Blue - #E4F4F8 - FOR ACTIVE HABIT CARDS IN LIGHT MODE (SAME AS MUTED) */
     /* --card-effective-foreground is not explicitly defined, defaults to --foreground */
 
     --popover: 0 0% 99%; /* Off-white for popovers */
