@@ -4,119 +4,101 @@
 
 @layer base {
   :root {
-    --background: 220 30% 97%; /* Light Grayish Blue - Page Background #F7FAFC */
-    --foreground: 215 25% 27%; /* Dark Slate Gray - Main Text #3A4754 */
+    --background: 200 50% 97%; /* Light Grayish Blue - Page Background #F2FAFC */
+    --foreground: 195 33% 15%; /* Darker Cool Gray - Main Text #192C31 */
 
-    /* Card for AppBar/BottomNav - BottomNav is dark in the image */
-    --card: 215 18% 18%; /* Darker Slate for BottomNav #262F3D */
-    --card-foreground: 210 20% 90%; /* Light Gray for BottomNav text #E2E8F0 */
+    /* Card for AppBar/BottomNav */
+    --card: 0 0% 100%; /* White for AppBar/BottomNav in Light Mode */
+    --card-foreground: 195 33% 15%; /* Darker Cool Gray for AppBar/BottomNav text */
 
     /* Effective card background for Content Cards (Habit Cards, Stat Cards etc.) */
-    --card-effective-background: 0 0% 100%; /* White #FFFFFF */
-    --card-effective-foreground: 215 25% 27%; /* Dark Slate Gray */
+    --card-effective-background: 0 0% 100%; /* White - FOR ACTIVE HABIT CARDS IN LIGHT MODE */
+    /* --card-effective-foreground is not explicitly defined, defaults to --foreground */
 
-    --popover: 0 0% 100%; /* White */
-    --popover-foreground: 215 25% 27%; /* Dark Slate Gray */
+    --popover: 0 0% 99%; /* Off-white for popovers */
+    --popover-foreground: 195 33% 15%; /* Darker Cool Gray */
 
-    --muted: 220 25% 92%; /* Very Light Gray for subtle backgrounds/borders #EAF0F5 */
-    --muted-foreground: 215 20% 55%; /* Medium Slate Gray for secondary text #7C8A9A */
+    --muted: 200 50% 93%; /* Very Light Grayish Blue for subtle backgrounds/borders #E4F4F8 - FOR INACTIVE HABIT CARDS BASE IN LIGHT */
+    --muted-foreground: 195 28% 41%; /* Medium Slate Gray for secondary text #4A7B88 */
 
-    --border: 220 25% 90%; /* Light Gray border for inputs #E1E7ED */
+    --border: 195 55% 67%; /* Primary color for borders (like input focus, specific borders) #7AC9DE */
     --input: 0 0% 100%; /* White background for inputs */
 
-    --primary: 190 65% 55%; /* Bright Teal #4FD1C5 - Image's primary */
+    --primary: 195 55% 67%; /* Main Primary Teal/Blue #7AC9DE */
     --primary-foreground: 0 0% 100%; /* White */
 
-    --secondary: 190 60% 88%; /* Very Light Teal #D4F5F2 */
-    --secondary-foreground: 190 50% 35%; /* Darker Teal for text on light teal bg #3DA89A */
+    --secondary: 200 50% 87%; /* Lighter Teal/Blue #CAE9F2 */
+    --secondary-foreground: 195 30% 28%; /* Darker Teal/Blue for text on secondary bg #31535C */
 
     --destructive: 0 72% 51%; /* Kept from existing */
     --destructive-foreground: 0 0% 100%; /* Kept from existing */
 
-    --ring: 190 65% 55%; /* Bright Teal for focus rings */
+    --ring: 195 55% 67%; /* Primary Teal/Blue for focus rings #7AC9DE */
 
     --radius: 1rem; /* Default radius for many components, leading to rounded-2xl */
 
-    --chart-1: 190 65% 55%; /* Primary Teal */
-    --chart-2: 190 60% 70%; /* Lighter Teal */
+    --chart-1: 195 55% 67%; /* Primary Teal/Blue */
+    --chart-2: 195 50% 75%; /* Lighter Teal/Blue */
     --chart-3: 30 100% 65%; /* Orange Accent (like Glucose) */
     --chart-4: 130 50% 60%; /* Green Accent (like success) */
-    --chart-5: 210 30% 25%; /* Dark Slate Gray */
-
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 215 25% 27%;
-    --sidebar-primary: 190 65% 55%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 190 60% 88%;
-    --sidebar-accent-foreground: 190 50% 35%;
-    --sidebar-border: 220 25% 90%;
-    --sidebar-ring: 190 65% 55%;
+    --chart-5: 195 33% 25%; /* Dark Cool Gray */
 
     /* Input specific colors (overriding previous ones) */
-    --input-border-color-hsl: 220 25% 90%; /* Light Gray border #E1E7ED */
-    --input-bg-color-hsl: 0 0% 100%; /* White background */
-    --input-placeholder-color-hsl: 215 20% 65%; /* Lighter Medium Slate Gray for placeholder #98A4B3 */
+    --input-border-color-hsl: 195 55% 67%; /* Primary color for border #7AC9DE */
+    --input-bg-color-hsl: 195 55% 67%; /* Primary color as base for 5% opacity bg */
+    --input-placeholder-color-hsl: 195 55% 67%; /* Primary color as base for 50% opacity placeholder */
 
     --input-border-color: hsl(var(--input-border-color-hsl));
-    --input-background: hsl(var(--input-bg-color-hsl));
-    --input-placeholder: hsl(var(--input-placeholder-color-hsl));
+    --input-background: hsl(var(--input-bg-color-hsl) / 0.05); /* Primary with 5% opacity */
+    --input-placeholder: hsl(var(--input-placeholder-color-hsl) / 0.5); /* Primary with 50% opacity */
   }
 
   .dark {
-    --background: 220 15% 10%; /* Very Dark Cool Gray #14171C */
-    --foreground: 210 20% 90%; /* Light Gray #E2E8F0 */
+    --background: 200 50% 2%; /* Very Dark Blue #010506 */
+    --foreground: 200 50% 97%; /* Light Grayish Blue #F2FAFC */
 
-    /* Card for AppBar/BottomNav - BottomNav is dark */
-    --card: 220 15% 8%; /* Even Darker Cool Gray for BottomNav #0F1115 */
-    --card-foreground: 210 20% 90%; /* Light Gray */
+    /* Card for AppBar/BottomNav */
+    --card: 195 35% 8%; /* Dark Cool Gray for AppBar/BottomNav #0D191C */
+    --card-foreground: 200 50% 97%; /* Light Grayish Blue */
 
     /* Effective card background for Content Cards */
-    --card-effective-background: 220 15% 15%; /* Dark Cool Gray for cards #1F242B */
-    --card-effective-foreground: 210 20% 90%; /* Light Gray */
+    --card-effective-background: 195 33% 15%; /* Darker Cool Gray for content cards #192C31 - FOR INACTIVE HABIT CARDS IN DARK*/
+    /* --card-effective-foreground is not explicitly defined, defaults to --foreground */
 
-    --muted: 220 15% 25%; /* Dark Gray #363D49 */
-    --muted-foreground: 210 20% 65%; /* Lighter Mid-gray #90A0B3 */
+    --muted: 195 33% 15%; /* Darker Cool Gray #192C31 - FOR ACTIVE HABIT CARDS IN DARK (then opacity /50 applied) */
+    --muted-foreground: 195 31% 54%; /* Lighter Mid-gray #62A2B3 */
 
-    --popover: 220 15% 12%; /* Darker than cards, for popovers #1A1D23 */
-    --popover-foreground: 210 20% 90%; /* Light Gray */
+    --popover: 195 35% 8%; /* Dark Cool Gray for popovers #0D191C */
+    --popover-foreground: 200 50% 97%; /* Light Grayish Blue */
 
-    --border: 220 15% 30%; /* Dark Gray Border #404854 */
-    --input: 220 15% 15%; /* Dark Cool Gray for inputs (same as content cards) */
+    --border: 195 55% 74%; /* Brighter Primary for borders in dark mode #95D4E5 */
+    --input: 195 33% 15%; /* Dark Cool Gray for inputs (same as content cards) */
 
-    --primary: 190 60% 65%; /* Slightly less saturated Teal for dark mode #66D8CC */
-    --primary-foreground: 220 15% 10%; /* Very Dark Cool Gray for text on primary */
+    --primary: 195 55% 74%; /* Brighter Primary Teal/Blue for dark mode #95D4E5 */
+    --primary-foreground: 195 35% 8%; /* Dark Cool Gray for text on primary */
 
-    --secondary: 220 15% 20%; /* Darker Secondary #2B303B */
-    --secondary-foreground: 190 55% 80%; /* Light Teal #99E5DC */
+    --secondary: 195 30% 21%; /* Darker Secondary #254047 */
+    --secondary-foreground: 200 50% 87%; /* Lighter Teal/Blue #CAE9F2 */
 
     --destructive: 0 63% 31%;
     --destructive-foreground: 0 0% 100%;
 
-    --ring: 190 60% 65%;
+    --ring: 195 55% 74%;
 
-    --chart-1: 190 60% 65%;
-    --chart-2: 190 55% 50%;
+    --chart-1: 195 55% 74%;
+    --chart-2: 195 50% 65%;
     --chart-3: 30 80% 60%;
     --chart-4: 130 45% 55%;
-    --chart-5: 210 20% 90%;
-
-    --sidebar-background: 220 15% 8%;
-    --sidebar-foreground: 210 20% 90%;
-    --sidebar-primary: 190 60% 65%;
-    --sidebar-primary-foreground: 220 15% 10%;
-    --sidebar-accent: 220 15% 20%;
-    --sidebar-accent-foreground: 190 55% 80%;
-    --sidebar-border: 220 15% 30%;
-    --sidebar-ring: 190 60% 65%;
+    --chart-5: 200 50% 90%;
 
     /* Input specific colors for dark mode */
-    --input-border-color-hsl: 220 15% 30%; /* Dark Gray Border #404854 */
-    --input-bg-color-hsl: 220 15% 15%; /* Dark Cool Gray for inputs #1F242B */
-    --input-placeholder-color-hsl: 210 20% 55%; /* Medium Gray for placeholder #7C8A9A */
-
+    --input-border-color-hsl: 195 55% 74%; /* Brighter Primary for border */
+    --input-bg-color-hsl: 195 55% 74%; /* Brighter Primary as base for 5% opacity bg */
+    --input-placeholder-color-hsl: 195 55% 74%; /* Brighter Primary as base for 50% opacity placeholder */
+    
     --input-border-color: hsl(var(--input-border-color-hsl));
-    --input-background: hsl(var(--input-bg-color-hsl));
-    --input-placeholder: hsl(var(--input-placeholder-color-hsl));
+    --input-background: hsl(var(--input-bg-color-hsl) / 0.05); /* Brighter Primary with 5% opacity */
+    --input-placeholder: hsl(var(--input-placeholder-color-hsl) / 0.5); /* Brighter Primary with 50% opacity */
   }
 }
 
@@ -174,12 +156,12 @@
   }
 
   html {
-    /* Removed font-sans from html */
+    /* font-sans applied via tailwind.config.ts */
   }
 
   body {
     @apply bg-background text-foreground;
-    font-family: "KookFaNum", sans-serif;
+    font-family: "KookFaNum", var(--font-geist-mono), sans-serif; /* Ensure KookFaNum is primary */
     /* font-feature-settings: "rlig" 1, "calt" 1; Uncomment if ligatures are desired */
   }
 
