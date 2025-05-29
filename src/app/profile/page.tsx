@@ -70,7 +70,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="space-y-8 pb-20" lang="fa">
+    <div className="space-y-4 pb-24" lang="fa">
       <h1 className="text-2xl font-bold text-foreground text-center">پروفایل</h1>
 
       <Card>

@@ -15,7 +15,7 @@ export default function HabitList() {
 
   if (activeHabits.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center text-center space-y-6 pb-10 min-h-[calc(100svh-32rem)]"> {/* Changed py-10 to pb-10 */}
+      <div className="flex flex-col items-center justify-center text-center space-y-6 pb-10">
         <ListX className="w-20 h-20 text-primary opacity-50" />
         <h2 className="text-2xl font-semibold text-foreground">هنوز عادتی اضافه نکردی یا همه آرشیو شدن</h2>
         <p className="text-muted-foreground max-w-xs">
@@ -23,7 +23,7 @@ export default function HabitList() {
         </p>
         <ArrowDown className="w-10 h-10 text-primary animate-bounce mt-4" />
         <Link href="/create-habit" legacyBehavior>
-          <Button className="text-xl px-4 py-6 rounded-xl shadow-lg">
+          <Button className="text-xl px-4 py-6 rounded-full shadow-lg">
             ایجاد اولین عادت
           </Button>
         </Link>
@@ -44,7 +44,7 @@ export default function HabitList() {
   });
 
   return (
-    <div className="space-y-6 pb-32"> {/* Changed pb-36 to pb-32 */}
+    <div className="space-y-6 pb-28">
       {sortedHabits.map((habit) => (
         <HabitCard key={habit.id} habit={habit} />
       ))}

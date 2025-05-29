@@ -6,6 +6,7 @@ import type { Habit } from "@/lib/types";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function EditHabitPage() {
   const params = useParams();
@@ -58,7 +59,7 @@ export default function EditHabitPage() {
   }
 
   return (
-    <div className="space-y-8" lang="fa">
+    <div className="space-y-4" lang="fa">
       <div className="text-right">
         <h1 className="text-2xl font-bold text-foreground">
           ویرایش عادت: {habitToEdit.title}

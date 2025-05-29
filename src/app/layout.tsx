@@ -1,4 +1,6 @@
-import type { Metadata } from "next";
+
+import type { Metadata, Viewport } from "next";
+import { Vazirmatn } from "next/font/google";
 import { Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/providers/theme-provider";
@@ -7,6 +9,11 @@ import { Toaster } from "@/components/ui/toaster";
 import BottomNavigation from "@/components/layout/bottom-navigation";
 import AuthProvider from "@/providers/auth-provider";
 import AppBar from "@/components/layout/app-bar";
+
+const vazir = Vazirmatn({
+  subsets: ["arabic", "latin"],
+  variable: "--font-vazir",
+});
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -17,7 +24,16 @@ export const metadata: Metadata = {
   title: "روز به روز",
   description: "اپلیکیشن مدیریت عادت‌ها",
   manifest: "/manifest.json",
+  themeColor: "#4FD1C5", // Updated theme color
 };
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#4FD1C5" },
+    { media: "(prefers-color-scheme: dark)", color: "#254047" },
+  ],
+};
+
 
 export default function RootLayout({
   children,
@@ -28,33 +44,26 @@ export default function RootLayout({
     <html
       lang="fa"
       dir="rtl"
-      className={`${geistMono.variable}`}
+      className={`${vazir.variable} ${geistMono.variable}`}
       suppressHydrationWarning={true}
     >
-      <head>
-        <meta name="theme-color" content="#4FD1C5" />
-      </head>
       <body
         className="antialiased font-sans bg-background"
         suppressHydrationWarning={true}
       >
         {" "}
-        {/* Ensure bg-background is on body */}
         <AuthProvider>
           <ThemeProvider
             attribute="class"
-            defaultTheme="light"
-            enableSystem={false}
+            defaultTheme="light" 
+            enableSystem={false} 
           >
             {" "}
-            {/* Default to light, disable system for now to match design */}
             <HabitProvider>
               <div className="flex flex-col min-h-svh">
                 <AppBar />
-                {/* Increased pt for taller AppBar, more overall padding for the new design */}
-                <main className="flex-grow container mx-auto max-w-md p-4 sm:p-6 pt-24">
+                <main className="flex-grow container mx-auto max-w-md px-4 sm:px-6 pt-4">
                   {" "}
-                  {/* pt-24 to account for h-20 AppBar + spacing */}
                   {children}
                 </main>
                 <BottomNavigation />
@@ -67,3 +76,4 @@ export default function RootLayout({
     </html>
   );
 }
+

@@ -1,32 +1,17 @@
 "use client";
 
-import type { Habit } from "@/lib/types";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button, buttonVariants } from "@/components/ui/button";
-import ProgressRing from "./progress-ring"; // Will be replaced or restyled
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import Link from "next/link";
-import { useHabits } from "@/providers/habit-provider";
-import React, { useState, useEffect } from "react";
-import { useToast } from "@/hooks/use-toast";
-import { getMotivationalMessage } from "@/ai/flows/personalized-motivation";
-import {
-  CheckCircle,
-  Loader2,
-  MoreVertical,
-  Archive as ArchiveIconLucide,
-  Trash2,
-  AlertTriangle,
-  ChevronRight,
-} from "lucide-react";
-import { cn, toPersianNumerals } from "@/lib/utils";
+import type { Habit } from '@/lib/types';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import Link from 'next/link';
+import { useHabits } from '@/providers/habit-provider';
+import React, { useState, useEffect } from 'react';
+import { useToast } from '@/hooks/use-toast';
+import { getMotivationalMessage } from '@/ai/flows/personalized-motivation';
+import { CheckCircle, Loader2, MoreVertical, Archive as ArchiveIconLucide, Trash2, AlertTriangle } from 'lucide-react';
+import { cn, toPersianNumerals } from '@/lib/utils';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -44,17 +29,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Progress } from "@/components/ui/progress"; // For new progress bar style
+import { Progress } from '@/components/ui/progress';
 
 interface HabitCardProps {
   habit: Habit;
   isArchiveView?: boolean;
 }
 
-// Simplified strategy name for display
-const getStrategyPersianName = (
-  strategyKey?: "21/90" | "40-day" | "2-minute" | "if-then" | "none"
-): string => {
+const getStrategyPersianName = (strategyKey?: '21/90' | '40-day' | '2-minute' | 'if-then' | 'none'): string => {
   switch (strategyKey) {
     case "21/90":
       return "۲۱/۹۰";
@@ -65,7 +47,7 @@ const getStrategyPersianName = (
     case "if-then":
       return "اگر-آنگاه";
     default:
-      return "";
+      return '';
   }
 };
 
@@ -89,25 +71,18 @@ export default function HabitCard({
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [habitToDelete, setHabitToDelete] = useState<Habit | null>(null);
 
-  const isCompletedToday =
-    habit.lastCheckedIn?.startsWith(new Date().toISOString().split("T")[0]) ??
-    false;
+  const isCurrentlyCompletedToday = habit.lastCheckedIn?.startsWith(new Date().toISOString().split('T')[0]) ?? false;
 
   useEffect(() => {
-    const today = new Date().toISOString().split("T")[0];
-    const isCurrentlyCompletedToday =
-      habit.lastCheckedIn?.startsWith(today) ?? false;
+    const today = new Date().toISOString().split('T')[0];
+    const isCompletedToday = habit.lastCheckedIn?.startsWith(today) ?? false;
 
-    if (
-      isCurrentlyCompletedToday &&
-      habit.lastMotivationalMessage &&
-      habit.lastMotivationalMessage.date === today
-    ) {
+    if (isCompletedToday && habit.lastMotivationalMessage && habit.lastMotivationalMessage.date === today) {
       if (motivationalMessage !== habit.lastMotivationalMessage.message) {
         setMotivationalMessage(habit.lastMotivationalMessage.message);
       }
       setIsLoadingMotivation(false);
-    } else if (!isCurrentlyCompletedToday) {
+    } else if (!isCompletedToday) {
       if (motivationalMessage !== null) {
         setMotivationalMessage(null);
       }
@@ -115,7 +90,7 @@ export default function HabitCard({
   }, [habit, motivationalMessage]);
 
   const handleCompleteDay = async () => {
-    if (habit.isArchived || !habit.isActive) return; // Prevent action if archived or inactive
+    if (habit.isArchived || !habit.isActive) return;
     const updatedHabit = completeDay(habit.id);
 
     if (
@@ -199,7 +174,6 @@ export default function HabitCard({
 
   if (isArchiveView) {
     return (
-      // Simplified archive card
       <Card className="w-full bg-content-card p-4 rounded-2xl">
         <div className="flex justify-between items-center">
           <div>
@@ -225,93 +199,14 @@ export default function HabitCard({
     );
   }
 
-  // New Habit Card Design - resembling "Wellness Score" or exercise items
   return (
     <>
-      <Card
-        className={cn(
-          "w-full bg-content-card p-4 rounded-2xl transition-opacity duration-300 ease-in-out", // Use content-card, more rounding
-          !isActiveAndNotArchived && "opacity-60" // Simplified inactive state
-        )}
-      >
-        <Link href={`/habits/${habit.id}`} passHref legacyBehavior>
-          <a
-            className={cn(
-              "block",
-              (!habit.isActive || habit.isArchived) && "pointer-events-none"
-            )}
-          >
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center space-x-2 space-x-reverse">
-                {/* Placeholder for an icon related to the habit - if available */}
-                {/* <Activity className="w-5 h-5 text-primary" /> */}
-                <h3 className="text-lg font-semibold text-content-card-foreground">
-                  {habit.title}
-                </h3>
-              </div>
-              <ChevronRight className="w-5 h-5 text-muted-foreground" />
-            </div>
-
-            <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
-              <span>
-                {toPersianNumerals(habit.daysCompleted)} /{" "}
-                {toPersianNumerals(habit.totalDays)} روز
-                {strategyName && (
-                  <span className="mr-2 text-xs">({strategyName})</span>
-                )}
-              </span>
-              <span>{toPersianNumerals(Math.round(percentage))}%</span>
-            </div>
-
-            <Progress
-              value={percentage}
-              className="h-2 rounded-full bg-muted"
-              indicatorClassName="bg-primary"
-            />
-
-            {/* Date and Active status can be shown here if needed, or in detail view */}
-            {/* <p className="text-xs text-muted-foreground mt-1">شروع: {new Date(habit.createdAt).toLocaleDateString('fa-IR')}</p> */}
-          </a>
-        </Link>
-
-        <div className="mt-4 flex items-center justify-between">
-          <div className="flex items-center space-x-2 space-x-reverse">
-            <Switch
-              id={`active-switch-${habit.id}`}
-              checked={habit.isActive}
-              onCheckedChange={() => toggleHabitActive(habit.id)}
-              aria-label={habit.isActive ? "عادت فعال است" : "عادت غیرفعال است"}
-              disabled={habit.isArchived}
-            />
-            <Label
-              htmlFor={`active-switch-${habit.id}`}
-              className="text-sm text-muted-foreground"
-            >
-              {habit.isActive ? "فعال" : "غیرفعال"}
-            </Label>
-          </div>
-
-          <Button
-            onClick={handleCompleteDay}
-            size="sm" // Smaller button
-            className="rounded-full" // Full round
-            disabled={isCompletedToday || !habit.isActive || habit.isArchived}
-          >
-            {isCompletedToday ? (
-              <>
-                <CheckCircle className="ml-1.5 h-4 w-4" />
-                انجام شد
-              </>
-            ) : (
-              "تکمیل امروز"
-            )}
-          </Button>
-        </div>
-
-        {/* Dropdown for Archive/Delete - can be integrated into the ChevronRight or a MoreVertical icon */}
-        {/* For simplicity, keeping it accessible, maybe change ChevronRight to MoreVertical if menu is needed */}
-        <div className="absolute top-4 left-4">
-          <DropdownMenu dir="rtl">
+      <Card className={cn(
+        "w-full p-4 rounded-2xl transition-opacity duration-300 ease-in-out relative",
+        isActiveAndNotArchived ? "bg-[var(--card-effective-background)] dark:bg-muted/50" : "bg-muted/50 opacity-70 scale-[0.985] transform dark:bg-[var(--card-effective-background)]"
+      )}>
+        <div className="absolute top-3 left-3 z-10"> {/* Changed right-3 to left-3 */}
+            <DropdownMenu dir="rtl">
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
@@ -329,9 +224,9 @@ export default function HabitCard({
               >
                 <ArchiveIconLucide className="ml-2 h-4 w-4" />
                 آرشیو عادت
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
                 onSelect={() => {
                   setHabitToDelete(habit);
                   setShowDeleteConfirm(true);
@@ -344,6 +239,63 @@ export default function HabitCard({
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
+        <Link href={`/habits/${habit.id}`} passHref legacyBehavior>
+          <a className={cn("block", (!habit.isActive || habit.isArchived) && "pointer-events-none")}>
+            <CardHeader className="flex flex-row justify-between items-center p-0 mb-2">
+              <div className="flex-grow">
+                <CardTitle className={cn(
+                  "text-lg font-semibold",
+                  isActiveAndNotArchived ? "text-content-card-foreground" : "text-muted-foreground"
+                )}>{habit.title}</CardTitle>
+                 <p className="text-xs text-muted-foreground mt-2">
+                  تاریخ شروع: {new Date(habit.createdAt).toLocaleDateString('fa-IR')}
+                </p>
+              </div>
+            </CardHeader>
+
+            <CardContent className="p-0">
+              <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
+                <span>
+                  {toPersianNumerals(habit.daysCompleted)} / {toPersianNumerals(habit.totalDays)} روز
+                  {strategyName && <span className="mr-2 text-xs">({strategyName})</span>}
+                </span>
+                <span>{toPersianNumerals(Math.round(percentage))}%</span>
+              </div>
+              <Progress value={percentage} className="h-2 rounded-full bg-muted" indicatorClassName="bg-primary" />
+            </CardContent>
+          </a>
+        </Link>
+
+        <CardFooter className="mt-4 flex items-center justify-between p-0">
+          <div className="flex items-center space-x-2 space-x-reverse">
+             <Switch
+                id={`active-switch-${habit.id}`}
+                checked={habit.isActive}
+                onCheckedChange={() => toggleHabitActive(habit.id)}
+                aria-label={habit.isActive ? 'عادت فعال است' : 'عادت غیرفعال است'}
+                disabled={habit.isArchived}
+              />
+            <Label htmlFor={`active-switch-${habit.id}`} className="text-sm text-muted-foreground">
+              {habit.isActive ? 'فعال' : 'غیرفعال'}
+            </Label>
+          </div>
+
+          <Button
+            onClick={handleCompleteDay}
+            size="sm"
+            className="rounded-full"
+            disabled={isCurrentlyCompletedToday || !habit.isActive || habit.isArchived}
+          >
+            {isCurrentlyCompletedToday ? (
+              <>
+                <CheckCircle className="ml-1.5 h-4 w-4" />
+                انجام شد
+              </>
+            ) : (
+              "تکمیل امروز"
+            )}
+          </Button>
+        </CardFooter>
 
         {isLoadingMotivation && (
           <div className="flex items-center justify-center text-sm text-muted-foreground p-2 mt-2">
@@ -359,13 +311,13 @@ export default function HabitCard({
       </Card>
 
       {habitToDelete && (
-        <AlertDialog
-          open={showDeleteConfirm}
-          onOpenChange={setShowDeleteConfirm}
-        >
+        <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
           <AlertDialogContent
             dir="rtl"
-            className="rounded-2xl bg-popover" // Use popover for dialogs
+            className="rounded-3xl bg-secondary"
+            onPointerDownOutside={(e) => {
+              setShowDeleteConfirm(false);
+            }}
           >
             <AlertDialogHeader className="items-center">
               <AlertTriangle className="h-10 w-10 text-destructive mb-3" />
@@ -375,16 +327,11 @@ export default function HabitCard({
                 قابل بازگشت نیست.
               </AlertDialogDescription>
             </AlertDialogHeader>
-            <AlertDialogFooter className="mt-4">
-              <AlertDialogCancel className="flex-1 rounded-full h-11">
-                انصراف
-              </AlertDialogCancel>
+            <AlertDialogFooter className="mt-4 flex flex-row gap-2">
+              <AlertDialogCancel className="flex-1 rounded-full h-12 bg-background text-foreground hover:bg-muted/90">انصراف</AlertDialogCancel>
               <AlertDialogAction
                 onClick={confirmDeleteHabit}
-                className={cn(
-                  buttonVariants({ variant: "destructive" }),
-                  "flex-1 rounded-full h-11"
-                )}
+                className={cn(buttonVariants({ variant: "destructive" }), "flex-1 rounded-full h-12")}
               >
                 حذف
               </AlertDialogAction>
@@ -395,3 +342,11 @@ export default function HabitCard({
     </>
   );
 }
+
+declare module "@/components/ui/progress" {
+  interface ProgressProps extends React.ComponentPropsWithoutRef<typeof import("@radix-ui/react-progress").Root> {
+    indicatorClassName?: string;
+  }
+}
+
+    
