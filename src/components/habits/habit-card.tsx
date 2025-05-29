@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { Habit } from '@/lib/types';
@@ -203,9 +204,11 @@ export default function HabitCard({
     <>
       <Card className={cn(
         "w-full p-4 rounded-2xl transition-opacity duration-300 ease-in-out relative",
-        isActiveAndNotArchived ? "bg-[var(--card-effective-background)] dark:bg-muted/50" : "bg-muted/50 opacity-70 scale-[0.985] transform dark:bg-[var(--card-effective-background)]"
+        isActiveAndNotArchived 
+          ? "bg-[var(--card-effective-background)] dark:bg-muted/50" 
+          : "bg-muted opacity-70 scale-[0.985] transform dark:bg-[var(--card-effective-background)]"
       )}>
-        <div className="absolute top-3 left-3 z-10"> {/* Changed right-3 to left-3 */}
+        <div className="absolute top-3 left-3 z-10">
             <DropdownMenu dir="rtl">
             <DropdownMenuTrigger asChild>
               <Button
@@ -315,6 +318,12 @@ export default function HabitCard({
     <AlertDialogContent
       dir="rtl"
       className="rounded-3xl bg-secondary"
+      onPointerDownOutside={(e) => {
+        // Only close if clicking outside the content itself, not on other elements like toast
+        if (e.target === e.currentTarget) {
+         setShowDeleteConfirm(false);
+        }
+      }}
     >
       <AlertDialogHeader className="items-center">
         <AlertTriangle className="h-10 w-10 text-destructive mb-3" />
