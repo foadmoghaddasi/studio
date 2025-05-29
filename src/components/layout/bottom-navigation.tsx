@@ -29,14 +29,12 @@ export default function BottomNavigation() {
     <nav 
       className={cn(
         "fixed bottom-4 bg-card rounded-full shadow-lg h-16 z-50",
-        // Mobile: w-60, centered using transform
-        "w-60 left-1/2 -translate-x-1/2",
-        // Desktop (md and up): width auto up to max-w-sm, centered using mx-auto
-        "md:w-auto md:max-w-sm md:left-auto md:translate-x-0 md:mx-auto"
+        // Ensure w-60 and centered using transform for all screen sizes
+        "w-60 left-1/2 -translate-x-1/2"
       )}
       aria-label="منوی اصلی پایین صفحه"
     > 
-      <div className="flex items-center justify-around h-full">
+      <div className="flex items-center justify-around h-full px-1">
         {navItems.map((item) => {
           const isActive = pathname === item.href || 
                          (item.href === '/my-habits' && pathname.startsWith('/habits/')) ||
@@ -72,3 +70,4 @@ export default function BottomNavigation() {
     </nav>
   );
 }
+
