@@ -21,7 +21,8 @@ export default function BottomNavigation() {
 
   useEffect(() => setMounted(true), []);
   
-  if (isLoading || !mounted || !isAuthenticated || ['/', '/otp'].includes(pathname)) {
+  // Hide on auth pages or if not authenticated yet
+  if (isLoading || !mounted || !isAuthenticated || ['/', '/otp', '/profile-setup'].includes(pathname)) {
     return null;
   }
 
@@ -43,10 +44,10 @@ export default function BottomNavigation() {
                 aria-current={isActive ? 'page' : undefined}
               >
                 <div className={cn(
-                  "flex items-center justify-center h-10 w-10 transition-all duration-200 ease-out", 
+                  "flex items-center justify-center h-8 w-8 transition-all duration-200 ease-out", // Changed from h-10 w-10
                   isActive 
                     ? "bg-primary rounded-full" 
-                    : "group-hover:bg-primary/10 rounded-full"
+                    : "group-hover:bg-primary/10 group-hover:rounded-full"
                 )}>
                   <item.icon className={cn(
                     "h-6 w-6", 
