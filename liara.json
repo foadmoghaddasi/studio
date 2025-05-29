@@ -2,8 +2,7 @@
   "app": "roozberooz",
   "port": 3000,
   "build": {
-    "location": "iran",
-    "command": "npm run build"
+    "location": "iran"
   },
   "disks": [
     {
