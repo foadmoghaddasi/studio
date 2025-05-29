@@ -4,10 +4,5 @@
   "build": {
     "location": "iran"
   },
-  "disks": [
-    {
-      "name": "my-disk",
-      "mountTo": "path/to/folder"
-    }
-  ]
+  "disks": []
 }
