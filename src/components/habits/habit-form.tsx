@@ -184,7 +184,7 @@ export default function HabitForm({ initialData }: HabitFormProps) {
     setIsLoading(true);
     
     const strategyDetails: HabitStrategyDetails = {
-      startDate: data.startDate ? format(data.startDate, 'yyyy-MM-dd') : undefined,
+      startDate: data.startDate ? format(data.startDate, 'yyyy-MM-dd'/*, { locale: faIR }*/) : undefined,
       reminderTime: data.reminderTime || undefined,
     };
 
@@ -334,14 +334,18 @@ export default function HabitForm({ initialData }: HabitFormProps) {
                               : "bg-[var(--input-background)] border-[var(--input-border-color)] hover:border-primary/70"
                           )}
                         >
-                           <Label
-                            className={cn(
-                              "font-normal text-base flex-grow text-right", 
-                              isSelected ? "text-primary" : "text-foreground"
-                            )}
-                          >
-                            {option.label}
-                          </Label>
+                          <div className="flex items-center space-x-2 space-x-reverse">
+                            {/* RadioGroupItem removed */}
+                            <Label
+                                htmlFor={`strategy-option-${option.value}`} // Ensure unique id for label
+                                className={cn(
+                                "font-normal text-base", 
+                                isSelected ? "text-primary" : "text-foreground"
+                                )}
+                            >
+                                {option.label}
+                            </Label>
+                          </div>
                           <Button
                             type="button"
                             variant="ghost"
@@ -566,7 +570,7 @@ export default function HabitForm({ initialData }: HabitFormProps) {
                       <div key={item.id} className="space-y-2 p-3 border rounded-lg bg-[var(--input-background)] border-[var(--input-border-color)]">
                         <div className="flex items-center justify-between">
                            <p className="text-sm font-medium text-muted-foreground">قاعده {toPersianNumerals(index + 1)}</p>
-                           {ifThenRulesFields.length > 0 && (
+                           {ifThenRulesFields.length > 0 && ( // Changed from > 1 to > 0 to allow deleting the last item if needed, though UI usually prevents deleting last if one is required.
                             <Button
                                 type="button"
                                 variant="ghost"
@@ -635,7 +639,7 @@ export default function HabitForm({ initialData }: HabitFormProps) {
             />
           )}
           
-          <div className="fixed inset-x-0 bottom-24 bg-background p-4 md:max-w-md md:mx-auto md:relative md:bottom-auto md:p-0 md:pt-4">
+          <div className="pt-4">
             <Button type="submit" className="w-full text-lg p-6" disabled={isLoading}>
               {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : (isEditMode ? "ثبت تغییرات" : "ایجاد عادت")}
             </Button>
@@ -665,3 +669,4 @@ export default function HabitForm({ initialData }: HabitFormProps) {
     </>
   );
 }
+
