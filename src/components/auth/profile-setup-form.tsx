@@ -17,7 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation"; // For potential redirect after edit
+import { useRouter } from "next/navigation";
 
 const profileSetupSchema = z.object({
   firstName: z.string().min(1, { message: "نام نمی‌تواند خالی باشد." }),
@@ -28,11 +28,18 @@ const profileSetupSchema = z.object({
 type ProfileSetupFormValues = z.infer<typeof profileSetupSchema>;
 
 export default function ProfileSetupForm() {
-  const { saveProfile, firstName: currentFirstName, lastName: currentLastName, age: currentAge, isProfileSetupComplete } = useAuth();
+  const { 
+    saveProfile, 
+    firstName: currentFirstName, 
+    lastName: currentLastName, 
+    age: currentAge,
+    // isProfileSetupComplete // This is now managed more granularly by AuthProvider based on loginIdentifier
+  } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   
-  const isEditMode = isProfileSetupComplete; // If profile is already setup, this form acts as edit
+  // Determine if it's an initial setup or an edit based on whether currentFirstName exists from AuthProvider
+  const isEditMode = !!currentFirstName; 
 
   const form = useForm<ProfileSetupFormValues>({
     resolver: zodResolver(profileSetupSchema),
@@ -43,27 +50,27 @@ export default function ProfileSetupForm() {
     },
   });
 
-  // Pre-fill form if in edit mode and data changes (e.g. on refresh)
+  // Pre-fill form if data changes (e.g. on refresh or after Google sign-in prefill)
   useEffect(() => {
-    if (isEditMode) {
-      form.reset({
-        firstName: currentFirstName || "",
-        lastName: currentLastName || "",
-        age: currentAge ? parseInt(currentAge) : undefined,
-      });
-    }
-  }, [isEditMode, currentFirstName, currentLastName, currentAge, form]);
+    form.reset({
+      firstName: currentFirstName || "",
+      lastName: currentLastName || "",
+      age: currentAge ? parseInt(currentAge) : undefined,
+    });
+  }, [currentFirstName, currentLastName, currentAge, form]);
 
 
   const onSubmit: SubmitHandler<ProfileSetupFormValues> = (data) => {
     setIsLoading(true);
-    setTimeout(() => {
+    setTimeout(() => { // Simulate API call
       saveProfile({ firstName: data.firstName, lastName: data.lastName, age: String(data.age) });
       setIsLoading(false);
+      // AuthProvider's useEffect will handle redirection to /my-habits or /profile
       if(isEditMode) {
-        router.push('/profile'); // Redirect to profile page after editing
+        router.push('/profile'); 
+      } else {
+        router.push('/my-habits'); // Default for initial setup
       }
-      // Default redirect to /my-habits (handled by AuthProvider if !isEditMode)
     }, 1000);
   };
 
@@ -85,7 +92,7 @@ export default function ProfileSetupForm() {
             name="firstName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm">نام</FormLabel>
+                <FormLabel className="text-sm pr-4">نام</FormLabel>
                 <FormControl>
                   <Input placeholder="مثلا: علی" {...field} className="rounded-full h-12 text-base" />
                 </FormControl>
@@ -98,7 +105,7 @@ export default function ProfileSetupForm() {
             name="lastName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm">نام خانوادگی</FormLabel>
+                <FormLabel className="text-sm pr-4">نام خانوادگی</FormLabel>
                 <FormControl>
                   <Input placeholder="مثلا: محمدی" {...field} className="rounded-full h-12 text-base" />
                 </FormControl>
@@ -111,7 +118,7 @@ export default function ProfileSetupForm() {
             name="age"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm">سن</FormLabel>
+                <FormLabel className="text-sm pr-4">سن</FormLabel>
                 <FormControl>
                   <Input type="number" inputMode="numeric" placeholder="مثلا: ۲۵" {...field} 
                     className="rounded-full h-12 text-base"
@@ -131,7 +138,7 @@ export default function ProfileSetupForm() {
             )}
           />
           <div className="pt-4">
-            <Button type="submit" className="w-full text-lg p-6 rounded-full" disabled={isLoading}>
+            <Button type="submit" className="w-full text-lg p-0 h-14 rounded-full" disabled={isLoading}>
               {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : 
                 (isEditMode ? "ثبت تغییرات" : "ذخیره و ادامه")}
             </Button>
