@@ -12,7 +12,7 @@
     --card-foreground: 195 33% 15%; /* Darker Cool Gray for AppBar/BottomNav text */
 
     /* Effective card background for Content Cards (Habit Cards, Stat Cards etc.) */
-    --card-effective-background: 198 47% 92%; /* Light Blue-Gray - #D9F0F8 - FOR ACTIVE/INACTIVE HABIT CARDS BASE IN LIGHT MODE */
+    --card-effective-background: 197 54% 95%; /* Light Blue-Gray - #D9F0F8 - FOR ACTIVE/INACTIVE HABIT CARDS BASE IN LIGHT MODE */
     /* --card-effective-foreground is not explicitly defined, defaults to --foreground */
 
     --popover: 0 0% 99%; /* Off-white for popovers */
@@ -49,8 +49,8 @@
     --input-placeholder-color-hsl: 195 55% 67%; /* Primary color as base for 50% opacity placeholder */
 
     --input-border-color: hsl(var(--input-border-color-hsl));
-    --input-background: hsl(var(--input-bg-color-hsl) / 0.05); /* Primary with 5% opacity */
-    --input-placeholder: hsl(var(--input-placeholder-color-hsl) / 0.5); /* Primary with 50% opacity */
+    --input-background: hsl(var(--input-bg-color-hsl) / 0.1); /* Primary with 5% opacity */
+    --input-placeholder: hsl(var(--input-placeholder-color-hsl) / 0.9); /* Primary with 50% opacity */
   }
 
   .dark {
@@ -62,7 +62,7 @@
     --card-foreground: 200 50% 97%; /* Light Grayish Blue */
 
     /* Effective card background for Content Cards */
-    --card-effective-background: 195 33% 15%; /* Darker Cool Gray for content cards #192C31 - FOR INACTIVE HABIT CARDS IN DARK*/
+    --card-effective-background: 196 35% 8%; /* Darker Cool Gray for content cards #192C31 - FOR INACTIVE HABIT CARDS IN DARK*/
     /* --card-effective-foreground is not explicitly defined, defaults to --foreground */
 
     --muted: 195 33% 15%; /* Darker Cool Gray #192C31 - FOR ACTIVE HABIT CARDS IN DARK (then opacity /50 applied) */
@@ -97,7 +97,7 @@
     --input-placeholder-color-hsl: 195 55% 74%; /* Brighter Primary as base for 50% opacity placeholder */
     
     --input-border-color: hsl(var(--input-border-color-hsl));
-    --input-background: hsl(var(--input-bg-color-hsl) / 0.05); /* Brighter Primary with 5% opacity */
+    --input-background: hsl(var(--input-bg-color-hsl) / 0.1); /* Brighter Primary with 5% opacity */
     --input-placeholder: hsl(var(--input-placeholder-color-hsl) / 0.5); /* Brighter Primary with 50% opacity */
   }
 }

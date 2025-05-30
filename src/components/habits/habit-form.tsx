@@ -268,14 +268,14 @@ export default function HabitForm({ initialData }: HabitFormProps) {
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pb-28" lang="fa">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 pb-28" lang="fa">
           
           <FormField
             control={form.control}
             name="title"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm">۱. نام عادت</FormLabel>
+                <FormLabel>۱. نام عادت</FormLabel>
                 <FormControl>
                   <Input placeholder="مثلا: مطالعه روزانه یا ترک سیگار" {...field} />
                 </FormControl>
@@ -289,7 +289,7 @@ export default function HabitForm({ initialData }: HabitFormProps) {
             name="goalDescription"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm">۲. هدف از این عادت (اختیاری)</FormLabel>
+                <FormLabel>۲. هدف از این عادت (اختیاری)</FormLabel>
                 <FormControl>
                   <Textarea placeholder="مثلا: ورزش حداقل ۳۰ دقیقه در روز یا ترک کامل سیگار..." {...field} />
                 </FormControl>
@@ -303,7 +303,7 @@ export default function HabitForm({ initialData }: HabitFormProps) {
             name="triggers"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm">۳. محرک‌ها (اختیاری)</FormLabel>
+                <FormLabel>۳. محرک‌ها (اختیاری)</FormLabel>
                 <FormDescription>موقعیت‌ها، زمان‌ها یا احساساتی که این عادت را تحریک می‌کنند (هر کدام در یک خط یا با کاما جدا کنید).</FormDescription>
                 <FormControl>
                   <Textarea placeholder="مثلا: بعد از بیدار شدن، وقتی استرس دارم، ساعت ۱۰ شب" {...field} />
@@ -317,8 +317,8 @@ export default function HabitForm({ initialData }: HabitFormProps) {
             control={form.control}
             name="strategy"
             render={({ field }) => (
-              <FormItem className="space-y-3">
-                <FormLabel className="text-sm pr-4">۴. روش ترک یا ساخت عادت</FormLabel>
+              <FormItem>
+                <FormLabel className="pr-4">۴. روش ترک یا ساخت عادت</FormLabel>
                  <FormControl>
                   <div className="grid grid-cols-1 gap-3">
                     {strategyOptions.map((option) => {
@@ -328,10 +328,10 @@ export default function HabitForm({ initialData }: HabitFormProps) {
                           key={option.value}
                           onClick={() => field.onChange(option.value)}
                           className={cn(
-                            "flex items-center justify-between p-3 border rounded-full cursor-pointer transition-colors h-12",
+                            "flex items-center justify-between p-3  rounded-full cursor-pointer transition-colors h-12",
                             isSelected
-                              ? "bg-primary/20 border-primary text-primary"
-                              : "bg-[var(--input-background)] border-[var(--input-border-color)] hover:border-primary/70"
+                              ? "bg-primary/20 text-primary"
+                              : "bg-[var(--input-background)] hover:border-primary/70"
                           )}
                         >
                           <div className="flex items-center space-x-2 space-x-reverse">
@@ -384,11 +384,11 @@ export default function HabitForm({ initialData }: HabitFormProps) {
                       <PopoverTrigger asChild>
                         <FormControl>
                           <Button
-                            variant={"outline"}
+                            variant={"secondary"}
                             className={cn(
                               "w-full justify-start text-right font-normal h-12 text-base", 
                               !field.value && "text-muted-foreground",
-                              "bg-[var(--input-background)] border-[var(--input-border-color)] hover:bg-[var(--input-background)]"
+                              "bg-[var(--input-background)] hover:bg-[var(--input-background)]"
                             )}
                           >
                             <CalendarIcon className="ml-2 h-4 w-4 opacity-50" />

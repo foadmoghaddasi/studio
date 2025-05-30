@@ -77,7 +77,7 @@ export default function ProfilePage() {
         <CardHeader className="items-center text-center">
           <div className="relative group">
             <Avatar className="w-24 h-24 mb-4 border-2 border-primary">
-              <AvatarImage src={profilePictureUrl || "https://placehold.co/100x100.png"} alt={fullDisplayName} data-ai-hint="profile avatar" />
+              <AvatarImage src={profilePictureUrl || "/icons/default-profile-img.png"} alt={fullDisplayName} data-ai-hint="profile avatar" />
               <AvatarFallback>
                 <User className="w-12 h-12 text-muted-foreground" />
               </AvatarFallback>
@@ -115,8 +115,8 @@ export default function ProfilePage() {
           ویرایش اطلاعات
         </Button>
         <Button 
-          variant="outline" 
-          className="w-full text-lg p-6 rounded-full text-destructive border-destructive hover:bg-destructive/10 hover:text-destructive-foreground" 
+          variant="secondary" 
+          className="w-full text-lg p-6 rounded-full text-destructive border-destructive bg-red hover:bg-destructive hover:text-white" 
           onClick={logout}
         >
           <LogOut className="ml-2 h-5 w-5" />

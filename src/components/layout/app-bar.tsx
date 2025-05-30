@@ -34,7 +34,7 @@ export default function AppBar() {
         <Link href="/profile" passHref legacyBehavior>
           <a aria-label="پروفایل کاربر" className="flex-shrink-0">
             <Avatar className="h-10 w-10 cursor-pointer border-2 border-border">
-              <AvatarImage src={profilePictureUrl || "https://placehold.co/100x100.png"} alt={userGreetingName} data-ai-hint="user avatar" />
+              <AvatarImage src={profilePictureUrl || "/icons/default-profile-img.png"} alt={userGreetingName} data-ai-hint="user avatar" />
               <AvatarFallback>
                 <User className="w-5 h-5 text-muted-foreground" />
               </AvatarFallback>

@@ -68,7 +68,7 @@ export default function MyHabitsPage() {
     {
       title: "روز های ناموفق",
       value: toPersianNumerals(unsuccessfulDays),
-      goal: "روزهای از دست رفته تا امروز",
+      goal: "روزهای از دست رفته",
       icon: TrendingDown,
       color: "purple",
       hint: "unsuccessful days",
@@ -85,7 +85,7 @@ export default function MyHabitsPage() {
             <div
               key={index}
               className={cn(
-                "flex flex-col items-center text-center p-3 rounded-3xl space-y-1.5",
+                "flex flex-col items-center text-center px-2 py-6 rounded-3xl space-y-1.5",
                 stat.color === "green" && "bg-emerald-100 dark:bg-emerald-900",
                 stat.color === "blue" && "bg-sky-100 dark:bg-sky-900",
                 stat.color === "purple" && "bg-violet-100 dark:bg-violet-900"

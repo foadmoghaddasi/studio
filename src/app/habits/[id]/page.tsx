@@ -221,7 +221,7 @@ export default function HabitDetailPage() {
       
       <div className="pt-4">
         <Link href={`/edit-habit/${habit.id}`} passHref legacyBehavior>
-          <Button variant="outline" className="w-full text-lg p-6 rounded-full">
+          <Button variant="secondary" className="w-full text-lg p-6 rounded-full">
             <Edit3 className="ml-2 h-5 w-5" />
             ویرایش عادت
           </Button>
