@@ -7,7 +7,7 @@ import { TEMP_PHONE_NUMBER_KEY } from '@/components/auth/welcome-form';
 import { auth } from '@/lib/firebase';
 import {
   GoogleAuthProvider,
-  signInWithPopup, // Using signInWithPopup as per user's statement
+  signInWithPopup,
   signOut,
   onAuthStateChanged,
   type User as FirebaseUser
@@ -20,7 +20,7 @@ interface AuthContextType {
   lastName: string | null;
   age: string | null;
   profilePictureUrl: string | null;
-  loginIdentifier: string | null;
+  loginIdentifier: string | null; // Can be phone number or email
   isProfileSetupComplete: boolean;
   loginWithOtp: () => void;
   signInWithGoogle: () => Promise<void>;
@@ -35,7 +35,13 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const AUTH_STORAGE_KEY_PREFIX = 'roozberooz_user_';
 
 const getStorageKey = (identifier: string | null, key: string) => {
-  if (!identifier) return `roozberooz_global_${key}`; // Should ideally not happen for user-specific data
+  if (!identifier) {
+    // Fallback for a very brief period if identifier is not yet set, though unlikely for user-specific data
+    // console.warn("Attempted to get storage key without a user identifier for key:", key);
+    // return `roozberooz_global_${key}`; // This should ideally not be used for user-specific data.
+    // Or handle it more gracefully, perhaps by not attempting to access localStorage
+    return null; 
+  }
   return `${AUTH_STORAGE_KEY_PREFIX}${identifier}_${key}`;
 };
 
@@ -51,58 +57,62 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   const [profilePictureUrl, setProfilePictureUrl] = useState<string | null>(null);
   const [loginIdentifier, setLoginIdentifier] = useState<string | null>(null);
   const [isProfileSetupComplete, setIsProfileSetupComplete] = useState(false);
-  const [isLoading, setIsLoading] = useState(true); // Start true, set to false by onAuthStateChanged
+  const [isLoading, setIsLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
     setMounted(true);
-    // setIsLoading(true) is already default, onAuthStateChanged will set it to false
     
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setIsLoading(true); // Set loading true while processing auth state change
       if (user) {
         setFirebaseUser(user);
         setIsAuthenticated(true);
-        const currentIdentifier = user.email || user.phoneNumber || user.uid; // Use UID as a fallback identifier
+        const currentIdentifier = user.email || user.phoneNumber || user.uid;
         setLoginIdentifier(currentIdentifier);
-        loadUserProfile(currentIdentifier); // This also sets isProfileSetupComplete from localStorage
+        loadUserProfile(currentIdentifier); // This also sets isProfileSetupComplete
 
-        // Pre-fill profile from Google if it's the first time for this identifier
-        // and profile is not yet set up, and data is not already in localStorage.
-        if (user.providerData.some(p => p.providerId === GoogleAuthProvider.PROVIDER_ID) && currentIdentifier) {
-          const storedProfileSetup = typeof window !== 'undefined' ? localStorage.getItem(getStorageKey(currentIdentifier, 'profileSetupComplete')) : null;
+        // Prefill profile from Google if it's a new Google sign-in and profile isn't setup
+        const isGoogleSignIn = user.providerData.some(p => p.providerId === GoogleAuthProvider.PROVIDER_ID);
+        if (isGoogleSignIn && currentIdentifier) {
+          const profileSetupKey = getStorageKey(currentIdentifier, 'profileSetupComplete');
+          const storedProfileSetup = profileSetupKey ? localStorage.getItem(profileSetupKey) : null;
           const isSetup = storedProfileSetup === 'true';
 
-          if (!isSetup) { // Only prefill if not already set up
+          if (!isSetup) {
             const nameParts = user.displayName?.split(' ') || [];
             const googleFirstName = nameParts[0] || null;
             const googleLastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : null;
+            const googlePhotoURL = user.photoURL || null;
 
-            if (googleFirstName && !localStorage.getItem(getStorageKey(currentIdentifier, 'userFirstName'))) {
+            const firstNameKey = getStorageKey(currentIdentifier, 'userFirstName');
+            const lastNameKey = getStorageKey(currentIdentifier, 'userLastName');
+            const photoUrlKey = getStorageKey(currentIdentifier, 'userProfilePictureUrl');
+
+            if (googleFirstName && firstNameKey && !localStorage.getItem(firstNameKey)) {
                 setFirstName(googleFirstName);
-                if (typeof window !== 'undefined') localStorage.setItem(getStorageKey(currentIdentifier, 'userFirstName'), googleFirstName);
+                localStorage.setItem(firstNameKey, googleFirstName);
             }
-            if (googleLastName && !localStorage.getItem(getStorageKey(currentIdentifier, 'userLastName'))) {
+            if (googleLastName && lastNameKey && !localStorage.getItem(lastNameKey)) {
                 setLastName(googleLastName);
-                if (typeof window !== 'undefined') localStorage.setItem(getStorageKey(currentIdentifier, 'userLastName'), googleLastName);
+                localStorage.setItem(lastNameKey, googleLastName);
             }
-            if (user.photoURL && !localStorage.getItem(getStorageKey(currentIdentifier, 'userProfilePictureUrl'))) {
-                setProfilePictureUrl(user.photoURL);
-                if (typeof window !== 'undefined') localStorage.setItem(getStorageKey(currentIdentifier, 'userProfilePictureUrl'), user.photoURL);
+            if (googlePhotoURL && photoUrlKey && !localStorage.getItem(photoUrlKey)) {
+                setProfilePictureUrl(googlePhotoURL);
+                localStorage.setItem(photoUrlKey, googlePhotoURL);
             }
           }
         }
       } else {
         setFirebaseUser(null);
         setIsAuthenticated(false);
-        if (loginIdentifier) { // If there was a previously logged-in user
-            clearUserProfile(loginIdentifier);
-        }
+        // Don't clear user-specific localStorage here on general sign-out,
+        // only if a specific user's data needs invalidation.
+        // clearUserProfile(loginIdentifier); // This was too broad
         setLoginIdentifier(null);
-        setIsProfileSetupComplete(false); // Ensure this is reset
-        // Clear states related to user profile
+        setIsProfileSetupComplete(false);
         setFirstName(null);
         setLastName(null);
         setAge(null);
@@ -113,20 +123,34 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
     return () => unsubscribe();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // loginIdentifier removed as a dependency
+  }, []); 
 
   const loadUserProfile = (identifier: string | null) => {
     if (typeof window !== 'undefined' && identifier) {
       try {
-        const storedProfileSetup = localStorage.getItem(getStorageKey(identifier, 'profileSetupComplete'));
+        const profileSetupKey = getStorageKey(identifier, 'profileSetupComplete');
+        const storedProfileSetup = profileSetupKey ? localStorage.getItem(profileSetupKey) : null;
         setIsProfileSetupComplete(storedProfileSetup === 'true');
-        setFirstName(localStorage.getItem(getStorageKey(identifier, 'userFirstName')));
-        setLastName(localStorage.getItem(getStorageKey(identifier, 'userLastName')));
-        setAge(localStorage.getItem(getStorageKey(identifier, 'userAge')));
-        setProfilePictureUrl(localStorage.getItem(getStorageKey(identifier, 'userProfilePictureUrl')));
+
+        const firstNameKey = getStorageKey(identifier, 'userFirstName');
+        if (firstNameKey) setFirstName(localStorage.getItem(firstNameKey));
+        
+        const lastNameKey = getStorageKey(identifier, 'userLastName');
+        if (lastNameKey) setLastName(localStorage.getItem(lastNameKey));
+
+        const ageKey = getStorageKey(identifier, 'userAge');
+        if (ageKey) setAge(localStorage.getItem(ageKey));
+
+        const picUrlKey = getStorageKey(identifier, 'userProfilePictureUrl');
+        if (picUrlKey) setProfilePictureUrl(localStorage.getItem(picUrlKey));
+
       } catch (error) {
         console.error("Failed to load user profile from localStorage", error);
-        setIsProfileSetupComplete(false); // Default to false on error
+        setIsProfileSetupComplete(false);
+        setFirstName(null);
+        setLastName(null);
+        setAge(null);
+        setProfilePictureUrl(null);
       }
     } else {
       setIsProfileSetupComplete(false);
@@ -137,16 +161,16 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const clearUserProfile = (identifier: string | null) => {
-      // State clearing is handled in onAuthStateChanged else block
+  const clearUserProfileOnLogout = (identifier: string | null) => {
       if (typeof window !== 'undefined' && identifier) {
-          localStorage.removeItem(getStorageKey(identifier, 'profileSetupComplete'));
-          localStorage.removeItem(getStorageKey(identifier, 'userFirstName'));
-          localStorage.removeItem(getStorageKey(identifier, 'userLastName'));
-          localStorage.removeItem(getStorageKey(identifier, 'userAge'));
-          localStorage.removeItem(getStorageKey(identifier, 'userProfilePictureUrl'));
+          const profileSetupKey = getStorageKey(identifier, 'profileSetupComplete');
+          if(profileSetupKey) localStorage.setItem(profileSetupKey, 'false'); // Mark as not setup, but don't delete data
+
+          // Keep user name, age, pic etc. so if they log back in with same identifier, it's there
+          // This implies that profileSetupComplete is the main gatekeeper for the setup form.
       }
   };
+
 
   useEffect(() => {
     if (isLoading || !mounted) {
@@ -155,8 +179,8 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
     if (isAuthenticated && loginIdentifier) {
       // Re-check isProfileSetupComplete directly from localStorage or state
-      // as it might have been updated by loadUserProfile in onAuthStateChanged
-      const setupComplete = typeof window !== 'undefined' ? localStorage.getItem(getStorageKey(loginIdentifier, 'profileSetupComplete')) === 'true' : isProfileSetupComplete;
+      const profileSetupKey = getStorageKey(loginIdentifier, 'profileSetupComplete');
+      const setupComplete = profileSetupKey ? localStorage.getItem(profileSetupKey) === 'true' : isProfileSetupComplete;
 
       if (!setupComplete && pathname !== PROFILE_SETUP_PAGE) {
         router.replace(PROFILE_SETUP_PAGE);
@@ -170,94 +194,115 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   }, [isAuthenticated, isProfileSetupComplete, isLoading, mounted, pathname, loginIdentifier]);
 
 
-  const loginWithOtp = () => {
+  const loginWithOtp = () => { // This is a simulated OTP login
     if (typeof window !== 'undefined') {
         const tempPhoneNumber = localStorage.getItem(TEMP_PHONE_NUMBER_KEY);
         if (tempPhoneNumber) {
-            // Simulate Firebase auth state change for OTP (since no actual Firebase OTP is implemented)
-            // In a real scenario, after OTP verification, Firebase would trigger onAuthStateChanged.
-            // For this simulation, we manually set states as if onAuthStateChanged fired.
-            setIsLoading(true); // Simulate start of auth process
+            setIsLoading(true); 
+            // Simulate Firebase auth state change for OTP
             const pseudoUser = { 
                 uid: tempPhoneNumber, 
                 phoneNumber: tempPhoneNumber, 
                 email: null, 
-                providerData: [{providerId: 'phone'}] 
-            } as unknown as FirebaseUser; // Cast for type compatibility
+                providerData: [{providerId: 'phone', uid: tempPhoneNumber, phoneNumber: tempPhoneNumber, email: null, displayName: null, photoURL: null }] 
+            } as unknown as FirebaseUser; 
             
             setFirebaseUser(pseudoUser);
             setIsAuthenticated(true);
             setLoginIdentifier(tempPhoneNumber);
-            localStorage.setItem(getStorageKey(null, 'lastLoginIdentifier'), tempPhoneNumber); // This might be redundant if loginIdentifier state is primary
+            const permLoginIdKey = getStorageKey(tempPhoneNumber, 'loginIdentifier'); // Store identifier more permanently tied to the user
+            if(permLoginIdKey) localStorage.setItem(permLoginIdKey, tempPhoneNumber);
+            
             localStorage.removeItem(TEMP_PHONE_NUMBER_KEY);
-            loadUserProfile(tempPhoneNumber); // Sets isProfileSetupComplete
-            setIsLoading(false); // Simulate end of auth process
+            loadUserProfile(tempPhoneNumber); 
+            setIsLoading(false); 
+        } else {
+          console.warn("OTP login attempted without temporary phone number.");
         }
     }
   };
 
   const signInWithGoogle = async () => {
-    setIsLoading(true); // Set loading true before initiating popup
+    setIsLoading(true);
     const provider = new GoogleAuthProvider();
     try {
-      // signInWithPopup returns a UserCredential, onAuthStateChanged will handle state updates
       await signInWithPopup(auth, provider);
-      // Successful sign-in will trigger onAuthStateChanged.
-      // isLoading will be set to false by onAuthStateChanged after it processes the user.
+      // onAuthStateChanged will handle the rest, including setting isLoading to false eventually.
     } catch (error: any) {
-      console.error("Google Sign-In failed with popup:", error);
-      // Handle specific errors, e.g., popup closed by user
-      if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request') {
-        // Optionally, show a toast or message for other errors
+      if (error.code === 'auth/popup-closed-by-user') {
+        console.log("Google Sign-In: Popup closed by user.");
+        // User cancelled the sign-in, this is expected.
+      } else if (error.code === 'auth/cancelled-popup-request') {
+        console.log("Google Sign-In: Popup request cancelled.");
+      } else {
+        console.error("Google Sign-In failed with popup:", error);
+        // Optionally, show a toast message to the user for other errors
       }
-      setIsLoading(false); // Reset loading state only if an error occurs during the popup phase
+      setIsLoading(false); // Reset loading state if popup phase itself errors out or is cancelled.
     }
   };
 
   const logout = async () => {
-    const currentIdentifier = loginIdentifier; // Capture before Firebase sign out clears it
+    const currentIdentifierForLogout = loginIdentifier;
     setIsLoading(true);
     try {
-      await signOut(auth); // This will trigger onAuthStateChanged, which handles state cleanup
-      // No need to clear specific user profile from localStorage here,
-      // onAuthStateChanged's 'else' block will call clearUserProfile if an identifier was present
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem(getStorageKey(null, 'lastLoginIdentifier'));
+      await signOut(auth); // This will trigger onAuthStateChanged
+      // onAuthStateChanged will clear: firebaseUser, isAuthenticated, loginIdentifier, isProfileSetupComplete, firstName, lastName, age, profilePictureUrl
+      // It also calls clearUserProfileOnLogout if an identifier was present.
+      if (currentIdentifierForLogout) {
+         clearUserProfileOnLogout(currentIdentifierForLogout); // Ensure profile setup status is reset for this identifier.
       }
+      // No need to clear specific user profile from localStorage here, onAuthStateChanged manages this.
     } catch (error) {
       console.error("Error signing out:", error);
-      setIsLoading(false); // Ensure loading is false if signOut itself errors
+      setIsLoading(false); 
     }
-    // onAuthStateChanged will set isLoading to false after processing the null user
-    router.replace('/'); // Ensure redirection to home page after logout
+    // onAuthStateChanged will set isLoading to false eventually.
+    // router.replace('/'); // Redirection is handled by the main useEffect
   };
 
   const saveProfile = (profileData: { firstName: string; lastName: string; age: string }) => {
     if (typeof window !== 'undefined' && loginIdentifier) {
       try {
-        localStorage.setItem(getStorageKey(loginIdentifier, 'userFirstName'), profileData.firstName);
-        localStorage.setItem(getStorageKey(loginIdentifier, 'userLastName'), profileData.lastName);
-        localStorage.setItem(getStorageKey(loginIdentifier, 'userAge'), profileData.age);
-        localStorage.setItem(getStorageKey(loginIdentifier, 'profileSetupComplete'), 'true');
+        const firstNameKey = getStorageKey(loginIdentifier, 'userFirstName');
+        if(firstNameKey) localStorage.setItem(firstNameKey, profileData.firstName);
+
+        const lastNameKey = getStorageKey(loginIdentifier, 'userLastName');
+        if(lastNameKey) localStorage.setItem(lastNameKey, profileData.lastName);
+        
+        const ageKey = getStorageKey(loginIdentifier, 'userAge');
+        if(ageKey) localStorage.setItem(ageKey, profileData.age);
+
+        const profileSetupKey = getStorageKey(loginIdentifier, 'profileSetupComplete');
+        if(profileSetupKey) localStorage.setItem(profileSetupKey, 'true');
+        
+        setFirstName(profileData.firstName);
+        setLastName(profileData.lastName);
+        setAge(profileData.age);
+        setIsProfileSetupComplete(true);
+        // Redirection is handled by the main useEffect
+
       } catch (error) {
         console.error("Failed to save profile data to localStorage", error);
       }
+    } else {
+      console.warn("Attempted to save profile without a login identifier.");
     }
-    setFirstName(profileData.firstName);
-    setLastName(profileData.lastName);
-    setAge(profileData.age);
-    setIsProfileSetupComplete(true);
-    // Redirection is handled by the main useEffect
   };
 
   const updateProfileImage = (imageUrl: string) => {
     if (typeof window !== 'undefined' && loginIdentifier) {
       try {
-        localStorage.setItem(getStorageKey(loginIdentifier, 'userProfilePictureUrl'), imageUrl);
-        setProfilePictureUrl(imageUrl);
+        const picUrlKey = getStorageKey(loginIdentifier, 'userProfilePictureUrl');
+        if(picUrlKey) {
+          localStorage.setItem(picUrlKey, imageUrl);
+          setProfilePictureUrl(imageUrl);
+        }
       } catch (error) {
         console.error("Failed to save profile image to localStorage", error);
       }
+    } else {
+       console.warn("Attempted to update profile image without a login identifier.");
     }
   };
 
@@ -298,6 +343,3 @@ export function useAuth() {
   }
   return context;
 }
-
-
-    
